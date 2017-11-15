@@ -7,10 +7,10 @@ import jade.content.onto.Ontology;
 import jade.content.onto.OntologyException;
 import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduledMethod;
-import repast.simphony.space.continuous.ContinuousSpace;
-import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
+import repast.simphony.space.grid.Grid;
+import repast.simphony.space.grid.GridPoint;
 import repast.simphony.util.ContextUtils;
 import sajas.core.Agent;
 import jade.core.AID;
@@ -41,11 +41,9 @@ public class CarAgent extends Agent {
 	
 private String requiredService = "bla";
 
-	ContinuousSpace<Object> spaceCont;
+	Grid<Object> spaceCont;
 
 	int sign = 1;
-
-
     
     private int nContracts;
     private ArrayList<ContractOutcome> contractOutcomes = new ArrayList<ContractOutcome>();
@@ -57,7 +55,7 @@ private String requiredService = "bla";
     private ArrayList<ProviderValue> providersList = new ArrayList<ProviderValue>();
     
     private Context<?> context;
-    private ContinuousSpace<Object> space;
+    private Grid<Object> space;
     private RepastEdge<Object> edge = null;
     
     private Codec codec;
@@ -147,7 +145,7 @@ private String requiredService = "bla";
 		public void onWake() {
 			// context and network (RepastS)
 			context = ContextUtils.getContext(myAgent);
-			space = (ContinuousSpace<Object>) context.getProjection("Street map");
+			space = (Grid<Object>) context.getProjection("Street map");
 			
 			// initiate CNet protocol
 			CNetInit cNetInit = new CNetInit(myAgent, (ACLMessage) myCfp.clone());
@@ -212,7 +210,7 @@ private String requiredService = "bla";
 		}
 	}
 	
-	public CarAgent(ContinuousSpace<Object> space) 
+	public CarAgent(Grid<Object> space) 
 	{
 		spaceCont = space;
 	}
@@ -222,8 +220,8 @@ private String requiredService = "bla";
 	{
 		try
 		{
-			NdPoint pos = spaceCont.getLocation(this);
-			spaceCont.moveTo(this, pos.getX()+2*sign/10.0, pos.getY());
+			GridPoint pos = spaceCont.getLocation(this);
+			spaceCont.moveTo(this, pos.toIntArray(null));
 		}
 		catch(Exception e)
 		{

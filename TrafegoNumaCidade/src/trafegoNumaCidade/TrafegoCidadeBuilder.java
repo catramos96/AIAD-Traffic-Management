@@ -6,18 +6,18 @@ import jade.core.AID;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import repast.simphony.context.Context;
-import repast.simphony.context.space.continuous.ContinuousSpaceFactory;
-import repast.simphony.context.space.continuous.ContinuousSpaceFactoryFinder;
+import repast.simphony.context.space.grid.GridFactory;
+import repast.simphony.context.space.grid.GridFactoryFinder;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.Schedule;
 import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.parameter.Parameters;
-import repast.simphony.space.continuous.ContinuousSpace;
-import repast.simphony.space.continuous.NdPoint;
-import repast.simphony.space.continuous.RandomCartesianAdder;
-import repast.simphony.space.continuous.SimpleCartesianAdder;
-import repast.simphony.space.continuous.StrictBorders;
+import repast.simphony.space.grid.Grid;
+import repast.simphony.space.grid.GridBuilderParameters;
+import repast.simphony.space.grid.GridPoint;
+import repast.simphony.space.grid.SimpleGridAdder;
+import repast.simphony.space.grid.StrictBorders;
 import sajas.core.Agent;
 import sajas.core.Runtime;
 import sajas.sim.repasts.RepastSLauncher;
@@ -32,7 +32,7 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 	private static int N_CONSUMERS = N;
 	private static int N_CONSUMERS_FILTERING_PROVIDERS = N;
 	
-	ContinuousSpace<Object> space;
+	Grid<Object> space;
 	
 	ArrayList<CarAgent> cars = new ArrayList<CarAgent>();
 	
@@ -118,8 +118,11 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 				cars.add(car);
 				agentContainer.acceptNewAgent("CarAgent" + i, car).start();
 				space.getAdder().add(space, car);
-				space.moveTo(car, Math.random()*50, Math.random()*50);
+				
+				int[] location = {(int) (Math.random()*50), (int) (Math.random()*50)};
+				space.moveTo(car,location);
 				schedule.schedule(car);
+				
 			}
 
 		} catch (StaleProxyException e) {
@@ -132,9 +135,10 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 	{
 		for(CarAgent car : cars)
 		{
-			NdPoint pos = space.getLocation(car);
+			GridPoint pos = space.getLocation(car);
+			
 			System.out.println("Before: x:" + pos.getX() + " y:" + pos.getY());
-			space.moveTo(car, pos.getX()+2, pos.getY()+2);
+			space.moveTo(car, pos.toIntArray(null));
 			pos = space.getLocation(car);
 			System.out.println("After: x:" + pos.getX() + " y:" + pos.getY());
 		}
@@ -146,9 +150,10 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 		int carCount = (Integer) params.getValue("carCount");
 		System.out.println(carCount);
 		
-		ContinuousSpaceFactory spaceFactory = ContinuousSpaceFactoryFinder.createContinuousSpaceFactory(null);
-		space = spaceFactory.createContinuousSpace("street_map", context, new SimpleCartesianAdder<>(), new StrictBorders(), 50, 50);
-		
+		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
+		space = gridFactory.createGrid(new String("street_map"), context, 
+				new GridBuilderParameters<Object>(new StrictBorders(), new SimpleGridAdder<Object>(), true,50, 50));
+
 		return super.build(context);
 	}
 
