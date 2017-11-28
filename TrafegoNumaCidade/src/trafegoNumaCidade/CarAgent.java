@@ -32,6 +32,7 @@ import trafegoNumaCidade.onto.ServiceProposal;
 import trafegoNumaCidade.onto.ServiceProposalRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +40,18 @@ import java.util.Vector;
 
 public class CarAgent extends Agent {
 	
-private String requiredService = "bla";
+	private String requiredService = "bla";
+
+
+	//Map Positioning
+	private enum PassageType {Road, Intersection};
+	private PassageType passageType = PassageType.Road;
+	//road
+	private Road road = null;
+	//intersection
+	private Intersection intersection = null;
+	private ArrayList<Point> intersectionRoute = new ArrayList<Point>();
+
 
 	Grid<Object> spaceCont;
 
@@ -62,6 +74,21 @@ private String requiredService = "bla";
     private Ontology serviceOntology;
     
     protected ACLMessage myCfp;
+    
+    /*
+     * GETS & SETS
+     */
+    
+    public void setIntersection(Intersection i){
+    	intersection = i;
+    	passageType = PassageType.Intersection;
+    }
+    
+    public void setRoad(Road r){
+    	road = r;
+    	passageType = PassageType.Road;
+    }
+    /*********** OTHER CLASSES  ********************/
     
     private class ProviderValue implements Comparable<ProviderValue> {
 		private final double INITIAL_VALUE = 0.5;
@@ -189,7 +216,6 @@ private String requiredService = "bla";
 		
 	}
 	
-	
 	private class CNetInit extends ContractNetInitiator {
 
 		private static final long serialVersionUID = 1L;
@@ -215,17 +241,70 @@ private String requiredService = "bla";
 		spaceCont = space;
 	}
 	
-	@ScheduledMethod(start=1 , interval=20000)
+	@ScheduledMethod(start=1 , interval=200000)
 	public void updateCarsPosition()
 	{
 		try
 		{
 			GridPoint pos = spaceCont.getLocation(this);
-			spaceCont.moveTo(this, pos.toIntArray(null));
+
+			if(passageType.equals(PassageType.Road)){
+				System.out.println("IN ROAD");
+				
+				//End of the road
+				if(new Point(pos.getX(),pos.getY()).equals(road.getEndPoint())){
+					this.setIntersection(road.getEndIntersection());
+					//test
+					Road out = intersection.getOutRoads().get(0);
+					
+					System.out.println("Road out " + out.getStartPoint().x + " " + out.getStartPoint().y + " " + out.getEndPoint().x + " " + out.getEndPoint().y);
+					
+					intersectionRoute = intersection.getRouteToRoad(road, out);
+					
+					System.out.println(intersectionRoute.size());
+					
+					road = out;
+				}
+				else{
+					Point next_pos = new Point(pos.getX() + road.getDirection().x, pos.getY() + road.getDirection().y);
+					
+					GridPoint pos2 = new GridPoint(next_pos.toArray());
+					spaceCont.moveTo(this, pos2.toIntArray(null));
+					
+					System.out.println("Position: " + next_pos.x+ " " + next_pos.y);
+					System.out.println("Direction: " + road.getDirection().x + " " + road.getDirection().y + "\n");
+				}
+			}
+			else if(passageType.equals(PassageType.Intersection)){
+				
+				System.out.println("IN INTERSECTION");
+
+				//route to get out of the intersection
+				if(intersectionRoute.size() != 0){
+					
+					System.out.println("Route to Accomplish");
+					Point next_point = intersectionRoute.get(0);
+					System.out.println(next_point.x + " " + next_point.y);
+					
+					intersectionRoute.remove(0);
+					
+					GridPoint pos2 = new GridPoint(next_point.toArray());
+					spaceCont.moveTo(this, pos2.toIntArray(null));
+					
+					if(intersectionRoute.size()== 0){
+						passageType = PassageType.Road;
+					}
+
+				}
+
+			}
+			
+			
 		}
 		catch(Exception e)
 		{
 			sign = -sign;
+			System.out.println("OUT");
 		}
 	}
 	

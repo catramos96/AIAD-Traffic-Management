@@ -22,11 +22,13 @@ import sajas.core.Agent;
 import sajas.core.Runtime;
 import sajas.sim.repasts.RepastSLauncher;
 import sajas.wrapper.ContainerController;
+import trafegoNumaCidade.Map;
+import trafegoNumaCidade.Road;
 import jade.wrapper.StaleProxyException;
 
 public class TrafegoCidadeBuilder extends RepastSLauncher {
 
-	private static int N_CARS = 100;
+	private static int N_CARS = 1;
 	
 	private static int N = 10;
 	private static int N_CONSUMERS = N;
@@ -112,6 +114,7 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 			agentContainer.acceptNewAgent("map", map).start();
 			space.getAdder().add(space, map);
 			space.moveTo(map, 25, 25);
+			
 			// create cars
 			for (int i = 0; i < N_CARS; i++) {
 				CarAgent car = new CarAgent(space);
@@ -119,8 +122,12 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 				agentContainer.acceptNewAgent("CarAgent" + i, car).start();
 				space.getAdder().add(space, car);
 				
-				int[] location = {(int) (Math.random()*50), (int) (Math.random()*50)};
-				space.moveTo(car,location);
+				
+				Point location = new Point(0,5);//{(int) (Math.random()*50), (int) (Math.random()*50)};
+				//test
+				map.updateCarRoad(car, location);
+
+				space.moveTo(car,location.toArray());
 				schedule.schedule(car);
 				
 			}
@@ -133,7 +140,7 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 	
 	public void updateCarsPosition()
 	{
-		for(CarAgent car : cars)
+		/*for(CarAgent car : cars)
 		{
 			GridPoint pos = space.getLocation(car);
 			
@@ -141,7 +148,7 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 			space.moveTo(car, pos.toIntArray(null));
 			pos = space.getLocation(car);
 			System.out.println("After: x:" + pos.getX() + " y:" + pos.getY());
-		}
+		}*/
 	}
 	
 	@Override
