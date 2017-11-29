@@ -1,42 +1,46 @@
 package trafegoNumaCidade;
 
-import trafegoNumaCidade.Intersection.RoadEntry;
+import trafegoNumaCidade.Intersection.EntryType;
 
 public class Road extends CityElement{
 	private Point startPoint;	//Out road of an intersection
 	private Point endPoint;		//In road of an intersection
+	
 	private Intersection startIntersection;
 	private Intersection endIntersection;
-	private Point direction = new Point(0,0);
+	
+	private Resources.Direction direction;
 	
 	public Road(Point start, Point end, Intersection i1, Intersection i2){
 		startPoint = start;
 		endPoint = end;
 		
-		RoadEntry entry1 = i1.insertRoad(this);
-		RoadEntry entry2 = i2.insertRoad(this);
+		EntryType entry1 = i1.insertRoad(this);
+		EntryType entry2 = i2.insertRoad(this);
 		
 		boolean insertOk = false;
 		
-		if(entry1.equals(RoadEntry.In)){
+		if(entry1.equals(EntryType.In)){
 			endIntersection = i1;
-			if(entry2.equals(RoadEntry.Out)){
+			if(entry2.equals(EntryType.Out)){
 				startIntersection = i2;
 				insertOk = true;
 			}
 		}
-		else if(entry2.equals(RoadEntry.In)){
+		else if(entry2.equals(EntryType.In)){
 			endIntersection = i2;
-			if(entry1.equals(RoadEntry.Out)){
+			if(entry1.equals(EntryType.Out)){
 				startIntersection = i1;
 				insertOk = true;
 			}
 		}
 		
-		if(insertOk)
-			updateDirection();
-		else
-			System.out.println("Direction not updated");
+		if(insertOk){
+			direction = Resources.getDirection(startPoint, endPoint);
+		}
+		else{
+			System.out.println("Intersection insertion incorrect");
+		}
 		
 	}
 	
@@ -47,29 +51,26 @@ public class Road extends CityElement{
 	 * @param point
 	 * @return array with the length to the end of the road
 	 */
-	public Point partOfRoad(Point point){
-		//Direction East
-		if(direction.x > 0 && point.y == startPoint.y){
-			if(point.x >= startPoint.x && point.x <= endPoint.x)
-				return new Point(endPoint.x - point.x,0);
+	public boolean partOfRoad(Point point){
+
+		if(direction.equals(Resources.Direction.East)){
+			if(point.x >= startPoint.x && point.x <= endPoint.x && point.y == startPoint.y)
+				return true;
 		}
-		//Direction West
-		else if(direction.x < 0 && point.y == startPoint.y){
-			if(point.x <= startPoint.x && point.x >= endPoint.x)
-				return new Point(startPoint.x - point.x,0);
+		else if(direction.equals(Resources.Direction.West)){
+			if(point.x <= startPoint.x && point.x >= endPoint.x && point.y == startPoint.y)
+				return true;
 		}
-		//Direction North
-		else if(direction.y > 0 && point.x == startPoint.x){
-			if(point.y >= startPoint.y && point.y <= endPoint.y)
-				return new Point(0,endPoint.y - point.y);
+		else if(direction.equals(Resources.Direction.North)){
+			if(point.y >= startPoint.y && point.y <= endPoint.y && point.x == startPoint.x)
+				return true;
 		}
-		//Direction South
-		else if(direction.y < 0 && point.x == startPoint.x){
-			if(point.y <= startPoint.y && point.y >= endPoint.y)
-				return new Point(0, startPoint.y - point.y);
+		else if(direction.equals(Resources.Direction.South)){
+			if(point.y <= startPoint.y && point.y >= endPoint.y && point.x == startPoint.x)
+				return true;
 		}
 			
-		return new Point(-1,-1);
+		return false;
 	}
 	
 	/*
@@ -80,7 +81,7 @@ public class Road extends CityElement{
 		return endIntersection;
 	}
 	
-	public Point getDirection(){
+	public Resources.Direction getDirection(){
 		return direction;
 	}
 	
@@ -101,21 +102,5 @@ public class Road extends CityElement{
 	
 	public String getName(){
 		return name;
-	}
-	
-	public void updateDirection(){
-		Point diff = new Point(endIntersection.getArea().x-startIntersection.getArea().x,endIntersection.getArea().y-startIntersection.getArea().y);
-		
-		if(diff.x == 0)
-			if(diff.y > 0)
-				direction = new Point(0,1);
-			else
-				direction = new Point(0,-1);
-		else if(diff.y == 0)
-			if(diff.x > 0)
-				direction = new Point(1,0);
-			else
-				direction = new Point(-1,0);
-		
 	}
 }

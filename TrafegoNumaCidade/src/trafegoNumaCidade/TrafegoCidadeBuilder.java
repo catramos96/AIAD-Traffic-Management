@@ -124,7 +124,7 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 				
 				
 				Point location = new Point(12,12);//{(int) (Math.random()*50), (int) (Math.random()*50)};
-				//test
+
 				map.updateCarRoad(car, location);
 
 				space.moveTo(car,location.toArray());
@@ -136,19 +136,6 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 			e.printStackTrace();
 		}
 		
-	}
-	
-	public void updateCarsPosition()
-	{
-		/*for(CarAgent car : cars)
-		{
-			GridPoint pos = space.getLocation(car);
-			
-			System.out.println("Before: x:" + pos.getX() + " y:" + pos.getY());
-			space.moveTo(car, pos.toIntArray(null));
-			pos = space.getLocation(car);
-			System.out.println("After: x:" + pos.getX() + " y:" + pos.getY());
-		}*/
 	}
 	
 	@Override

@@ -1,0 +1,45 @@
+package trafegoNumaCidade;
+
+public class Resources {
+
+	static enum Direction{North,South,East,West,None};
+	
+	public static Direction getDirection(Point startPoint,Point endPoint){
+		Point diff = new Point(endPoint.x-startPoint.x,endPoint.y-startPoint.y);
+		
+		if(diff.x == 0){
+			if(diff.y > 0)
+				return Direction.North;
+			else if(diff.y < 0)
+				return Direction.South;
+		}
+		else if(diff.y == 0){
+			if(diff.x > 0)
+				return Direction.East;
+			else if(diff.x < 0)
+				return Direction.West;
+		}
+		
+		return Direction.None;
+	}
+	
+	public static Point getDirectionPoint(Direction d){
+		switch (d) {
+			case North:
+				return new Point(0,1);
+			case South:
+				return new Point(0,-1);
+			case East:
+				return new Point(1,0);
+			case West:
+				return new Point (-1,0);
+			default:
+				return new Point(0,0);
+		}
+	}
+	
+	public static Point incrementDirection(Direction d, Point p){
+		Point inc = getDirectionPoint(d);
+		return new Point(p.x + inc.x,p.y + inc.y);
+	}
+}

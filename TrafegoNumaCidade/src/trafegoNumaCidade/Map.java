@@ -13,25 +13,25 @@ public class Map extends Agent
 	public Map() {
 		
 		//Intersections top->bottom left->right
-	    Intersection i1 = new Intersection(new Point(1,20), "A");
-	    Intersection i2 = new Intersection(new Point(19,20), "B");
-	    Intersection i3 = new Intersection(new Point(1,17), "C");
-	    Intersection i4 = new Intersection(new Point(4,17), "D");
-	    Intersection i5 = new Intersection(new Point(9,17), "E");
-	    Intersection i6 = new Intersection(new Point(10,15), "F");
-	    Intersection i7 = new Intersection(new Point(19,15), "G");
-	    Intersection i8 = new Intersection(new Point(4,12), "H");
-	    Intersection i9 = new Intersection(new Point(9,12), "I");
-	    Intersection i10 = new Intersection(new Point(10,12), "J");
-	    Intersection i11 = new Intersection(new Point(19,12), "K");
-	    Intersection i12 = new Intersection(new Point(2,11), "L");
-	    Intersection i13= new Intersection(new Point(9,11), "M");
-	    Intersection i14= new Intersection(new Point(10,11), "N");
-	    Intersection i15= new Intersection(new Point(16,11), "O");
-	    Intersection i16= new Intersection(new Point(2,7), "P");
-	    Intersection i17= new Intersection(new Point(9,7), "Q");
-	    Intersection i18= new Intersection(new Point(10,1), "R");
-	    Intersection i19 = new Intersection(new Point(16,1), "S");
+	    Intersection i1 = new SimpleIntersection(new Point(1,20), "A");
+	    Intersection i2 = new SimpleIntersection(new Point(19,20), "B");
+	    Intersection i3 = new SimpleIntersection(new Point(1,17), "C");
+	    Intersection i4 = new SimpleIntersection(new Point(4,17), "D");
+	    Intersection i5 = new SimpleIntersection(new Point(9,17), "E");
+	    Intersection i6 = new SimpleIntersection(new Point(10,15), "F");
+	    Intersection i7 = new SimpleIntersection(new Point(19,15), "G");
+	    Intersection i8 = new SimpleIntersection(new Point(4,12), "H");
+	    Intersection i9 = new SimpleIntersection(new Point(9,12), "I");
+	    Intersection i10 = new SimpleIntersection(new Point(10,12), "J");
+	    Intersection i11 = new SimpleIntersection(new Point(19,12), "K");
+	    Intersection i12 = new SimpleIntersection(new Point(2,11), "L");
+	    Intersection i13= new SimpleIntersection(new Point(9,11), "M");
+	    Intersection i14= new SimpleIntersection(new Point(10,11), "N");
+	    Intersection i15= new SimpleIntersection(new Point(16,11), "O");
+	    Intersection i16= new SimpleIntersection(new Point(2,7), "P");
+	    Intersection i17= new SimpleIntersection(new Point(9,7), "Q");
+	    Intersection i18= new SimpleIntersection(new Point(10,1), "R");
+	    Intersection i19 = new SimpleIntersection(new Point(16,1), "S");
 	    
 	    //Horizontal (top-> bottom, left->right)
 	    Road r1 = new Road(new Point(18,20),new Point(2,20),i1,i2);
@@ -103,18 +103,11 @@ public class Map extends Agent
 	public boolean updateCarRoad(CarAgent car, Point position){
 
 		for(int i = 0; i < roads.size(); i++){
-			Point direction = roads.get(i).partOfRoad(position);
-			if(!direction.equals(new Point(-1,-1))){
+			if(roads.get(i).partOfRoad(position)){
 				car.setRoad(roads.get(i));
 				return true;
 			}
 		}
-		
-		/*
-		for(int i = 0; i < intersections.size(); i++){
-			if(intersections.get(i).getArea().equals(position))
-				car.setIntersection(intersections.get(i));
-		}*/
 		
 		return false;
 	}

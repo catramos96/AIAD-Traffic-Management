@@ -2,62 +2,72 @@ package trafegoNumaCidade;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
+
+import org.apache.commons.math3.analysis.function.Add;
+
 import trafegoNumaCidade.Point;
 
 import trafegoNumaCidade.Semaphore;
 
-public class Intersection extends CityElement{
-	enum RoadEntry {In,Out,NotPart}
-	//Intersection Roads Entry
-	private Point bottomRoadEntry;
-	private Point topRoadEntry;
-	private Point leftRoadEntry;
-	private Point rightRoadEntry;
+/*
+ * Area with 4 points		Area with 1 point
+ * 8 Possible Roads			4 Possible Roads
+ * 
+ * 	_|||_						_| |_
+ * 	_X|X_						_ X _		
+ *  _X|X_	 					 | |
+ * 	 |||
+ */
+public abstract class Intersection extends CityElement{
+	enum EntryType {In,Out,NotPart}
+	enum CellEntry {North, South, East, West}
 	
-	private ArrayList<Road> inRoads = new ArrayList<Road>();
-	private ArrayList<Road> outRoads = new ArrayList<Road>();
-	private Semaphore semaphore = null;
-	
-	/*
-	 * Area with 4 points		Area with 1 point
-	 * 8 Possible Roads			4 Possible Roads
-	 * 
-	 * 	_|||_						_| |_
-	 * 	_X|X_						_ X _		
-	 *  _X|X_	 					 | |
-	 * 	 |||
-	 */
-	
-	//Substituir por uma matriz e deduzir as entries
-	private Point area;
-	private HashMap<Point,Road> entries = new HashMap<Point,Road>();
+	protected ArrayList<Road> inRoads = new ArrayList<Road>();
+	protected ArrayList<Road> outRoads = new ArrayList<Road>();
+	protected Semaphore semaphore = null;
+	protected HashMap<Point,HashMap<CellEntry,Road>> entries = new HashMap<Point,HashMap<CellEntry,Road>>();
 							
 	
-	public Intersection(Point area, String name){
-		this.area = area;
+	public Intersection(ArrayList<Point> area, String name){
 		this.name = name;
 		
-		bottomRoadEntry = new Point(area.x,area.y-1);
-		topRoadEntry = new Point(area.x,area.y+1);
-		leftRoadEntry = new Point(area.x-1,area.y);
-		rightRoadEntry = new Point(area.x+1,area.y);
+		HashMap<Point,ArrayList<CellEntry>> occupied = getOccupiedAdjacentCells();
 		
-		entries.put(bottomRoadEntry,null);
-		entries.put(topRoadEntry, null);
-		entries.put(leftRoadEntry,null);
-		entries.put(rightRoadEntry, null);
+		for(int i = 0; i < area.size(); i++){
+			HashMap<CellEntry,Road> entries_tmp = new HashMap<CellEntry,Road>();
+			entries_tmp.put(CellEntry.North, null);
+			entries_tmp.put(CellEntry.South, null);
+			entries_tmp.put(CellEntry.East, null);
+			entries_tmp.put(CellEntry.West, null);
+			
+			System.out.println("Cells Occupied on " + area.get(i));
+			for (CellEntry cellEntry : occupied.get(area.get(i))) {
+				
+				System.out.println(cellEntry);
+				entries_tmp.remove(cellEntry);
+			}
+			
+			entries.put(area.get(i), entries_tmp);
+		}
+		
+		
 	}
 	
-	public ArrayList<Point> getRouteToRoad(Road roadEntry,Road roadOut){
+	public Intersection(Point area, String name){
+		this.name = name;
 		
-		ArrayList<Point> route = new ArrayList<Point>();
-		
-		if(isOutRoad(roadOut)){
-			route.add(area);
-			route.add(roadOut.getStartPoint());
-		}
-		return route;
+		HashMap<CellEntry,Road> entries_tmp = new HashMap<CellEntry,Road>();
+		entries_tmp.put(CellEntry.North, null);
+		entries_tmp.put(CellEntry.South, null);
+		entries_tmp.put(CellEntry.East, null);
+		entries_tmp.put(CellEntry.West, null);
+			
+		entries.put(area, entries_tmp);
 	}
+	
+	public abstract ArrayList<Point> getRouteToRoad(Road roadEntry,Road roadOut);
+	
 	
 	/*
 	 * GETS & SETS
@@ -69,26 +79,32 @@ public class Intersection extends CityElement{
 		}
 		return false;
 	}
-	public RoadEntry insertRoad(Road r){
+	
+	public EntryType insertRoad(Road r){
 		Point startPoint = r.getStartPoint();
 		Point endPoint = r.getEndPoint();
 
+		//Search for the cell of the intersection where the road ends/starts
 		for(Point p : entries.keySet()){
 			
-			
-			if(p.x == startPoint.x && p.y == startPoint.y && entries.get(p) == null){
-				entries.put(p, r);
-				outRoads.add(r);
-				return RoadEntry.Out;
-			}
-			else if(p.x == endPoint.x && p.y == endPoint.y && entries.get(p) == null){
-				entries.put(p, r);
-				inRoads.add(r);
-				return RoadEntry.In;
+			HashMap<CellEntry, Road> entries_tmp = entries.get(p);
+
+			for(CellEntry key : entries_tmp.keySet()){
+				
+				if(startPoint.equals(getCellEntryPoint(key, p))){
+					outRoads.add(r);
+					entries_tmp.put(key, r);
+					return EntryType.Out;
+				}
+				else if(endPoint.equals(getCellEntryPoint(key, p))){
+					inRoads.add(r);
+					entries_tmp.put(key, r);
+					return EntryType.In;
+				}
 			}
 		}
 		System.out.println("COULDN'T INSERT ROAD");
-		return RoadEntry.NotPart;
+		return EntryType.NotPart;
 	}
 	
 	public void setSemaphore(Semaphore s){
@@ -111,7 +127,53 @@ public class Intersection extends CityElement{
 		return semaphore;
 	}
 	
-	public Point getArea(){
-		return area;
+	public abstract <T> T getArea();
+	
+	private HashMap<Point,ArrayList<CellEntry>> getOccupiedAdjacentCells(){
+		HashMap<Point,ArrayList<CellEntry>> ret = new HashMap<Point,ArrayList<CellEntry>>();
+		
+		for(Point p : entries.keySet()) {
+			ret.put(p, new ArrayList<CellEntry>());
+		}
+		
+		int n = 1;
+		for(Point p1: entries.keySet()){
+			
+			for(Point p2: entries.keySet()){
+				
+				//skip points treated in the previous for
+				int n2 = 0;
+				if(n2 != n)
+					n2++;
+				else{
+					if(getCellEntryPoint(CellEntry.North, p1).equals(p2))
+						ret.get(p1).add(CellEntry.North);
+					else if(getCellEntryPoint(CellEntry.South, p1).equals(p2))
+						ret.get(p1).add(CellEntry.South);
+					else if(getCellEntryPoint(CellEntry.East, p1).equals(p2))
+						ret.get(p1).add(CellEntry.East);
+					else if(getCellEntryPoint(CellEntry.West, p1).equals(p2))
+						ret.get(p1).add(CellEntry.West);
+				}
+			}
+			n++;
+		}
+		
+		return ret;
+	}
+	
+	public Point getCellEntryPoint(CellEntry entry, Point cell){
+		switch (entry) {
+		case North:
+			return new Point(cell.x,cell.y+1);
+		case South:
+			return new Point(cell.x,cell.y-1);
+		case East:
+			return new Point(cell.x+1,cell.y);
+		case West:
+			return new Point(cell.x-1,cell.y);
+		default:
+			return null;
+		}
 	}
 }

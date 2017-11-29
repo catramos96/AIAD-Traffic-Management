@@ -7,7 +7,6 @@ import jade.content.onto.Ontology;
 import jade.content.onto.OntologyException;
 import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduledMethod;
-import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
@@ -28,11 +27,9 @@ import sajas.proto.SubscriptionInitiator;
 import trafegoNumaCidade.onto.ContractOutcome;
 import trafegoNumaCidade.onto.Results;
 import trafegoNumaCidade.onto.ServiceOntology;
-import trafegoNumaCidade.onto.ServiceProposal;
 import trafegoNumaCidade.onto.ServiceProposalRequest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,11 +75,6 @@ public class CarAgent extends Agent {
     /*
      * GETS & SETS
      */
-    
-    public void setIntersection(Intersection i){
-    	intersection = i;
-    	passageType = PassageType.Intersection;
-    }
     
     public void setRoad(Road r){
     	road = r;
@@ -246,37 +238,34 @@ public class CarAgent extends Agent {
 	{
 		try
 		{
-			GridPoint pos = spaceCont.getLocation(this);
-
+			Point pos = new Point(spaceCont.getLocation(this).getX(),spaceCont.getLocation(this).getY());			
+			
 			if(passageType.equals(PassageType.Road) && road != null){
 				System.out.println("IN ROAD: " + road.getEndPoint().x + "-" + road.getEndPoint().y);
 				
 				//End of the road
-				if(new Point(pos.getX(),pos.getY()).equals(road.getEndPoint())){
-					this.setIntersection(road.getEndIntersection());
-					//test
+				if(pos.equals(road.getEndPoint())){
+					intersection = road.getEndIntersection();
+					passageType = PassageType.Intersection;
+					//ALTERAR
 					Road out = intersection.getOutRoads().get(0);
+					intersectionRoute = intersection.getRouteToRoad(road, out);
+					road = out;
 					
 					System.out.println("Road out " + out.getStartPoint().x + " " + out.getStartPoint().y + " " + out.getEndPoint().x + " " + out.getEndPoint().y);
-					
-					intersectionRoute = intersection.getRouteToRoad(road, out);
-					
-					System.out.println(intersectionRoute.size());
-					
-					road = out;
+
 				}
 				else{
-					Point next_pos = new Point(pos.getX() + road.getDirection().x, pos.getY() + road.getDirection().y);
+					Point next_pos = Resources.incrementDirection(road.getDirection(), pos);
 					
 					GridPoint pos2 = new GridPoint(next_pos.toArray());
 					spaceCont.moveTo(this, pos2.toIntArray(null));
 					
 					System.out.println("Position: " + next_pos.x+ " " + next_pos.y);
-					System.out.println("Direction: " + road.getDirection().x + " " + road.getDirection().y + "\n");
+					System.out.println("Direction: " + road.getDirection().toString());
 				}
 			}
-			else if(passageType.equals(PassageType.Intersection) && intersectionRoute != null){
-				
+			else if(passageType.equals(PassageType.Intersection) && intersectionRoute != null){				
 				System.out.println("IN INTERSECTION");
 
 				//route to get out of the intersection
