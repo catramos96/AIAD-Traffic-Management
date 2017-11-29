@@ -1,32 +1,43 @@
 package trafegoNumaCidade;
 
+import trafegoNumaCidade.Intersection.RoadEntry;
+
 public class Road extends CityElement{
 	private Point startPoint;	//Out road of an intersection
 	private Point endPoint;		//In road of an intersection
 	private Intersection startIntersection;
 	private Intersection endIntersection;
-	private Point direction;
+	private Point direction = new Point(0,0);
 	
-	public Road(Point start, Point end){
+	public Road(Point start, Point end, Intersection i1, Intersection i2){
 		startPoint = start;
 		endPoint = end;
 		
-		Point diff = new Point(endPoint.x-startPoint.x,endPoint.y-startPoint.y);
+		RoadEntry entry1 = i1.insertRoad(this);
+		RoadEntry entry2 = i2.insertRoad(this);
 		
-		if(diff.x == 0 && diff.y == 0){
-			System.out.println("Road " + name + " with no direction");
+		boolean insertOk = false;
+		
+		if(entry1.equals(RoadEntry.In)){
+			endIntersection = i1;
+			if(entry2.equals(RoadEntry.Out)){
+				startIntersection = i2;
+				insertOk = true;
+			}
+		}
+		else if(entry2.equals(RoadEntry.In)){
+			endIntersection = i2;
+			if(entry1.equals(RoadEntry.Out)){
+				startIntersection = i1;
+				insertOk = true;
+			}
 		}
 		
-		if(diff.x == 0)
-			if(diff.y > 0)
-				direction = new Point(0,1);
-			else
-				direction = new Point(0,-1);
-		else if(diff.y == 0)
-			if(diff.x > 0)
-				direction = new Point(1,0);
-			else
-				direction = new Point(-1,0);
+		if(insertOk)
+			updateDirection();
+		else
+			System.out.println("Direction not updated");
+		
 	}
 	
 	/**
@@ -90,5 +101,21 @@ public class Road extends CityElement{
 	
 	public String getName(){
 		return name;
+	}
+	
+	public void updateDirection(){
+		Point diff = new Point(endIntersection.getArea().x-startIntersection.getArea().x,endIntersection.getArea().y-startIntersection.getArea().y);
+		
+		if(diff.x == 0)
+			if(diff.y > 0)
+				direction = new Point(0,1);
+			else
+				direction = new Point(0,-1);
+		else if(diff.y == 0)
+			if(diff.x > 0)
+				direction = new Point(1,0);
+			else
+				direction = new Point(-1,0);
+		
 	}
 }

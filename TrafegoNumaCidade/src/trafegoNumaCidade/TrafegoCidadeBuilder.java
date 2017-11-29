@@ -113,7 +113,7 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 			Map map = new Map();
 			agentContainer.acceptNewAgent("map", map).start();
 			space.getAdder().add(space, map);
-			space.moveTo(map, 25, 25);
+			space.moveTo(map, 10, 10);
 			
 			// create cars
 			for (int i = 0; i < N_CARS; i++) {
@@ -123,7 +123,7 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 				space.getAdder().add(space, car);
 				
 				
-				Point location = new Point(0,5);//{(int) (Math.random()*50), (int) (Math.random()*50)};
+				Point location = new Point(12,12);//{(int) (Math.random()*50), (int) (Math.random()*50)};
 				//test
 				map.updateCarRoad(car, location);
 
@@ -159,7 +159,7 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 		
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
 		space = gridFactory.createGrid(new String("street_map"), context, 
-				new GridBuilderParameters<Object>(new StrictBorders(), new SimpleGridAdder<Object>(), true,50, 50));
+				new GridBuilderParameters<Object>(new StrictBorders(), new SimpleGridAdder<Object>(), true,21, 21));
 
 		return super.build(context);
 	}

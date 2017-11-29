@@ -248,8 +248,8 @@ public class CarAgent extends Agent {
 		{
 			GridPoint pos = spaceCont.getLocation(this);
 
-			if(passageType.equals(PassageType.Road)){
-				System.out.println("IN ROAD");
+			if(passageType.equals(PassageType.Road) && road != null){
+				System.out.println("IN ROAD: " + road.getEndPoint().x + "-" + road.getEndPoint().y);
 				
 				//End of the road
 				if(new Point(pos.getX(),pos.getY()).equals(road.getEndPoint())){
@@ -275,7 +275,7 @@ public class CarAgent extends Agent {
 					System.out.println("Direction: " + road.getDirection().x + " " + road.getDirection().y + "\n");
 				}
 			}
-			else if(passageType.equals(PassageType.Intersection)){
+			else if(passageType.equals(PassageType.Intersection) && intersectionRoute != null){
 				
 				System.out.println("IN INTERSECTION");
 

@@ -7,7 +7,7 @@ import trafegoNumaCidade.Point;
 import trafegoNumaCidade.Semaphore;
 
 public class Intersection extends CityElement{
-	private enum IntersectionWay {Right, Left, Ahead};
+	enum RoadEntry {In,Out,NotPart}
 	//Intersection Roads Entry
 	private Point bottomRoadEntry;
 	private Point topRoadEntry;
@@ -69,30 +69,26 @@ public class Intersection extends CityElement{
 		}
 		return false;
 	}
-	public boolean insertRoad(Road r){
+	public RoadEntry insertRoad(Road r){
 		Point startPoint = r.getStartPoint();
 		Point endPoint = r.getEndPoint();
 
-		//System.out.println("\nstart: " + startPoint.x + " " + startPoint.y + "\nend: " + endPoint.x + " " + endPoint.y);
 		for(Point p : entries.keySet()){
 			
-			//System.out.println("Entry: " + p.x + " " + p.y);
 			
 			if(p.x == startPoint.x && p.y == startPoint.y && entries.get(p) == null){
 				entries.put(p, r);
 				outRoads.add(r);
-				r.setStartIntersection(this);
-				return true;
+				return RoadEntry.Out;
 			}
 			else if(p.x == endPoint.x && p.y == endPoint.y && entries.get(p) == null){
 				entries.put(p, r);
 				inRoads.add(r);
-				r.setEndIntersection(this);
-				return true;
+				return RoadEntry.In;
 			}
 		}
 		System.out.println("COULDN'T INSERT ROAD");
-		return false;
+		return RoadEntry.NotPart;
 	}
 	
 	public void setSemaphore(Semaphore s){
