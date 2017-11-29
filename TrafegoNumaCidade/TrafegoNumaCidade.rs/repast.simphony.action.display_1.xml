@@ -54,7 +54,7 @@
     </repast.simphony.scenario.data.ProjectionData>
   </projections>
   <visualizationProperties class="repast.simphony.visualization.UnitSizeLayoutProperties">
-    <unitSize>15.0</unitSize>
+    <unitSize>30.0</unitSize>
   </visualizationProperties>
   <projectionDescriptors>
     <entry>
@@ -71,7 +71,7 @@
               </entry>
               <entry>
                 <string>UNIT_SIZE</string>
-                <float>15.0</float>
+                <float>30.0</float>
               </entry>
               <entry>
                 <string>SHOW</string>
