@@ -13,6 +13,7 @@ import trafegoNumaCidade.Semaphore;
 /*
  * Area with 4 points		Area with 1 point
  * 8 Possible Roads			4 Possible Roads
+ * Complex Intersection		Simple Intersection
  * 
  * 	_|||_						_| |_
  * 	_X|X_						_ X _		
@@ -189,6 +190,24 @@ public abstract class Intersection extends CityElement{
 			}
 		}
 		
+		return null;
+	}
+	
+	/**
+	 * UPDATES
+	 */
+	
+	public Semaphore updateSemaphore(){
+		if(inRoads.size() > 1){
+			ArrayList<Point> controlPoints = new ArrayList<Point>();
+			
+			for(Road r : inRoads){
+				controlPoints.add(r.getEndPoint());
+			}
+			semaphore = new Semaphore(controlPoints);
+			
+			return semaphore;
+		}
 		return null;
 	}
 }

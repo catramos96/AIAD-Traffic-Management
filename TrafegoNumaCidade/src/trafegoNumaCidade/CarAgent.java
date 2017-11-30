@@ -260,9 +260,7 @@ public class CarAgent extends Agent {
 				}
 				else{
 					Point next_pos = Resources.incrementDirection(road.getDirection(), pos);
-					
-					GridPoint pos2 = new GridPoint(next_pos.toArray());
-					spaceCont.moveTo(this, pos2.toIntArray(null));
+					spaceCont.moveTo(this, next_pos.toArray());
 					
 					System.out.println("Position: " + next_pos.x+ " " + next_pos.y);
 					System.out.println("Direction: " + road.getDirection().toString());
@@ -279,9 +277,7 @@ public class CarAgent extends Agent {
 					System.out.println(next_point.x + " " + next_point.y);
 					
 					intersectionRoute.remove(0);
-					
-					GridPoint pos2 = new GridPoint(next_point.toArray());
-					spaceCont.moveTo(this, pos2.toIntArray(null));
+					spaceCont.moveTo(this, next_point.toArray());
 					
 					if(intersectionRoute.size()== 0){
 						passageType = PassageType.Road;

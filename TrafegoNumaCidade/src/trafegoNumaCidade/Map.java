@@ -9,6 +9,7 @@ public class Map extends Agent
 	
 	private ArrayList<Intersection> intersections = new ArrayList<Intersection>();
 	private ArrayList<Road> roads = new ArrayList<Road>();
+	private ArrayList<Semaphore> semaphores = new ArrayList<Semaphore>();
 
 	public Map() {
 		
@@ -97,7 +98,16 @@ public class Map extends Agent
 	    intersections.add(i18);
 	    intersections.add(i19);
 	    intersections.add(ci1);
-
+	    
+	    /*Update Semaphore of intersections*/
+	    for(Intersection i : intersections){
+	    	Semaphore s = i.updateSemaphore();
+	    	
+	    	if(s!= null){
+	    		semaphores.add(s);
+	    		System.out.println("Semaphore " + s.getActiveControlPoint().x + " " + s.getActiveControlPoint().y);
+	    	}
+	    }
 
 	}
 	
@@ -119,5 +129,9 @@ public class Map extends Agent
 	
 	public ArrayList<Road> getRoads(){
 		return roads;
+	}
+	
+	public ArrayList<Semaphore> getSemaphores(){
+		return semaphores;
 	}
 }

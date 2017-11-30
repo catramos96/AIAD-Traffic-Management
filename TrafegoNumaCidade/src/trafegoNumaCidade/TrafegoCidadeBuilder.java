@@ -10,12 +10,9 @@ import repast.simphony.context.space.grid.GridFactory;
 import repast.simphony.context.space.grid.GridFactoryFinder;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.Schedule;
-import repast.simphony.engine.schedule.ScheduleParameters;
-import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.parameter.Parameters;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridBuilderParameters;
-import repast.simphony.space.grid.GridPoint;
 import repast.simphony.space.grid.SimpleGridAdder;
 import repast.simphony.space.grid.StrictBorders;
 import sajas.core.Agent;
@@ -23,7 +20,6 @@ import sajas.core.Runtime;
 import sajas.sim.repasts.RepastSLauncher;
 import sajas.wrapper.ContainerController;
 import trafegoNumaCidade.Map;
-import trafegoNumaCidade.Road;
 import jade.wrapper.StaleProxyException;
 
 public class TrafegoCidadeBuilder extends RepastSLauncher {
@@ -115,6 +111,22 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 			space.getAdder().add(space, map);
 			space.moveTo(map, 10, 10);
 			
+			// create radio
+			//TODO
+			
+			// create semaphores
+			ArrayList<Semaphore> semaphores = map.getSemaphores();
+			for(int i = 0; i < semaphores.size(); i++){
+				Semaphore s = semaphores.get(i);
+				
+				agentContainer.acceptNewAgent("SemaphoreAgent" + i, s).start();
+				space.getAdder().add(space, s);
+				s.setSpace(space);
+				
+				Point location = s.getPosition();
+				space.moveTo(s,location.toArray());
+				schedule.schedule(s);
+			}
 			// create cars
 			for (int i = 0; i < N_CARS; i++) {
 				CarAgent car = new CarAgent(space);
@@ -122,8 +134,8 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 				agentContainer.acceptNewAgent("CarAgent" + i, car).start();
 				space.getAdder().add(space, car);
 				
-				
-				Point location = new Point(12,12);//{(int) (Math.random()*50), (int) (Math.random()*50)};
+				//ALTERAR
+				Point location = new Point(12,12);
 
 				map.updateCarRoad(car, location);
 
