@@ -42,4 +42,29 @@ public class Resources {
 		Point inc = getDirectionPoint(d);
 		return new Point(p.x + inc.x,p.y + inc.y);
 	}
+	
+	/**
+	 * Same as the getDirection(...) but with just a cell apart
+	 * @param origin
+	 * @param destination
+	 * @return
+	 */
+	public static Direction getAdjacentDirection(Point origin, Point destination){
+		Point diff = new Point(destination.x-origin.x,destination.y-origin.y);
+		
+		if(diff.x == 0){
+			if(diff.y == 1)
+				return Direction.North;
+			else if(diff.y == -1)
+				return Direction.South;
+		}
+		else if(diff.y == 0){
+			if(diff.x == 1)
+				return Direction.East;
+			else if(diff.x == -1)
+				return Direction.West;
+		}
+		
+		return Direction.None;
+	}
 }

@@ -32,7 +32,7 @@ public abstract class Intersection extends CityElement{
 	public Intersection(ArrayList<Point> area, String name){
 		this.name = name;
 		
-		HashMap<Point,ArrayList<CellEntry>> occupied = getOccupiedAdjacentCells();
+		HashMap<Point,ArrayList<CellEntry>> occupied = getOccupiedAdjacentCells(area);
 		
 		for(int i = 0; i < area.size(); i++){
 			HashMap<CellEntry,Road> entries_tmp = new HashMap<CellEntry,Road>();
@@ -41,17 +41,13 @@ public abstract class Intersection extends CityElement{
 			entries_tmp.put(CellEntry.East, null);
 			entries_tmp.put(CellEntry.West, null);
 			
-			System.out.println("Cells Occupied on " + area.get(i));
 			for (CellEntry cellEntry : occupied.get(area.get(i))) {
-				
-				System.out.println(cellEntry);
 				entries_tmp.remove(cellEntry);
 			}
 			
-			entries.put(area.get(i), entries_tmp);
+			if(entries_tmp.size() != 0)
+				entries.put(area.get(i), entries_tmp);
 		}
-		
-		
 	}
 	
 	public Intersection(Point area, String name){
@@ -67,8 +63,7 @@ public abstract class Intersection extends CityElement{
 	}
 	
 	public abstract ArrayList<Point> getRouteToRoad(Road roadEntry,Road roadOut);
-	
-	
+
 	/*
 	 * GETS & SETS
 	 */
@@ -129,31 +124,39 @@ public abstract class Intersection extends CityElement{
 	
 	public abstract <T> T getArea();
 	
-	private HashMap<Point,ArrayList<CellEntry>> getOccupiedAdjacentCells(){
+	private HashMap<Point,ArrayList<CellEntry>> getOccupiedAdjacentCells(ArrayList<Point> area){
 		HashMap<Point,ArrayList<CellEntry>> ret = new HashMap<Point,ArrayList<CellEntry>>();
 		
-		for(Point p : entries.keySet()) {
+		for(Point p : area) {
 			ret.put(p, new ArrayList<CellEntry>());
 		}
 		
 		int n = 1;
-		for(Point p1: entries.keySet()){
-			
-			for(Point p2: entries.keySet()){
+		for(Point p1: ret.keySet()){
+			int n2 = 0;
+
+			for(Point p2: ret.keySet()){
 				
 				//skip points treated in the previous for
-				int n2 = 0;
-				if(n2 != n)
+				if(n2 < n)
 					n2++;
 				else{
-					if(getCellEntryPoint(CellEntry.North, p1).equals(p2))
+					if(getCellEntryPoint(CellEntry.North, p1).equals(p2)){
 						ret.get(p1).add(CellEntry.North);
-					else if(getCellEntryPoint(CellEntry.South, p1).equals(p2))
+						ret.get(p2).add(CellEntry.South);
+					}
+					else if(getCellEntryPoint(CellEntry.South, p1).equals(p2)){
 						ret.get(p1).add(CellEntry.South);
-					else if(getCellEntryPoint(CellEntry.East, p1).equals(p2))
+						ret.get(p2).add(CellEntry.North);
+					}
+					else if(getCellEntryPoint(CellEntry.East, p1).equals(p2)){
 						ret.get(p1).add(CellEntry.East);
-					else if(getCellEntryPoint(CellEntry.West, p1).equals(p2))
+						ret.get(p2).add(CellEntry.West);
+					}
+					else if(getCellEntryPoint(CellEntry.West, p1).equals(p2)){
 						ret.get(p1).add(CellEntry.West);
+						ret.get(p2).add(CellEntry.East);
+					}
 				}
 			}
 			n++;
@@ -175,5 +178,17 @@ public abstract class Intersection extends CityElement{
 		default:
 			return null;
 		}
+	}
+
+	public Point getAreaPointOfEntry(Point entry){
+		for(Point p : entries.keySet()){
+			
+			for(CellEntry c : entries.get(p).keySet()){
+				if(getCellEntryPoint(c, p).equals(entry))
+					return p;
+			}
+		}
+		
+		return null;
 	}
 }

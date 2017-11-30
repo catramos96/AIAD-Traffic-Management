@@ -1,17 +1,56 @@
 package trafegoNumaCidade;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import trafegoNumaCidade.Resources.Direction;
 
 public class ComplexIntersection extends Intersection{
 
+	ArrayList<Point> circuit = new ArrayList<Point>();
+	
 	public ComplexIntersection(ArrayList<Point> area, String name) {
 		super(area, name);
+		loadCircuit(area);
 	}
 
 	@Override
 	public ArrayList<Point> getRouteToRoad(Road roadEntry, Road roadOut) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		ArrayList<Point> route = new ArrayList<Point>();
+		
+		Point areaOfEntry = getAreaPointOfEntry(roadEntry.getEndPoint());
+		
+		if(areaOfEntry == null)
+			return null;
+		
+		route.add(areaOfEntry);
+		
+		int index = -1;
+		
+		//Look for position in circuit
+		for(int i = 0; i < circuit.size(); i++){
+			if(circuit.get(i).equals(areaOfEntry)){
+				index = i;
+				break;
+			}
+		}
+		
+		if(index == -1)
+			return null;
+		
+		int n = circuit.size() - 1;
+		
+		while(n != 0){
+			index ++;
+			if(index == circuit.size())
+				index = 0;
+			route.add(circuit.get(index));
+			n--;
+		}
+		
+		return route;
 	}
 
 	@Override
@@ -22,6 +61,48 @@ public class ComplexIntersection extends Intersection{
 			ret.add(p);
 		
 		return ret;
+	}
+	
+	public void loadCircuit(ArrayList<Point> area){
+		ArrayList<Direction> circuit_direction = new ArrayList<Direction>();
+		
+		//Direction counterclockwise
+		circuit_direction.add(Direction.North);
+		circuit_direction.add(Direction.West);
+		circuit_direction.add(Direction.South);
+		circuit_direction.add(Direction.East);
+
+		Point lastPoint = area.get(0);
+		int dir_index = 0;
+		
+		circuit.add(lastPoint);
+		area.remove(0);
+
+		while(area.size() != 0){
+			boolean found = false;
+			
+			for(int i = 0; i < area.size();){
+				Direction adjDir = Resources.getAdjacentDirection(lastPoint, area.get(i));
+				
+				if(adjDir.equals(circuit_direction.get(dir_index))){
+					found = true;
+	
+					circuit.add(area.get(i));
+					lastPoint = area.get(i);
+					area.remove(i);
+				}
+				else
+					i++;
+			}
+			
+			if(!found){
+				dir_index++;
+				if(dir_index == circuit_direction.size())
+					dir_index = 0;
+			}
+			
+		}
+		
 	}
 
 }
