@@ -101,12 +101,15 @@ public class Map extends Agent
 	    
 	    /*Update Semaphore of intersections*/
 	    for(Intersection i : intersections){
-	    	Semaphore s = i.updateSemaphore();
 	    	
-	    	if(s!= null){
-	    		semaphores.add(s);
-	    		System.out.println("Semaphore " + s.getActiveControlPoint().x + " " + s.getActiveControlPoint().y);
+	    	i.updateSemaphores();
+	    	
+	    	if(i.getSemaphoreManager() != null){
+	    		for(Semaphore s : i.getSemaphoreManager().getSemaphores()){
+		    		semaphores.add(s);
+		    	}
 	    	}
+	    	
 	    }
 
 	}

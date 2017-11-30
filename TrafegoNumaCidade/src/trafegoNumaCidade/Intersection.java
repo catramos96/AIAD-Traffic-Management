@@ -9,6 +9,7 @@ import org.apache.commons.math3.analysis.function.Add;
 import trafegoNumaCidade.Point;
 
 import trafegoNumaCidade.Semaphore;
+import trafegoNumaCidade.Semaphore.Light;
 
 /*
  * Area with 4 points		Area with 1 point
@@ -26,7 +27,7 @@ public abstract class Intersection extends CityElement{
 	
 	protected ArrayList<Road> inRoads = new ArrayList<Road>();
 	protected ArrayList<Road> outRoads = new ArrayList<Road>();
-	protected Semaphore semaphore = null;
+	protected SemaphoreManager semaphoreManager;
 	protected HashMap<Point,HashMap<CellEntry,Road>> entries = new HashMap<Point,HashMap<CellEntry,Road>>();
 							
 	
@@ -103,10 +104,6 @@ public abstract class Intersection extends CityElement{
 		return EntryType.NotPart;
 	}
 	
-	public void setSemaphore(Semaphore s){
-		semaphore = s;
-	}
-	
 	public void setName(String name){
 		this.name = name;
 	}
@@ -119,8 +116,8 @@ public abstract class Intersection extends CityElement{
 		return inRoads;
 	}
 	
-	public Semaphore getSemaphore(){
-		return semaphore;
+	public SemaphoreManager getSemaphoreManager(){
+		return semaphoreManager;
 	}
 	
 	public abstract <T> T getArea();
@@ -197,17 +194,14 @@ public abstract class Intersection extends CityElement{
 	 * UPDATES
 	 */
 	
-	public Semaphore updateSemaphore(){
+	public void updateSemaphores(){
 		if(inRoads.size() > 1){
 			ArrayList<Point> controlPoints = new ArrayList<Point>();
 			
 			for(Road r : inRoads){
 				controlPoints.add(r.getEndPoint());
 			}
-			semaphore = new Semaphore(controlPoints);
-			
-			return semaphore;
+			semaphoreManager = new SemaphoreManager(controlPoints);
 		}
-		return null;
 	}
 }
