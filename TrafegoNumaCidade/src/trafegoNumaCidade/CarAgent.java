@@ -242,13 +242,16 @@ public class CarAgent extends Agent {
 			
 			if(passageType.equals(PassageType.Road) && road != null){
 				System.out.println("IN ROAD: " + road.getEndPoint().x + "-" + road.getEndPoint().y);
+				System.out.println("IN END: " + road.getEndPoint().x + "-" + road.getEndPoint().y);
 				
 				//End of the road
 				if(pos.equals(road.getEndPoint())){
 					intersection = road.getEndIntersection();
 					passageType = PassageType.Intersection;
 					//ALTERAR
-					Road out = intersection.getOutRoads().get(0);
+					int road_index = (int) (Math.random() * intersection.getOutRoads().size());
+					Road out = intersection.getOutRoads().get(road_index);
+					//
 					intersectionRoute = intersection.getRouteToRoad(road, out);
 					road = out;
 					

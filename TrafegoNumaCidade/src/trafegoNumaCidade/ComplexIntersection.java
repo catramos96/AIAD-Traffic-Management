@@ -21,8 +21,9 @@ public class ComplexIntersection extends Intersection{
 		ArrayList<Point> route = new ArrayList<Point>();
 		
 		Point areaOfEntry = getAreaPointOfEntry(roadEntry.getEndPoint());
+		Point areaOfOut = getAreaPointOfEntry(roadOut.getStartPoint());
 		
-		if(areaOfEntry == null)
+		if(areaOfEntry == null || areaOfOut == null)
 			return null;
 		
 		route.add(areaOfEntry);
@@ -40,15 +41,17 @@ public class ComplexIntersection extends Intersection{
 		if(index == -1)
 			return null;
 		
-		int n = circuit.size() - 1;
+		Point lastPoint;
 		
-		while(n != 0){
+		do{
 			index ++;
 			if(index == circuit.size())
 				index = 0;
-			route.add(circuit.get(index));
-			n--;
-		}
+			lastPoint = circuit.get(index);
+			route.add(lastPoint);
+		}while(!lastPoint.equals(areaOfOut));
+		
+		route.add(roadOut.getStartPoint());
 		
 		return route;
 	}
