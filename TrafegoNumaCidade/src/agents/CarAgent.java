@@ -83,6 +83,7 @@ public class CarAgent extends Agent {
      * Contructor
      * @param space
      */
+    
     public CarAgent(Grid<Object> space) 
 	{
 		this.space = space;
@@ -97,7 +98,7 @@ public class CarAgent extends Agent {
 	{
 		try
 		{
-			Point pos = new Point(space.getLocation(this).getX(),space.getLocation(this).getY());			
+			Point pos = new Point(space.getLocation(this).getX(),space.getLocation(this).getY());
 			
 			if(passageType.equals(PassageType.Road) && road != null){
 				
@@ -105,14 +106,12 @@ public class CarAgent extends Agent {
 				if(pos.equals(road.getEndPoint())){		
 					
 					//Check semaphores
-					Semaphore s = SpaceResources.hasRedOrYellowSemaphore(space, pos);
-					
-					if(s == null)
-						greenSemaphore = true;
-					else
+					if(SpaceResources.hasRedOrYellowSemaphore(space, pos))
 						greenSemaphore = false;
+					else
+						greenSemaphore = true;
 					
-					//Is ok to advance
+					//If it's ok to advance
 					if(greenSemaphore){
 						intersection = road.getEndIntersection();
 						
@@ -124,25 +123,31 @@ public class CarAgent extends Agent {
 						road = out;
 						
 						passageType = PassageType.Intersection;
-
 					}
 				}
 				else{
-					Point next_pos = Resources.incrementDirection(road.getDirection(), pos);
-					space.moveTo(this, next_pos.toArray());
+					Point next_position = Resources.incrementDirection(road.getDirection(), pos);
+
+					if(!SpaceResources.hasCar(space, next_position)){
+						space.moveTo(this, next_position.toArray());
+					}
 				}
 			}
-			else if(passageType.equals(PassageType.Intersection)){	
-				
-				Point next_point = intersectionRoute.get(0);
-				
-				intersectionRoute.remove(0);
-				space.moveTo(this, next_point.toArray());
-				
-				if(intersectionRoute.size()== 0)
-					passageType = PassageType.Road;
-			}
 			
+			if(passageType.equals(PassageType.Intersection)){	
+				
+				Point next_position = intersectionRoute.get(0);
+
+				if(!SpaceResources.hasCar(space, next_position)){
+					
+					space.moveTo(this, next_position.toArray());
+
+					intersectionRoute.remove(0);
+					
+					if(intersectionRoute.size()== 0)
+						passageType = PassageType.Road;
+				}
+			}			
 			
 		}
 		catch(Exception e)
@@ -160,7 +165,8 @@ public class CarAgent extends Agent {
     	road = r;
     	passageType = PassageType.Road;
     }
-    /*********** OTHER CLASSES  ********************/
+    
+    /******************** OTHER CLASSES  ********************/
     
     private class ProviderValue implements Comparable<ProviderValue> {
 		private final double INITIAL_VALUE = 0.5;

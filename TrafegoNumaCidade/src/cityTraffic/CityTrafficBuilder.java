@@ -26,7 +26,7 @@ import jade.wrapper.StaleProxyException;
 
 public class CityTrafficBuilder extends RepastSLauncher {
 
-	private static int N_CARS = 1;
+	private static int N_CARS = 2;
 	
 	private static int N = 10;
 	private static int N_CONSUMERS = N;
@@ -123,7 +123,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				space.getAdder().add(space, car);
 				
 				//ALTERAR
-				Point location = new Point(12,12);
+				Point location = new Point(12+i,12);
 
 				map.updateCarRoad(car, location);
 
