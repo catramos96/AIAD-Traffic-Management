@@ -106,7 +106,7 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 		Schedule schedule = new Schedule();
 		
 		try {
-			Map map = new Map();
+			Map map = new Map(space,mainContainer,schedule);
 			agentContainer.acceptNewAgent("map", map).start();
 			space.getAdder().add(space, map);
 			space.moveTo(map, 10, 10);
@@ -115,7 +115,7 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 			//TODO
 			
 			// create semaphores
-			ArrayList<Semaphore> semaphores = map.getSemaphores();
+			/*ArrayList<Semaphore> semaphores = map.getSemaphores();
 			for(int i = 0; i < semaphores.size(); i++){
 				Semaphore s = semaphores.get(i);
 				
@@ -126,7 +126,7 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 				Point location = s.getPosition();
 				space.moveTo(s,location.toArray());
 				schedule.schedule(s);
-			}
+			}*/
 			// create cars
 			for (int i = 0; i < N_CARS; i++) {
 				CarAgent car = new CarAgent(space);

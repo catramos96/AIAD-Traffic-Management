@@ -241,8 +241,8 @@ public class CarAgent extends Agent {
 			Point pos = new Point(spaceCont.getLocation(this).getX(),spaceCont.getLocation(this).getY());			
 			
 			if(passageType.equals(PassageType.Road) && road != null){
-				System.out.println("IN ROAD: " + road.getEndPoint().x + "-" + road.getEndPoint().y);
-				System.out.println("IN END: " + road.getEndPoint().x + "-" + road.getEndPoint().y);
+				/*System.out.println("IN ROAD: " + road.getEndPoint().x + "-" + road.getEndPoint().y);
+				System.out.println("IN END: " + road.getEndPoint().x + "-" + road.getEndPoint().y);*/
 				
 				//End of the road
 				if(pos.equals(road.getEndPoint())){
@@ -255,26 +255,26 @@ public class CarAgent extends Agent {
 					intersectionRoute = intersection.getRouteToRoad(road, out);
 					road = out;
 					
-					System.out.println("Road out " + out.getStartPoint().x + " " + out.getStartPoint().y + " " + out.getEndPoint().x + " " + out.getEndPoint().y);
+					//System.out.println("Road out " + out.getStartPoint().x + " " + out.getStartPoint().y + " " + out.getEndPoint().x + " " + out.getEndPoint().y);
 
 				}
 				else{
 					Point next_pos = Resources.incrementDirection(road.getDirection(), pos);
 					spaceCont.moveTo(this, next_pos.toArray());
 					
-					System.out.println("Position: " + next_pos.x+ " " + next_pos.y);
-					System.out.println("Direction: " + road.getDirection().toString());
+					//System.out.println("Position: " + next_pos.x+ " " + next_pos.y);
+					//System.out.println("Direction: " + road.getDirection().toString());
 				}
 			}
 			else if(passageType.equals(PassageType.Intersection) && intersectionRoute != null){				
-				System.out.println("IN INTERSECTION");
+				//System.out.println("IN INTERSECTION");
 
 				//route to get out of the intersection
 				if(intersectionRoute.size() != 0){
 					
-					System.out.println("Route to Accomplish");
+					//System.out.println("Route to Accomplish");
 					Point next_point = intersectionRoute.get(0);
-					System.out.println(next_point.x + " " + next_point.y);
+					//System.out.println(next_point.x + " " + next_point.y);
 					
 					intersectionRoute.remove(0);
 					spaceCont.moveTo(this, next_point.toArray());

@@ -2,16 +2,20 @@ package trafegoNumaCidade;
 
 import java.util.ArrayList;
 
+import repast.simphony.engine.schedule.Schedule;
+import repast.simphony.space.grid.Grid;
 import sajas.core.Agent;
+import sajas.wrapper.ContainerController;
 
 public class Map extends Agent 
 {
-	
+	Grid<Object> space;
 	private ArrayList<Intersection> intersections = new ArrayList<Intersection>();
 	private ArrayList<Road> roads = new ArrayList<Road>();
 	private ArrayList<Semaphore> semaphores = new ArrayList<Semaphore>();
 
-	public Map() {
+	public Map(Grid<Object> space, ContainerController mainContainer, Schedule schedule) {
+		this.space = space;
 		
 		//Intersections top->bottom left->right
 	    Intersection i1 = new SimpleIntersection(new Point(1,20), "A");
@@ -102,13 +106,13 @@ public class Map extends Agent
 	    /*Update Semaphore of intersections*/
 	    for(Intersection i : intersections){
 	    	
-	    	i.updateSemaphores();
+	    	i.updateSemaphores(space,mainContainer,schedule);
 	    	
-	    	if(i.getSemaphoreManager() != null){
+	    	/*if(i.getSemaphoreManager() != null){
 	    		for(Semaphore s : i.getSemaphoreManager().getSemaphores()){
 		    		semaphores.add(s);
 		    	}
-	    	}
+	    	}*/
 	    	
 	    }
 

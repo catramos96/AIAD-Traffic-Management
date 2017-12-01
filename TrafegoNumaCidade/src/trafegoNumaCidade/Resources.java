@@ -1,6 +1,8 @@
 package trafegoNumaCidade;
 
 public class Resources {
+	
+	static final Point Semaphore_Rest = new Point(0,0);
 
 	static enum Direction{North,South,East,West,None};
 	

@@ -6,6 +6,9 @@ import java.util.Set;
 
 import org.apache.commons.math3.analysis.function.Add;
 
+import repast.simphony.engine.schedule.Schedule;
+import repast.simphony.space.grid.Grid;
+import sajas.wrapper.ContainerController;
 import trafegoNumaCidade.Point;
 
 import trafegoNumaCidade.Semaphore;
@@ -194,14 +197,15 @@ public abstract class Intersection extends CityElement{
 	 * UPDATES
 	 */
 	
-	public void updateSemaphores(){
+	public void updateSemaphores(Grid<Object> space, ContainerController mainContainer,Schedule schedule){
 		if(inRoads.size() > 1){
 			ArrayList<Point> controlPoints = new ArrayList<Point>();
 			
 			for(Road r : inRoads){
 				controlPoints.add(r.getEndPoint());
 			}
-			semaphoreManager = new SemaphoreManager(controlPoints);
+			semaphoreManager = new SemaphoreManager(space,mainContainer,controlPoints);
+			schedule.schedule(semaphoreManager);
 		}
 	}
 }
