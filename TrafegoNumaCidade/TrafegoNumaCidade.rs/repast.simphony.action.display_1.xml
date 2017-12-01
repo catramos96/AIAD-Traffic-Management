@@ -3,46 +3,46 @@
   <type>2D</type>
   <styles>
     <entry>
-      <string>trafegoNumaCidade.SemaphoreGreen</string>
+      <string>agents.SemaphoreRed</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
-      <string>trafegoNumaCidade.CarAgent</string>
+      <string>agents.SemaphoreGreen</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
-      <string>trafegoNumaCidade.SemaphoreYellow</string>
+      <string>agents.SemaphoreYellow</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
-      <string>trafegoNumaCidade.Map</string>
+      <string>agents.CarAgent</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
-      <string>trafegoNumaCidade.SemaphoreRed</string>
+      <string>cityStructure.Map</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
   </styles>
   <editedStyles>
     <entry>
-      <string>trafegoNumaCidade.SemaphoreGreen</string>
-      <string>trafegoNumaCidade.SemaphoreGreen.style_11.xml</string>
+      <string>agents.SemaphoreRed</string>
+      <string>agents.SemaphoreRed.style_0.xml</string>
     </entry>
     <entry>
-      <string>trafegoNumaCidade.CarAgent</string>
-      <string>trafegoNumaCidade.CarAgent.style_0.xml</string>
+      <string>agents.SemaphoreGreen</string>
+      <string>agents.SemaphoreGreen.style_0.xml</string>
     </entry>
     <entry>
-      <string>trafegoNumaCidade.SemaphoreYellow</string>
-      <string>trafegoNumaCidade.SemaphoreYellow.style_11.xml</string>
+      <string>agents.SemaphoreYellow</string>
+      <string>agents.SemaphoreYellow.style_0.xml</string>
     </entry>
     <entry>
-      <string>trafegoNumaCidade.Map</string>
-      <string>trafegoNumaCidade.Map.style_0.xml</string>
+      <string>agents.CarAgent</string>
+      <string>agents.CarAgent.style_0.xml</string>
     </entry>
     <entry>
-      <string>trafegoNumaCidade.SemaphoreRed</string>
-      <string>trafegoNumaCidade.SemaphoreRed.style_6.xml</string>
+      <string>cityStructure.Map</string>
+      <string>cityStructure.Map.style_0.xml</string>
     </entry>
   </editedStyles>
   <netStyles/>
@@ -55,31 +55,31 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-2067695480</hashCode>
+    <hashCode>1929316100</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>street_map</layoutProjection>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
-      <string>trafegoNumaCidade.SemaphoreGreen</string>
-      <int>3</int>
-    </entry>
-    <entry>
-      <string>trafegoNumaCidade.CarAgent</string>
-      <int>1</int>
-    </entry>
-    <entry>
-      <string>trafegoNumaCidade.SemaphoreYellow</string>
+      <string>agents.SemaphoreRed</string>
       <int>4</int>
     </entry>
     <entry>
-      <string>trafegoNumaCidade.Map</string>
-      <int>0</int>
+      <string>agents.SemaphoreGreen</string>
+      <int>2</int>
     </entry>
     <entry>
-      <string>trafegoNumaCidade.SemaphoreRed</string>
-      <int>2</int>
+      <string>agents.SemaphoreYellow</string>
+      <int>3</int>
+    </entry>
+    <entry>
+      <string>agents.CarAgent</string>
+      <int>1</int>
+    </entry>
+    <entry>
+      <string>cityStructure.Map</string>
+      <int>0</int>
     </entry>
   </layerOrder>
   <projections>
