@@ -9,9 +9,9 @@ public class Resources {
 
 	public static final int TimeUnitInTicks = 1000000;
 	
-	public static final int GreenLightTimeUnits = 6;
+	public static final int GreenLightTimeUnits = 3;
 	
-	public static final int YellowLightTimeUnits = 2;
+	public static final int YellowLightTimeUnits = 1;
 			
 	public static final Point Semaphore_Rest = new Point(0,0);
 	

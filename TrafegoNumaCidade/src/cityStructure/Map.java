@@ -7,6 +7,8 @@ import agents.Semaphore;
 import repast.simphony.engine.schedule.Schedule;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
+import resources.Resources;
+import resources.Resources.Direction;
 import sajas.core.Agent;
 import sajas.wrapper.ContainerController;
 
@@ -113,16 +115,34 @@ public class Map extends Agent
 
 	}
 	
-	public boolean updateCarRoad(CarAgent car, Point position){
-
-		for(int i = 0; i < roads.size(); i++){
-			if(roads.get(i).partOfRoad(position)){
-				car.setRoad(roads.get(i));
-				return true;
-			}
-		}
+	public Point getRandomRoadPosition(Road r){
+		Direction d = r.getDirection();
 		
-		return false;
+		switch (d) {
+		case South: case North:
+		{
+			int length = Math.abs(r.getStartPoint().y - r.getEndPoint().y + 1);
+			int rnd_pos = (int)(Math.random() * length);
+			
+			if(r.getStartPoint().y < r.getEndPoint().y)
+				return new Point(r.getEndPoint().x,r.getStartPoint().y + rnd_pos);
+			else
+				return new Point(r.getEndPoint().x,r.getEndPoint().y + rnd_pos);
+		}
+		case East: case West:
+		{
+			int length =  Math.abs(r.getStartPoint().x - r.getEndPoint().x + 1);
+			int rnd_pos = (int)(Math.random() * length);
+
+			if(r.getStartPoint().x < r.getEndPoint().x)
+				return new Point(r.getStartPoint().x + rnd_pos, r.getStartPoint().y);
+			else
+				return new Point(r.getEndPoint().x + rnd_pos, r.getStartPoint().y);
+
+		}
+		default:
+			return new Point(0,0);
+		}
 	}
 	
 	public ArrayList<Intersection> getIntersections(){

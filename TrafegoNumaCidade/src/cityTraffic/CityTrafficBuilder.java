@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import agents.CarAgent;
 import cityStructure.Map;
+import cityStructure.Road;
 import jade.core.AID;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -18,6 +19,7 @@ import repast.simphony.space.grid.GridBuilderParameters;
 import repast.simphony.space.grid.SimpleGridAdder;
 import repast.simphony.space.grid.StrictBorders;
 import resources.Point;
+import resources.SpaceResources;
 import sajas.core.Agent;
 import sajas.core.Runtime;
 import sajas.sim.repasts.RepastSLauncher;
@@ -26,7 +28,7 @@ import jade.wrapper.StaleProxyException;
 
 public class CityTrafficBuilder extends RepastSLauncher {
 
-	private static int N_CARS = 2;
+	private static int N_CARS = 20;
 	
 	private static int N = 10;
 	private static int N_CONSUMERS = N;
@@ -122,11 +124,27 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				agentContainer.acceptNewAgent("CarAgent" + i, car).start();
 				space.getAdder().add(space, car);
 				
-				//ALTERAR
-				Point location = new Point(12+i,12);
+				boolean position_ok = false;
+				Point location = null;
+				Road r = null;
+				
+				while(!position_ok){
+					//RANDOM Location -> ALTERAR ?
+					
+					int rnd_road = (int)(Math.random() * map.getRoads().size());
+					r = map.getRoads().get(rnd_road);
+					location = map.getRandomRoadPosition(r);
+					
+					position_ok = true;
 
-				map.updateCarRoad(car, location);
+					//check if there are no cars at the location
+					for(int j = 0; j < i; j++){
+						if(SpaceResources.hasCar(space, location))
+							position_ok = false;
+					}
+				}
 
+				car.setRoad(r);
 				space.moveTo(car,location.toArray());
 				schedule.schedule(car);
 				
