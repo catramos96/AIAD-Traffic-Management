@@ -3,7 +3,7 @@ package agents;
 import java.util.ArrayList;
 
 import cityStructure.Intersection;
-import cityStructure.Map;
+import cityStructure.CityMap;
 import cityStructure.Road;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
@@ -17,7 +17,7 @@ import sajas.wrapper.ContainerController;
  */
 public class City extends Agent{
 
-	private Map map;
+	private CityMap map;
 	private Grid<Object> space;
 	private ContainerController container;
 	
@@ -25,7 +25,7 @@ public class City extends Agent{
 	 * Constructor
 	 */
 	public City(Grid<Object> space, ContainerController container){
-		map = new Map();
+		map = new CityMap();
 		this.space = space;
 		this.container = container;
 		
@@ -70,7 +70,7 @@ public class City extends Agent{
 		}
 	}
 	
-	public Map getMap(){
+	public CityMap getMap(){
 		return map;
 	}
 	

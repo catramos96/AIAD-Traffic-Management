@@ -21,5 +21,14 @@ public class Point {
 	public int[] toArray(){
 		return new int[]{x,y};
 	}
+	
+	public static int getDistance(Point a, Point b){
+		
+		int x_dist = Math.abs(a.x - b.x);
+		int y_dist = Math.abs(a.y - b.y);
+		
+		return x_dist + y_dist;
+			
+	}
 }
 

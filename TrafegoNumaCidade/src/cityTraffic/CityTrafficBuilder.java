@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 import agents.CarAgent;
 import agents.City;
-import cityStructure.Map;
+import algorithms.AStar;
+import cityStructure.CityMap;
 import cityStructure.Road;
 import jade.core.AID;
 import jade.core.Profile;
@@ -117,6 +118,19 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			space.getAdder().add(space, city);
 			space.moveTo(city, 10, 10);
 			
+			//To test the algorithm of the shortest path
+			/*Road test_road = null;
+			for(Road r : city.getMap().getRoads()){
+				if(r.partOfRoad(new Point(4,20)))
+					test_road = r;
+			}
+			
+			ArrayList<Road> path = AStar.shortestPath(city.getMap(), test_road, new Point(4,20), new Point(19,14));
+
+			for(Road r : path){
+				System.out.println(r.getName());
+			}*/
+			
 			// create cars
 			for (int i = 0; i < N_CARS; i++) {
 				CarAgent car = new CarAgent(space);
@@ -152,6 +166,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
 		}
+		
 		
 	}
 	

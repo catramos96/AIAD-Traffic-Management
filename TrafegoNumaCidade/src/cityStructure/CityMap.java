@@ -16,12 +16,12 @@ import sajas.wrapper.ContainerController;
  * Class that represents the city structure and the connections
  * between roads and intersections.
  */
-public class Map extends Agent 
+public class CityMap extends Agent 
 {
 	private ArrayList<Intersection> intersections = new ArrayList<Intersection>();
 	private ArrayList<Road> roads = new ArrayList<Road>();
 
-	public Map() {
+	public CityMap() {
 		
 		//Intersections top->bottom left->right
 	    Intersection i1 = new SimpleIntersection(new Point(1,20), "A");

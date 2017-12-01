@@ -94,6 +94,10 @@ public class Road{
 		return endIntersection;
 	}
 	
+	public Intersection getStartIntersection(){
+		return startIntersection;
+	}
+	
 	public Resources.Direction getDirection(){
 		return direction;
 	}

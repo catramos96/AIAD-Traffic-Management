@@ -191,4 +191,11 @@ public abstract class Intersection{
 	public int getLength(){
 		return length;
 	}
+	
+	//getEntry
+	public Point getOneEntry(){
+		for(Point p : entries.keySet())
+			return p;
+		return null;
+	}
 }
