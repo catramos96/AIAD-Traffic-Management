@@ -161,6 +161,7 @@ public class CarAgent extends Agent {
 							nextRoad = jorney.get(0);
 							jorney.remove(0);
 							intersectionRoute = intersection.getRouteToRoad(road, nextRoad);
+							System.out.println("jorney");
 							
 							//no route found
 							if(intersectionRoute.size() == 0){
@@ -168,21 +169,25 @@ public class CarAgent extends Agent {
 								jorney = new ArrayList<Road>();
 							}
 						}
+						else{
+							valid = false;
+							System.out.println("jorney invalid");
+						}
 						
 						if(!valid){
 							int road_index = (int) (Math.random() * intersection.getOutRoads().size());
 							nextRoad = intersection.getOutRoads().get(road_index);
 							intersectionRoute = intersection.getRouteToRoad(road, nextRoad);
+							
+							System.out.println("random");
 						}
 						
 						road = nextRoad;
-						System.out.println("On Road " + nextRoad.getName());
 						
 						//Calculate a new path starting on the nextRoad in case
 						//the current path is not valid
-						if(!valid){
+						if(!valid)
 							new Thread(new CalculateShortestPath(this)).start();
-						}
 						
 						passageType = PassageType.Intersection;
 					}
