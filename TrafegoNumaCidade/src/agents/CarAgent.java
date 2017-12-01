@@ -33,6 +33,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import com.jogamp.common.util.RunnableTask;
+
+import algorithms.AStar;
+import cityStructure.CityMap;
 import cityStructure.Intersection;
 import cityStructure.Road;
 import cityTraffic.onto.ContractOutcome;
@@ -46,7 +50,7 @@ public class CarAgent extends Agent {
 
 
 	//Map Positioning
-	private enum PassageType {Road, Intersection};
+	private enum PassageType {Road, Intersection, Out};
 	private PassageType passageType = PassageType.Road;
 	//road
 	private Road road = null;
@@ -56,6 +60,12 @@ public class CarAgent extends Agent {
 	
 	//Semaphore
 	private boolean greenSemaphore = true;
+	
+	//Origin and Destination
+	private CityMap map;
+	private Point position;
+	private Point destination;
+	private ArrayList<Road> jorney = new ArrayList<Road>();
 
 	Grid<Object> space;
 
@@ -84,10 +94,33 @@ public class CarAgent extends Agent {
      * @param space
      */
     
-    public CarAgent(Grid<Object> space) 
+    public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination) 
 	{
 		this.space = space;
+		this.destination = destination;
+		this.position = origin;
+		this.map = map;			
+		
+		new Thread(new CalculateShortestPath(this)).start();
 	}
+    
+    /*
+     * Threads
+     */
+    public class CalculateShortestPath implements Runnable {
+
+    	CarAgent car = null;
+    	
+    	   public CalculateShortestPath(CarAgent c) {
+    		   this.car = c;
+    		   System.out.println("Calculating shortest path ...");
+    	   }
+
+    	   public void run() {
+    		   car.setJorney(AStar.shortestPath(car.getMap(), car.getRoad(), car.getDestination()));
+    		   jorney.remove(0);	//removes the first road because is the road where the car is
+    	   }
+    	}
     
     /*
      * Scheduled Methods
@@ -99,6 +132,12 @@ public class CarAgent extends Agent {
 		try
 		{
 			Point pos = new Point(space.getLocation(this).getX(),space.getLocation(this).getY());
+			
+			if(destination.equals(pos)){
+				System.out.println("Destination Accomplished");
+				setPosition(new Point(0,0));
+				passageType = PassageType.Out;
+			}
 			
 			if(passageType.equals(PassageType.Road) && road != null){
 				
@@ -115,12 +154,35 @@ public class CarAgent extends Agent {
 					if(greenSemaphore){
 						intersection = road.getEndIntersection();
 						
-						//ALTERAR
-						int road_index = (int) (Math.random() * intersection.getOutRoads().size());
-						Road out = intersection.getOutRoads().get(road_index);
+						Road nextRoad = null;
+						boolean valid = true;
 						
-						intersectionRoute = intersection.getRouteToRoad(road, out);
-						road = out;
+						if(jorney.size() != 0){
+							nextRoad = jorney.get(0);
+							jorney.remove(0);
+							intersectionRoute = intersection.getRouteToRoad(road, nextRoad);
+							
+							//no route found
+							if(intersectionRoute.size() == 0){
+								valid = false;
+								jorney = new ArrayList<Road>();
+							}
+						}
+						
+						if(!valid){
+							int road_index = (int) (Math.random() * intersection.getOutRoads().size());
+							nextRoad = intersection.getOutRoads().get(road_index);
+							intersectionRoute = intersection.getRouteToRoad(road, nextRoad);
+						}
+						
+						road = nextRoad;
+						System.out.println("On Road " + nextRoad.getName());
+						
+						//Calculate a new path starting on the nextRoad in case
+						//the current path is not valid
+						if(!valid){
+							new Thread(new CalculateShortestPath(this)).start();
+						}
 						
 						passageType = PassageType.Intersection;
 					}
@@ -161,11 +223,50 @@ public class CarAgent extends Agent {
      * GETS & SETS
      */
     
+    public CityMap getMap(){
+    	return map;
+    }
+    
+    public Road getRoad(){
+    	return road;
+    }
+    
+    public Point getPosition(){
+    	return position;
+    }
+    
+    public Point getDestination(){
+    	return destination;
+    }
+    
+    public void setJorney(ArrayList<Road> jorney){
+    	this.jorney = jorney;
+    	
+    	String s = new String();
+		s = "Jorney\n" + print() + "\n";
+
+    	for(Road r : jorney){
+    		s+= r.getName() + " ";
+    	}
+    	
+    	System.out.println(s);
+    }
+    
     public void setRoad(Road r){
     	road = r;
     	passageType = PassageType.Road;
     }
     
+    public void setPosition(Point p){
+    	this.position = p;
+    	space.moveTo(this, position.toArray());
+    }
+    
+    public String print(){
+    	return new String("Car:\n" +
+    			"Position: " + position.print() + "\n" +
+    			"Destination: " + destination.print());
+    }
     /******************** OTHER CLASSES  ********************/
     
     private class ProviderValue implements Comparable<ProviderValue> {

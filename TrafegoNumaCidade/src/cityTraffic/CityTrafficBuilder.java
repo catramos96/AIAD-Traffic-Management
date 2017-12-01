@@ -133,35 +133,45 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			
 			// create cars
 			for (int i = 0; i < N_CARS; i++) {
-				CarAgent car = new CarAgent(space);
-				cars.add(car);
-				agentContainer.acceptNewAgent("CarAgent" + i, car).start();
-				space.getAdder().add(space, car);
+				int rnd_road;
+				Road startRoad = null, endRoad = null;
+				Point origin = null, destination = null;
 				
 				boolean position_ok = false;
-				Point location = null;
-				Road r = null;
 				
+				//Search Origin Random
 				while(!position_ok){
-					//RANDOM Location -> ALTERAR ?
 					
-					int rnd_road = (int)(Math.random() * city.getMap().getRoads().size());
-					r = city.getMap().getRoads().get(rnd_road);
-					location = city.getRandomRoadPosition(r);
+					rnd_road = (int)(Math.random() * city.getMap().getRoads().size());
+					startRoad = city.getMap().getRoads().get(rnd_road);
+					origin = city.getRandomRoadPosition(startRoad);
 					
 					position_ok = true;
 
 					//check if there are no cars at the location
 					for(int j = 0; j < i; j++){
-						if(SpaceResources.hasCar(space, location))
+						if(SpaceResources.hasCar(space, origin))
 							position_ok = false;
 					}
 				}
+				
+				//Search Destination Random
+				rnd_road = (int)(Math.random() * city.getMap().getRoads().size());
+				endRoad = city.getMap().getRoads().get(rnd_road);
+				destination = city.getRandomRoadPosition(endRoad);
 
-				car.setRoad(r);
-				space.moveTo(car,location.toArray());
+				//create car
+				//INICIALMENTE ELES CONHECEM A CIDADE TODA ---> city.getMap()
+				CarAgent car = new CarAgent(space, city.getMap(), origin,destination);
+				cars.add(car);
+				agentContainer.acceptNewAgent("CarAgent" + i, car).start();
+				space.getAdder().add(space, car);
+
+				car.setRoad(startRoad);
+				car.setPosition(origin);
 				schedule.schedule(car);
 				
+				System.out.println(car.print());
 			}
 		} catch (StaleProxyException e) {
 			e.printStackTrace();

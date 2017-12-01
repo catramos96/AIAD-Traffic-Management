@@ -30,5 +30,9 @@ public class Point {
 		return x_dist + y_dist;
 			
 	}
+	
+	public String print(){
+		return new String("[" + x + "," + y + "]");
+	}
 }
 

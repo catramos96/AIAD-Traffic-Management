@@ -17,7 +17,7 @@ public class AStar {
 	
 	public static int INFINITE = 999999;
 	
-	public static ArrayList<Road> shortestPath(CityMap map, Road startRoad, Point origin, Point destination){
+	public static ArrayList<Road> shortestPath(CityMap map, Road startRoad, Point destination){
 		
 		ArrayList<Road> path = new ArrayList<Road>();
 		ArrayList<Road> evaluatedSet = new ArrayList<Road>();		
@@ -49,10 +49,8 @@ public class AStar {
 				endRoad.getStartIntersection().getOneEntry()));
 		
 		while(!toEvaluateSet.isEmpty()){
-			System.out.println("Size of to evaluate: " + toEvaluateSet.size());
-			
+
 			Road current = getMinimumCost(toEvaluateSet,final_costs);
-			System.out.println("Current " + current.getName());
 
 			if(current.equals(endRoad))
 				return buildPath(cameFrom, current);
@@ -61,8 +59,6 @@ public class AStar {
 			evaluatedSet.add(current);
 			
 			for(Road next : current.getEndIntersection().getOutRoads()){
-				
-				System.out.println("Neighbour " + next.getName());
 				
 				if(!evaluatedSet.contains(next)){
 					
@@ -84,7 +80,7 @@ public class AStar {
 			
 		}
 		
-		System.out.println("Failed to get the shortest path between" + origin.x + "_" + origin.y + " " + destination.x + "_" + destination.y);
+		System.out.println("Failed to get the shortest path between" + startRoad.getName() + " " + destination.x + "_" + destination.y);
 		return path;
 	}
 	
@@ -114,8 +110,6 @@ public class AStar {
 				road = r;
 			}
 		}
-		System.out.println("MinCost: " + min);
-
 	
 		return road;
 	}

@@ -24,7 +24,7 @@ public class ComplexIntersection extends Intersection{
 		Point areaOfOut = getAreaPointOfEntry(roadOut.getStartPoint());
 		
 		if(areaOfEntry == null || areaOfOut == null)
-			return null;
+			return route;
 		
 		route.add(areaOfEntry);
 		
@@ -42,7 +42,7 @@ public class ComplexIntersection extends Intersection{
 		}
 		
 		if(index == -1)
-			return null;
+			return route;
 		
 		Point lastPoint;
 		
