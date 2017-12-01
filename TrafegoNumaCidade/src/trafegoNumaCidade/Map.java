@@ -46,7 +46,7 @@ public class Map extends Agent
 	    Road r1 = new Road(new Point(18,20),new Point(2,20),i1,i2);
 	    Road r2 = new Road(new Point(2,17), new Point(3,17),i3,i4);
 	    Road r3 = new Road(new Point(8,17), new Point(5,17),i4,i5);
-	    Road r4 = new Road(new Point(11,15), new Point(18,15),i6,i7);
+	    Road r4 = new Road(new Point(18,15),new Point(11,15),i6,i7);
 	    Road r5 = new Road(new Point(5,12), new Point(8,12),i8,ci1);
 	    Road r6 = new Road(new Point(11,12), new Point(18,12),ci1,i11);
 	    Road r7 = new Road(new Point(3,11), new Point(8,11),i12,ci1);

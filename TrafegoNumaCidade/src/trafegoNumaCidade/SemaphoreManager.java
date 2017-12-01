@@ -14,8 +14,8 @@ public class SemaphoreManager extends Agent{
 
 	private final int SecondsMult = 1000000;
 	
-	private int secondsToYellow = 4;
-	private int secondsToGreen = 10;
+	private int secondsToYellow = 3;
+	private int secondsToGreen = 6;
 	
 	private int time = 0;
 		
