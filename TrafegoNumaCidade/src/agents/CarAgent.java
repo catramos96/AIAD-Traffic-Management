@@ -9,10 +9,10 @@ import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.space.grid.Grid;
-import repast.simphony.space.grid.GridPoint;
 import repast.simphony.util.ContextUtils;
 import resources.Point;
 import resources.Resources;
+import resources.SpaceResources;
 import sajas.core.Agent;
 import jade.core.AID;
 import sajas.core.behaviours.Behaviour;
@@ -53,9 +53,11 @@ public class CarAgent extends Agent {
 	//intersection
 	private Intersection intersection = null;
 	private ArrayList<Point> intersectionRoute = new ArrayList<Point>();
+	
+	//Semaphore
+	private boolean greenSemaphore = true;
 
-
-	Grid<Object> spaceCont;
+	Grid<Object> space;
 
 	int sign = 1;
     
@@ -69,13 +71,86 @@ public class CarAgent extends Agent {
     private ArrayList<ProviderValue> providersList = new ArrayList<ProviderValue>();
     
     private Context<?> context;
-    private Grid<Object> space;
+    private Grid<Object> contextSpace;
     private RepastEdge<Object> edge = null;
     
     private Codec codec;
     private Ontology serviceOntology;
     
     protected ACLMessage myCfp;
+    
+    /**
+     * Contructor
+     * @param space
+     */
+    public CarAgent(Grid<Object> space) 
+	{
+		this.space = space;
+	}
+    
+    /*
+     * Scheduled Methods
+     */
+    
+    @ScheduledMethod(start=1 , interval=150000)
+	public void updateCarsPosition()
+	{
+		try
+		{
+			Point pos = new Point(space.getLocation(this).getX(),space.getLocation(this).getY());			
+			
+			if(passageType.equals(PassageType.Road) && road != null){
+				
+				//End of the road
+				if(pos.equals(road.getEndPoint())){		
+					
+					//Check semaphores
+					Semaphore s = SpaceResources.hasRedOrYellowSemaphore(space, pos);
+					
+					if(s == null)
+						greenSemaphore = true;
+					else
+						greenSemaphore = false;
+					
+					//Is ok to advance
+					if(greenSemaphore){
+						intersection = road.getEndIntersection();
+						
+						//ALTERAR
+						int road_index = (int) (Math.random() * intersection.getOutRoads().size());
+						Road out = intersection.getOutRoads().get(road_index);
+						
+						intersectionRoute = intersection.getRouteToRoad(road, out);
+						road = out;
+						
+						passageType = PassageType.Intersection;
+
+					}
+				}
+				else{
+					Point next_pos = Resources.incrementDirection(road.getDirection(), pos);
+					space.moveTo(this, next_pos.toArray());
+				}
+			}
+			else if(passageType.equals(PassageType.Intersection)){	
+				
+				Point next_point = intersectionRoute.get(0);
+				
+				intersectionRoute.remove(0);
+				space.moveTo(this, next_point.toArray());
+				
+				if(intersectionRoute.size()== 0)
+					passageType = PassageType.Road;
+			}
+			
+			
+		}
+		catch(Exception e)
+		{
+			sign = -sign;
+			System.out.println("Car out of the grid!");
+		}
+	}
     
     /*
      * GETS & SETS
@@ -169,7 +244,7 @@ public class CarAgent extends Agent {
 		public void onWake() {
 			// context and network (RepastS)
 			context = ContextUtils.getContext(myAgent);
-			space = (Grid<Object>) context.getProjection("Street map");
+			contextSpace = (Grid<Object>) context.getProjection("Street map");
 			
 			// initiate CNet protocol
 			CNetInit cNetInit = new CNetInit(myAgent, (ACLMessage) myCfp.clone());
@@ -232,76 +307,8 @@ public class CarAgent extends Agent {
 			return super.prepareCfps(cfp);
 		}
 	}
-	
-	public CarAgent(Grid<Object> space) 
-	{
-		spaceCont = space;
-	}
-	
-	@ScheduledMethod(start=1 , interval=200000)
-	public void updateCarsPosition()
-	{
-		try
-		{
-			Point pos = new Point(spaceCont.getLocation(this).getX(),spaceCont.getLocation(this).getY());			
-			
-			if(passageType.equals(PassageType.Road) && road != null){
-				/*System.out.println("IN ROAD: " + road.getEndPoint().x + "-" + road.getEndPoint().y);
-				System.out.println("IN END: " + road.getEndPoint().x + "-" + road.getEndPoint().y);*/
-				
-				//End of the road
-				if(pos.equals(road.getEndPoint())){
-					intersection = road.getEndIntersection();
-					passageType = PassageType.Intersection;
-					//ALTERAR
-					int road_index = (int) (Math.random() * intersection.getOutRoads().size());
-					Road out = intersection.getOutRoads().get(road_index);
-					//
-					intersectionRoute = intersection.getRouteToRoad(road, out);
-					road = out;
-					
-					//System.out.println("Road out " + out.getStartPoint().x + " " + out.getStartPoint().y + " " + out.getEndPoint().x + " " + out.getEndPoint().y);
 
-				}
-				else{
-					Point next_pos = Resources.incrementDirection(road.getDirection(), pos);
-					spaceCont.moveTo(this, next_pos.toArray());
-					
-					//System.out.println("Position: " + next_pos.x+ " " + next_pos.y);
-					//System.out.println("Direction: " + road.getDirection().toString());
-				}
-			}
-			else if(passageType.equals(PassageType.Intersection) && intersectionRoute != null){				
-				//System.out.println("IN INTERSECTION");
-
-				//route to get out of the intersection
-				if(intersectionRoute.size() != 0){
-					
-					//System.out.println("Route to Accomplish");
-					Point next_point = intersectionRoute.get(0);
-					//System.out.println(next_point.x + " " + next_point.y);
-					
-					intersectionRoute.remove(0);
-					spaceCont.moveTo(this, next_point.toArray());
-					
-					if(intersectionRoute.size()== 0){
-						passageType = PassageType.Road;
-					}
-
-				}
-
-			}
-			
-			
-		}
-		catch(Exception e)
-		{
-			sign = -sign;
-			System.out.println("OUT");
-		}
-	}
-	
-protected ArrayList<AID> getBestProviders() {
+	protected ArrayList<AID> getBestProviders() {
 		
 		ArrayList<AID> bestProviders = new ArrayList<AID>();
 		

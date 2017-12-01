@@ -2,8 +2,30 @@ package resources;
 
 public class Resources {
 	
-	public static final Point Semaphore_Rest = new Point(0,0);
+	/*
+	 * Semaphore
+	 */
+	public enum Light{Green,Yellow,Red};
 
+	public static final int TimeUnitInTicks = 1000000;
+	
+	public static final int GreenLightTimeUnits = 6;
+	
+	public static final int YellowLightTimeUnits = 2;
+			
+	public static final Point Semaphore_Rest = new Point(0,0);
+	
+	public static int getLightTime(boolean isGreenActive){
+		
+		if(isGreenActive)
+			return Resources.GreenLightTimeUnits;
+		else
+			return Resources.YellowLightTimeUnits;
+	}
+
+	/*
+	 * Direction
+	 */
 	public static enum Direction{North,South,East,West,None};
 	
 	public static Direction getDirection(Point startPoint,Point endPoint){
@@ -69,4 +91,5 @@ public class Resources {
 		
 		return Direction.None;
 	}
+
 }

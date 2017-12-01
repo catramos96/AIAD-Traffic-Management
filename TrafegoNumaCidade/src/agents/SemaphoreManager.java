@@ -3,7 +3,7 @@ package agents;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import agents.Semaphore.Light;
+import resources.Resources.Light;
 import jade.wrapper.StaleProxyException;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.grid.Grid;
@@ -13,11 +13,6 @@ import sajas.core.Agent;
 import sajas.wrapper.ContainerController;
 
 public class SemaphoreManager extends Agent{
-
-	private final int SecondsMult = 1000000;
-	
-	private int secondsToYellow = 3;
-	private int secondsToGreen = 6;
 	
 	private int time = 0;
 		
@@ -76,9 +71,9 @@ public class SemaphoreManager extends Agent{
 	@ScheduledMethod(start=1 , interval=1000000)
 	public void updateLight(){
 		
-		time += SecondsMult;
+		time += 1000000;
 		
-		if(time >= getLightTime() * SecondsMult){
+		if(time >= Resources.getLightTime(isGreenActive) * Resources.TimeUnitInTicks){
 			
 			time = 0;
 			
@@ -115,13 +110,5 @@ public class SemaphoreManager extends Agent{
 			}
 			
 		}
-	}
-	
-	private int getLightTime(){
-		
-		if(isGreenActive)
-			return secondsToGreen;
-		else
-			return secondsToYellow;
 	}
 }

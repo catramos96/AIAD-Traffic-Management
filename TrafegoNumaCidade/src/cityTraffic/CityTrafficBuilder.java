@@ -131,7 +131,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				schedule.schedule(car);
 				
 			}
-
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
 		}
@@ -142,7 +141,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	public Context build(Context<Object> context) {		
 		Parameters params = RunEnvironment.getInstance().getParameters();
 		int carCount = (Integer) params.getValue("carCount");
-		System.out.println(carCount);
 		
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
 		space = gridFactory.createGrid(new String("street_map"), context, 
