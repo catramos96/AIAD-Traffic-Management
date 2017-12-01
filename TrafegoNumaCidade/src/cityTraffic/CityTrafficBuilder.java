@@ -3,6 +3,7 @@ package cityTraffic;
 import java.util.ArrayList;
 
 import agents.CarAgent;
+import agents.City;
 import cityStructure.Map;
 import cityStructure.Road;
 import jade.core.AID;
@@ -37,7 +38,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	Grid<Object> space;
 	
 	ArrayList<CarAgent> cars = new ArrayList<CarAgent>();
-	
 	
 	public static int FILTER_SIZE = 5; 
 	
@@ -112,10 +112,10 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		schedule = new Schedule();
 		
 		try {
-			Map map = new Map(space,agentContainer);
-			agentContainer.acceptNewAgent("map", map).start();
-			space.getAdder().add(space, map);
-			space.moveTo(map, 10, 10);
+			City city = new City(space,agentContainer);
+			agentContainer.acceptNewAgent("city", city).start();
+			space.getAdder().add(space, city);
+			space.moveTo(city, 10, 10);
 			
 			// create cars
 			for (int i = 0; i < N_CARS; i++) {
@@ -131,9 +131,9 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				while(!position_ok){
 					//RANDOM Location -> ALTERAR ?
 					
-					int rnd_road = (int)(Math.random() * map.getRoads().size());
-					r = map.getRoads().get(rnd_road);
-					location = map.getRandomRoadPosition(r);
+					int rnd_road = (int)(Math.random() * city.getMap().getRoads().size());
+					r = city.getMap().getRoads().get(rnd_road);
+					location = city.getRandomRoadPosition(r);
 					
 					position_ok = true;
 

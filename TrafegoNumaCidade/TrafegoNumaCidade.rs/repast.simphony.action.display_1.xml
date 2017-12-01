@@ -11,15 +11,15 @@
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
+      <string>agents.City</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
       <string>agents.SemaphoreYellow</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
       <string>agents.CarAgent</string>
-      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
-    </entry>
-    <entry>
-      <string>cityStructure.Map</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
   </styles>
@@ -33,16 +33,16 @@
       <string>agents.SemaphoreGreen.style_0.xml</string>
     </entry>
     <entry>
+      <string>agents.City</string>
+      <string>agents.City.style_3.xml</string>
+    </entry>
+    <entry>
       <string>agents.SemaphoreYellow</string>
       <string>agents.SemaphoreYellow.style_0.xml</string>
     </entry>
     <entry>
       <string>agents.CarAgent</string>
       <string>agents.CarAgent.style_0.xml</string>
-    </entry>
-    <entry>
-      <string>cityStructure.Map</string>
-      <string>cityStructure.Map.style_0.xml</string>
     </entry>
   </editedStyles>
   <netStyles/>
@@ -55,7 +55,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1929316100</hashCode>
+    <hashCode>1349731637</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>street_map</layoutProjection>
@@ -70,16 +70,16 @@
       <int>2</int>
     </entry>
     <entry>
+      <string>agents.City</string>
+      <int>0</int>
+    </entry>
+    <entry>
       <string>agents.SemaphoreYellow</string>
       <int>3</int>
     </entry>
     <entry>
       <string>agents.CarAgent</string>
       <int>1</int>
-    </entry>
-    <entry>
-      <string>cityStructure.Map</string>
-      <int>0</int>
     </entry>
   </layerOrder>
   <projections>

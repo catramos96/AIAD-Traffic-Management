@@ -9,10 +9,10 @@ public class Road{
 	
 	private Intersection startIntersection = null;
 	private Intersection endIntersection = null;
-	
 	private Resources.Direction direction;
-	
 	private String name = new String();
+	
+	private int length = 0;		//= weight in Dijkstra
 	
 	public Road(Point start, Point end, Intersection i1, Intersection i2, String name){
 		this.name = name;
@@ -41,11 +41,20 @@ public class Road{
 		
 		if(insertOk){
 			direction = Resources.getDirection(startPoint, endPoint);
+			
+			switch (direction) {
+				case North: case South:
+					length =  Math.abs(startPoint.y - endPoint.y + 1);
+					break;
+				case East: case West:
+					Math.abs(startPoint.x - endPoint.x + 1);
+				default:
+					break;
+			}
 		}
 		else{
 			System.out.println("Intersection insertion incorrect");
 		}
-		
 	}
 	
 	/**
@@ -89,13 +98,6 @@ public class Road{
 		return direction;
 	}
 	
-	public void setStartIntersection(Intersection i){
-		startIntersection = i;
-	}
-	
-	public void setEndIntersection(Intersection i){
-		endIntersection = i;
-	}
 	public Point getStartPoint(){
 		return startPoint;
 	}
@@ -106,5 +108,9 @@ public class Road{
 	
 	public String getName(){
 		return name;
+	}
+	
+	public int getLength(){
+		return length;
 	}
 }

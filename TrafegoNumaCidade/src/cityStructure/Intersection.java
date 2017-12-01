@@ -24,9 +24,10 @@ public abstract class Intersection{
 	
 	protected ArrayList<Road> inRoads = new ArrayList<Road>();
 	protected ArrayList<Road> outRoads = new ArrayList<Road>();
-	protected SemaphoreManager semaphoreManager;
 	protected HashMap<Point,HashMap<CellEntry,Road>> entries = new HashMap<Point,HashMap<CellEntry,Road>>();
 	protected String name = new String();
+	
+	protected int length = 0; // = weight in Dijkstra
 	
 	public Intersection(ArrayList<Point> area, String name){
 		this.name = name;
@@ -46,7 +47,10 @@ public abstract class Intersection{
 			
 			if(entries_tmp.size() != 0)
 				entries.put(area.get(i), entries_tmp);
+			
 		}
+		
+		length = entries.keySet().size();
 	}
 	
 	public Intersection(Point area, String name){
@@ -59,6 +63,7 @@ public abstract class Intersection{
 		entries_tmp.put(CellEntry.West, null);
 			
 		entries.put(area, entries_tmp);
+		length = entries.keySet().size();
 	}
 	
 	public abstract ArrayList<Point> getRouteToRoad(Road roadEntry,Road roadOut);
@@ -111,10 +116,6 @@ public abstract class Intersection{
 	
 	public ArrayList<Road> getInRoads(){
 		return inRoads;
-	}
-	
-	public SemaphoreManager getSemaphoreManager(){
-		return semaphoreManager;
 	}
 	
 	public abstract <T> T getArea();
@@ -187,18 +188,7 @@ public abstract class Intersection{
 		return null;
 	}
 	
-	/**
-	 * UPDATES
-	 */
-	
-	public void updateSemaphores(Grid<Object> space, ContainerController mainContainer){
-		if(inRoads.size() > 1){
-			ArrayList<Point> controlPoints = new ArrayList<Point>();
-			
-			for(Road r : inRoads){
-				controlPoints.add(r.getEndPoint());
-			}
-			semaphoreManager = new SemaphoreManager(space,mainContainer,controlPoints);
-		}
+	public int getLength(){
+		return length;
 	}
 }

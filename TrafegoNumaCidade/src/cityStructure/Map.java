@@ -12,15 +12,16 @@ import resources.Resources.Direction;
 import sajas.core.Agent;
 import sajas.wrapper.ContainerController;
 
+/**
+ * Class that represents the city structure and the connections
+ * between roads and intersections.
+ */
 public class Map extends Agent 
 {
-	Grid<Object> space;
 	private ArrayList<Intersection> intersections = new ArrayList<Intersection>();
 	private ArrayList<Road> roads = new ArrayList<Road>();
-	private ArrayList<Semaphore> semaphores = new ArrayList<Semaphore>();
 
-	public Map(Grid<Object> space, ContainerController mainContainer) {
-		this.space = space;
+	public Map() {
 		
 		//Intersections top->bottom left->right
 	    Intersection i1 = new SimpleIntersection(new Point(1,20), "A");
@@ -107,42 +108,6 @@ public class Map extends Agent
 	    intersections.add(i18);
 	    intersections.add(i19);
 	    intersections.add(ci1);
-	    
-	    /*Update Semaphore of intersections*/
-	    for(Intersection i : intersections){
-	    	i.updateSemaphores(space,mainContainer);
-	    }
-
-	}
-	
-	public Point getRandomRoadPosition(Road r){
-		Direction d = r.getDirection();
-		
-		switch (d) {
-		case South: case North:
-		{
-			int length = Math.abs(r.getStartPoint().y - r.getEndPoint().y + 1);
-			int rnd_pos = (int)(Math.random() * length);
-			
-			if(r.getStartPoint().y < r.getEndPoint().y)
-				return new Point(r.getEndPoint().x,r.getStartPoint().y + rnd_pos);
-			else
-				return new Point(r.getEndPoint().x,r.getEndPoint().y + rnd_pos);
-		}
-		case East: case West:
-		{
-			int length =  Math.abs(r.getStartPoint().x - r.getEndPoint().x + 1);
-			int rnd_pos = (int)(Math.random() * length);
-
-			if(r.getStartPoint().x < r.getEndPoint().x)
-				return new Point(r.getStartPoint().x + rnd_pos, r.getStartPoint().y);
-			else
-				return new Point(r.getEndPoint().x + rnd_pos, r.getStartPoint().y);
-
-		}
-		default:
-			return new Point(0,0);
-		}
 	}
 	
 	public ArrayList<Intersection> getIntersections(){
@@ -151,9 +116,5 @@ public class Map extends Agent
 	
 	public ArrayList<Road> getRoads(){
 		return roads;
-	}
-	
-	public ArrayList<Semaphore> getSemaphores(){
-		return semaphores;
 	}
 }
