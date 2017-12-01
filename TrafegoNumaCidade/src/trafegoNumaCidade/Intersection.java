@@ -197,7 +197,7 @@ public abstract class Intersection extends CityElement{
 	 * UPDATES
 	 */
 	
-	public void updateSemaphores(Grid<Object> space, ContainerController mainContainer,Schedule schedule){
+	public void updateSemaphores(Grid<Object> space, ContainerController mainContainer){
 		if(inRoads.size() > 1){
 			ArrayList<Point> controlPoints = new ArrayList<Point>();
 			
@@ -205,7 +205,6 @@ public abstract class Intersection extends CityElement{
 				controlPoints.add(r.getEndPoint());
 			}
 			semaphoreManager = new SemaphoreManager(space,mainContainer,controlPoints);
-			schedule.schedule(semaphoreManager);
 		}
 	}
 }

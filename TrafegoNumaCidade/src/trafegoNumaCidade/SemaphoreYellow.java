@@ -1,6 +1,5 @@
 package trafegoNumaCidade;
 
-import repast.simphony.engine.schedule.Schedule;
 import repast.simphony.space.grid.Grid;
 import sajas.wrapper.ContainerController;
 

@@ -1,8 +1,9 @@
 package trafegoNumaCidade;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
-import repast.simphony.engine.schedule.Schedule;
+import jade.wrapper.StaleProxyException;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.grid.Grid;
 import sajas.core.Agent;
@@ -11,17 +12,18 @@ import trafegoNumaCidade.Semaphore.Light;
 
 public class SemaphoreManager extends Agent{
 
-	//In seconds - 1 sec = 1000000
 	private final int SecondsMult = 1000000;
 	
-	private int secondsToYellow = 3;
+	private int secondsToYellow = 4;
 	private int secondsToGreen = 10;
 	
 	private int time = 0;
 		
-	private ArrayList<Semaphore> semaphores = new ArrayList<Semaphore>();
-	private Semaphore active = null;
-	private int active_index = 0;
+	private LinkedList<Semaphore> redSemaphores = new LinkedList<Semaphore>();
+	private Semaphore greenSem = null;	//green light
+	private Semaphore yellowSem = null;	//yellow semaphore
+	
+	private boolean isGreenActive = false;
 	
 	Grid<Object> space;
 	
@@ -30,34 +32,41 @@ public class SemaphoreManager extends Agent{
 	public SemaphoreManager(Grid<Object> space, ContainerController mainContainer, ArrayList<Point> controlPoints){
 		
 		this.space = space;
-		
 		this.container = mainContainer;
 		
-		//Random Active Control Point
-		int rndPoint = (int)(Math.random() * controlPoints.size());
+		try {
+			this.container.acceptNewAgent("SemaphoreManager_" + controlPoints.get(0).x + "_" + controlPoints.get(0).y, this).start();
+		} catch (StaleProxyException e) {
+			e.printStackTrace();
+		}
+		
+		this.space.getAdder().add(space, this);
 		
 		//Random Active Light
 		int rndLight = (int) (Math.random() * 2);
-
 		
 		for(int i = 0; i < controlPoints.size(); i++){
 			
-			//1 random green semaphore
-			if(i == rndPoint){
+			//1 random green/yellow semaphore
+			if(i == 0){
+				Point p = controlPoints.get(i);
 				
-				//Green Light
-				if(Light.values()[rndLight].equals(Light.Green))
-					active = new SemaphoreGreen(space,container,controlPoints.get(i));
-				//Yellow Light
-				else
-					active = new SemaphoreYellow(space,container,controlPoints.get(i));
+				//have the same position
+				greenSem = new SemaphoreGreen(space,container,p);
+				yellowSem = new SemaphoreYellow(space,container,p);
 				
-				semaphores.add(active);
-				active_index = i;
+				if(Light.values()[rndLight].equals(Light.Green)){
+					isGreenActive = true;
+					yellowSem.setPosition(Resources.Semaphore_Rest);
+				}
+				else if(Light.values()[rndLight].equals(Light.Yellow)){
+					isGreenActive = false;
+					greenSem.setPosition(Resources.Semaphore_Rest);
+				}
 			}
 			//red semaphores
 			else{
-				semaphores.add(new SemaphoreRed(space,container,controlPoints.get(i)));;
+				redSemaphores.addLast(new SemaphoreRed(space,container,controlPoints.get(i)));
 			}
 		}
 	}
@@ -66,42 +75,41 @@ public class SemaphoreManager extends Agent{
 	public void updateLight(){
 		
 		time += SecondsMult;
-		System.out.println(time);
 		
 		if(time >= getLightTime() * SecondsMult){
+			
 			time = 0;
 			
-			
 			//Next Light
-			if(active.getLight().equals(Light.Green)){
-				
-				//same position
-				Point tmp = active.getPosition();
-				
-				//remove green light from space
-				removeSemaphore(active_index);
+			if(isGreenActive){
+				isGreenActive = false;
+
+				Point activePoint = greenSem.getPosition();
 				
 				//place a yellow light
-				active = new SemaphoreYellow(space,container,tmp);
-				semaphores.add(active_index, active);
+				yellowSem.setPosition(activePoint);
+				
+				//remove green light from space
+				greenSem.setPosition(Resources.Semaphore_Rest);
 			}
 			else{
+				isGreenActive = true;
+				
 				//Get next green light semaphore
-				int next_index = active_index+1;
+				Semaphore tmp = redSemaphores.getFirst();
+				Point green_position = tmp.getPosition();
+				Point red_position = yellowSem.getPosition();
 				
-				if(next_index == semaphores.size())
-					next_index = 0;
+				yellowSem.setPosition(Resources.Semaphore_Rest);
 				
-				Semaphore tmp = semaphores.get(active_index);
-				Point nextPosition = tmp.getPosition();
+				//swap semaphores (red <> green)
+				tmp.setPosition(red_position);
+				greenSem.setPosition(green_position);
 				
-				//swap semaphores
-				tmp.setPosition(active.getPosition());								//red semaphore is in the past active semaphore position
-				removeSemaphore(active_index);										//remove yellow semaphore
-				active = new SemaphoreGreen(space,container,nextPosition);
-				semaphores.add(active_index, active);
-
-				active_index = next_index;
+				//add semaphore in the past active 
+				redSemaphores.addLast(tmp);	
+				redSemaphores.removeFirst();
+				
 			}
 			
 		}
@@ -109,23 +117,9 @@ public class SemaphoreManager extends Agent{
 	
 	private int getLightTime(){
 		
-		System.out.println(active.getLight().toString());
-		switch(active.getLight()){
-			case Green:
-				return secondsToGreen;
-			case Yellow:
-				return secondsToYellow;
-			default:
-				return secondsToYellow;
-		}
-	}
-	
-	public ArrayList<Semaphore> getSemaphores(){
-		return semaphores;
-	}
-	
-	public void removeSemaphore(int index){
-		container.removeLocalAgent(semaphores.get(index));
-		semaphores.remove(index);
+		if(isGreenActive)
+			return secondsToGreen;
+		else
+			return secondsToYellow;
 	}
 }

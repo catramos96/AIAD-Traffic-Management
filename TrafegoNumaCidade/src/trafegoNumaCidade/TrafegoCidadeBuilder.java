@@ -45,6 +45,8 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 	public static final boolean SEPARATE_CONTAINERS = false;
 	private ContainerController mainContainer;
 	private ContainerController agentContainer;
+	
+	private Schedule schedule;
 
 	public static Agent getAgent(Context<?> context, AID aid) {
 		for(Object obj : context.getObjects(Agent.class)) {
@@ -103,30 +105,14 @@ public class TrafegoCidadeBuilder extends RepastSLauncher {
 	
 	private void launchAgents() {
 		
-		Schedule schedule = new Schedule();
+		schedule = new Schedule();
 		
 		try {
-			Map map = new Map(space,mainContainer,schedule);
+			Map map = new Map(space,agentContainer);
 			agentContainer.acceptNewAgent("map", map).start();
 			space.getAdder().add(space, map);
 			space.moveTo(map, 10, 10);
 			
-			// create radio
-			//TODO
-			
-			// create semaphores
-			/*ArrayList<Semaphore> semaphores = map.getSemaphores();
-			for(int i = 0; i < semaphores.size(); i++){
-				Semaphore s = semaphores.get(i);
-				
-				agentContainer.acceptNewAgent("SemaphoreAgent" + i, s).start();
-				space.getAdder().add(space, s);
-				s.setSpace(space);
-				
-				Point location = s.getPosition();
-				space.moveTo(s,location.toArray());
-				schedule.schedule(s);
-			}*/
 			// create cars
 			for (int i = 0; i < N_CARS; i++) {
 				CarAgent car = new CarAgent(space);

@@ -14,7 +14,7 @@ public class Map extends Agent
 	private ArrayList<Road> roads = new ArrayList<Road>();
 	private ArrayList<Semaphore> semaphores = new ArrayList<Semaphore>();
 
-	public Map(Grid<Object> space, ContainerController mainContainer, Schedule schedule) {
+	public Map(Grid<Object> space, ContainerController mainContainer) {
 		this.space = space;
 		
 		//Intersections top->bottom left->right
@@ -105,15 +105,7 @@ public class Map extends Agent
 	    
 	    /*Update Semaphore of intersections*/
 	    for(Intersection i : intersections){
-	    	
-	    	i.updateSemaphores(space,mainContainer,schedule);
-	    	
-	    	/*if(i.getSemaphoreManager() != null){
-	    		for(Semaphore s : i.getSemaphoreManager().getSemaphores()){
-		    		semaphores.add(s);
-		    	}
-	    	}*/
-	    	
+	    	i.updateSemaphores(space,mainContainer);
 	    }
 
 	}
