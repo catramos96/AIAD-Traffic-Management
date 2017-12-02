@@ -36,6 +36,7 @@ import java.util.Vector;
 import com.jogamp.common.util.RunnableTask;
 
 import algorithms.AStar;
+import behaviours.TestBehaviour;
 import cityStructure.CityMap;
 import cityStructure.Intersection;
 import cityStructure.Road;
@@ -86,7 +87,6 @@ public class CarAgent extends Agent {
     private Codec codec;
     private Ontology serviceOntology;
     
-    protected ACLMessage inform;
     
     /**
      * Contructor
@@ -282,32 +282,7 @@ public class CarAgent extends Agent {
     			"Destination: " + destination.print());
     }
     
-    /*
-     * Messages TEST
-     */
     
-    public void sendRandomHello(){
-    	
-    	AID r = null;
-    	
-    	//look for random car
-    	for(Object o : space.getObjects()){
-    		if(o.getClass().equals(CarAgent.class)){
-    			r = ((CarAgent)o).getAID();
-    			break;
-    		}
-    	}
-    	 // prepare inform message
-        inform.setContent("Ola amigo");
-        
-        //TODO
-        
-        inform.addReceiver(r);
-        
-        this.send(inform);
-        
-        System.out.println("Message sent!");
-    }
     
     
     //JADE RELATED
@@ -325,23 +300,15 @@ public class CarAgent extends Agent {
         ServiceDescription sd = new ServiceDescription();
         sd.setType("service-provider");
         template.addServices(sd);
-        /*addBehaviour(new DFSubscInit(this, template));
+        //addBehaviour(new DFSubscInit(this, template));
         try {
         	DFService.register(this, template);
         } catch(FIPAException ex) {
         	ex.printStackTrace();
-        }*/
+        }
 
-        // prepare inform message
-        inform = new ACLMessage(ACLMessage.INFORM);
-        inform.setLanguage(codec.getName());
-        inform.setOntology(serviceOntology.getName());
-        inform.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
-        //TODO
-        //inform.addReceiver(r);
-        
-        sendRandomHello();
-        
+        addBehaviour(new TestBehaviour(this,1000,space,codec,serviceOntology));
+      
         /*
         ServiceProposalRequest serviceProposalRequest = new ServiceProposalRequest(requiredService);
         try {
@@ -363,6 +330,16 @@ public class CarAgent extends Agent {
         	ex.printStackTrace();
         }
     }
+
+
+	public Grid<Object> getSpace() {
+		return space;
+	}
+
+
+	public void setSpace(Grid<Object> space) {
+		this.space = space;
+	}
     
     
     /******************** OTHER CLASSES  ********************/
