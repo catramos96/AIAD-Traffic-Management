@@ -125,6 +125,16 @@ public class CarAgent extends Agent {
      * Scheduled Methods
      */
     
+    @ScheduledMethod(start=1, interval = 100000)
+    public void receiveMessages(){
+    	ACLMessage message = this.receive();
+    	
+    	if(message != null){
+    		System.out.println(message.getContent());
+    	}
+    }
+    
+    
     @ScheduledMethod(start=1 , interval=150000)
 	public void updateCarsPosition()
 	{
@@ -272,8 +282,35 @@ public class CarAgent extends Agent {
     			"Destination: " + destination.print());
     }
     
-    //JADE RELATED
+    /*
+     * Messages TEST
+     */
     
+    public void sendRandomHello(){
+    	
+    	AID r = null;
+    	
+    	//look for random car
+    	for(Object o : space.getObjects()){
+    		if(o.getClass().equals(CarAgent.class)){
+    			r = ((CarAgent)o).getAID();
+    			break;
+    		}
+    	}
+    	 // prepare inform message
+        inform.setContent("Ola amigo");
+        
+        //TODO
+        
+        inform.addReceiver(r);
+        
+        this.send(inform);
+        
+        System.out.println("Message sent!");
+    }
+    
+    
+    //JADE RELATED
     @Override
     public void setup() {
 
@@ -288,21 +325,22 @@ public class CarAgent extends Agent {
         ServiceDescription sd = new ServiceDescription();
         sd.setType("service-provider");
         template.addServices(sd);
-        //addBehaviour(new DFSubscInit(this, template));
+        /*addBehaviour(new DFSubscInit(this, template));
         try {
         	DFService.register(this, template);
         } catch(FIPAException ex) {
         	ex.printStackTrace();
-        }
+        }*/
 
         // prepare inform message
         inform = new ACLMessage(ACLMessage.INFORM);
         inform.setLanguage(codec.getName());
         inform.setOntology(serviceOntology.getName());
         inform.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
-        inform.setContent("ola amigo");
         //TODO
         //inform.addReceiver(r);
+        
+        sendRandomHello();
         
         /*
         ServiceProposalRequest serviceProposalRequest = new ServiceProposalRequest(requiredService);
