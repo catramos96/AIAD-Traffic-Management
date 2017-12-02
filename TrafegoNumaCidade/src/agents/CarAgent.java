@@ -39,15 +39,12 @@ import algorithms.AStar;
 import cityStructure.CityMap;
 import cityStructure.Intersection;
 import cityStructure.Road;
-import cityTraffic.onto.ContractOutcome;
 import cityTraffic.onto.Results;
 import cityTraffic.onto.ServiceOntology;
-import cityTraffic.onto.ServiceProposalRequest;
 
 public class CarAgent extends Agent {
 	
-	private String requiredService = "bla";
-
+	//private String requiredService = "bla";
 
 	//Map Positioning
 	private enum PassageType {Road, Intersection, Out};
@@ -67,10 +64,11 @@ public class CarAgent extends Agent {
 	private Point destination;
 	private ArrayList<Road> jorney = new ArrayList<Road>();
 
-	Grid<Object> space;
+	private Grid<Object> space;
 
 	int sign = 1;
     
+	/*
     private int nContracts;
     private ArrayList<ContractOutcome> contractOutcomes = new ArrayList<ContractOutcome>();
     private AID resultsCollector;
@@ -79,15 +77,16 @@ public class CarAgent extends Agent {
     private int nBestProviders;
     private Map<AID,ProviderValue> providersTable = new HashMap<AID,ProviderValue>();
     private ArrayList<ProviderValue> providersList = new ArrayList<ProviderValue>();
-    
+    */
+	
     private Context<?> context;
-    private Grid<Object> contextSpace;
+    //private Grid<Object> contextSpace;
     private RepastEdge<Object> edge = null;
     
     private Codec codec;
     private Ontology serviceOntology;
     
-    protected ACLMessage myCfp;
+    protected ACLMessage inform;
     
     /**
      * Contructor
@@ -272,8 +271,64 @@ public class CarAgent extends Agent {
     			"Position: " + position.print() + "\n" +
     			"Destination: " + destination.print());
     }
-    /******************** OTHER CLASSES  ********************/
     
+    //JADE RELATED
+    
+    @Override
+    public void setup() {
+
+        // register language and ontology
+        codec = new SLCodec();
+        serviceOntology = ServiceOntology.getInstance();
+        getContentManager().registerLanguage(codec);
+        getContentManager().registerOntology(serviceOntology);
+        
+        // subscribe DF
+        DFAgentDescription template = new DFAgentDescription();
+        ServiceDescription sd = new ServiceDescription();
+        sd.setType("service-provider");
+        template.addServices(sd);
+        //addBehaviour(new DFSubscInit(this, template));
+        try {
+        	DFService.register(this, template);
+        } catch(FIPAException ex) {
+        	ex.printStackTrace();
+        }
+
+        // prepare inform message
+        inform = new ACLMessage(ACLMessage.INFORM);
+        inform.setLanguage(codec.getName());
+        inform.setOntology(serviceOntology.getName());
+        inform.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+        inform.setContent("ola amigo");
+        //TODO
+        //inform.addReceiver(r);
+        
+        /*
+        ServiceProposalRequest serviceProposalRequest = new ServiceProposalRequest(requiredService);
+        try {
+            getContentManager().fillContent(inform, serviceProposalRequest);
+        } catch (CodecException | OntologyException e) {
+            e.printStackTrace();
+        }
+                
+        // waker behaviour for starting CNets
+        addBehaviour(new StartCNets(this, 2000));
+        */
+    }
+
+    @Override
+    protected void takeDown() {
+    	try {
+        	DFService.deregister(this);
+        } catch(FIPAException ex) {
+        	ex.printStackTrace();
+        }
+    }
+    
+    
+    /******************** OTHER CLASSES  ********************/
+    /*
     private class ProviderValue implements Comparable<ProviderValue> {
 		private final double INITIAL_VALUE = 0.5;
 
@@ -431,38 +486,6 @@ public class CarAgent extends Agent {
 		
 		return bestProviders;
 	}
-	
-	@Override
-    public void setup() {
-
-        // register language and ontology
-        codec = new SLCodec();
-        serviceOntology = ServiceOntology.getInstance();
-        getContentManager().registerLanguage(codec);
-        getContentManager().registerOntology(serviceOntology);
-        
-        // subscribe DF
-        DFAgentDescription template = new DFAgentDescription();
-        ServiceDescription sd = new ServiceDescription();
-        sd.setType("service-provider");
-        template.addServices(sd);
-        addBehaviour(new DFSubscInit(this, template));
-
-        // prepare cfp message
-        myCfp = new ACLMessage(ACLMessage.CFP);
-        myCfp.setLanguage(codec.getName());
-        myCfp.setOntology(serviceOntology.getName());
-        myCfp.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-        //
-        ServiceProposalRequest serviceProposalRequest = new ServiceProposalRequest(requiredService);
-        try {
-            getContentManager().fillContent(myCfp, serviceProposalRequest);
-        } catch (CodecException | OntologyException e) {
-            e.printStackTrace();
-        }
-        
-        // waker behaviour for starting CNets
-        addBehaviour(new StartCNets(this, 2000));
-    }
+	*/
 	
 }

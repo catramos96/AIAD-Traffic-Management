@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import agents.CarAgent;
 import agents.City;
-import algorithms.AStar;
-import cityStructure.CityMap;
 import cityStructure.Road;
 import jade.core.AID;
 import jade.core.Profile;
@@ -30,20 +28,18 @@ import jade.wrapper.StaleProxyException;
 
 public class CityTrafficBuilder extends RepastSLauncher {
 
-	private static int N_CARS = 20;
+	private static int N_CARS = 2;
 	
-	private static int N = 10;
-	private static int N_CONSUMERS = N;
-	private static int N_CONSUMERS_FILTERING_PROVIDERS = N;
+	//private static int N = 10;
+	//private static int N_CONSUMERS = N;
+	//private static int N_CONSUMERS_FILTERING_PROVIDERS = N;
 	
 	Grid<Object> space;
 	
 	ArrayList<CarAgent> cars = new ArrayList<CarAgent>();
 	
-	public static int FILTER_SIZE = 5; 
-	
-	
-	private int N_CONTRACTS = 100;
+	//public static int FILTER_SIZE = 5; 
+	//private int N_CONTRACTS = 100;
 	
 	public static final boolean USE_RESULTS_COLLECTOR = true;
 	
@@ -62,7 +58,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		return null;
 	}
 
-	public int getN() {
+	/*public int getN() {
 		return N;
 	}
 
@@ -84,7 +80,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 
 	public void setN_CONTRACTS(int N_CONTRACTS) {
 		this.N_CONTRACTS = N_CONTRACTS;
-	}
+	}*/
 
 	@Override
 	public String getName() {
