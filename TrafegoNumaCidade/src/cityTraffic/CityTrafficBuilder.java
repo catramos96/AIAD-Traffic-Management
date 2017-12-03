@@ -66,10 +66,8 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		} else {
 			agentContainer = mainContainer;
 		}
-		CityMap map = new CityMap();
-		map.load("C:\\Users\\Catarina\\Documents\\Académico\\4º Ano\\AIAD\\AIAD-Traffic-Management\\Map.txt");
-		//System.out.println(CityTrafficBuilder.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "\\Map.txt");
-		//launchAgents();
+		
+		launchAgents();
 	}
 	
 	private void launchAgents() {
@@ -110,7 +108,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				while(!position_ok){
 					
 					rnd_road = (int)(Math.random() * city.getMap().getRoads().size());
-					startRoad = city.getMap().getRoads().get(rnd_road);
+					startRoad = (Road) city.getMap().getRoads().values().toArray()[rnd_road];
 					origin = city.getRandomRoadPosition(startRoad);
 					
 					position_ok = true;
@@ -124,11 +122,11 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				
 				//Search Destination Random
 				rnd_road = (int)(Math.random() * city.getMap().getRoads().size());
-				endRoad = city.getMap().getRoads().get(rnd_road);
+				endRoad = (Road) city.getMap().getRoads().values().toArray()[rnd_road];
 				destination = city.getRandomRoadPosition(endRoad);
 
 				//create car
-				CarAgent car = new CarAgent(space,origin,destination,startRoad);		//car doesn't know the cityMap (only the road he is in)
+				CarAgent car = new CarAgent(space,city.getMap(),origin,destination,startRoad);		//car doesn't know the cityMap (only the road he is in)
 				agentContainer.acceptNewAgent("CarAgent" + i, car).start();
 				space.getAdder().add(space, car);
 				car.setPosition(origin);
