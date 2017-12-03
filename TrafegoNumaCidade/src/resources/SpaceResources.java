@@ -1,10 +1,13 @@
 package resources;
 
+import java.util.ArrayList;
+
 import agents.CarAgent;
 import agents.Semaphore;
 import agents.SemaphoreRed;
 import agents.SemaphoreYellow;
 import repast.simphony.space.grid.Grid;
+import sajas.core.AID;
 
 public class SpaceResources {
 
@@ -24,6 +27,17 @@ public class SpaceResources {
 			value = ((double)roadlength - ((double)roadlength)/3);
 		
 		return (int) Math.round(value);
+	}
+	
+	public static ArrayList<AID> getCarsAID(Grid<Object> space){
+		ArrayList<AID> cars = new ArrayList<AID>();
+		
+		for(Object o : space.getObjects()){
+			if(o.getClass().equals(CarAgent.class))
+				cars.add((AID) ((CarAgent)o).getAID());
+		}
+		
+		return cars;		
 	}
 	
 	public static Semaphore hasRedOrYellowSemaphore(Grid<Object> space, Point location){

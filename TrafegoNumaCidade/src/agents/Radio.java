@@ -1,7 +1,6 @@
 package agents;
 
-import behaviours.CheckTransit;
-import cityStructure.Road;
+import behaviours.RadioService;
 import cityTraffic.onto.ServiceOntology;
 import jade.content.lang.sl.SLCodec;
 import jade.content.onto.Ontology;
@@ -11,26 +10,20 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import repast.simphony.space.grid.Grid;
 import sajas.core.Agent;
 import sajas.domain.DFService;
+import sajas.wrapper.ContainerController;
 
-public class RoadMonitor extends Agent{
+public class Radio extends Agent{
 
-	private Road road = null;
-	private Radio radio = null;
+	private SLCodec codec = null;
+	private Ontology ontology = null;
 	private Grid<Object> space = null;
-	private SLCodec codec;
-	private Ontology ontology;
 	
-	public RoadMonitor(Road road, Grid<Object> space, Radio radio){
-		this.road = road;
+	public Radio(Grid<Object> space){
 		this.space = space;
-		this.radio = radio;
 	}
 	
-	
-	//JADE RELATED
 	@Override
 	public void setup(){
-
 		codec = new SLCodec();
         ontology = ServiceOntology.getInstance();
         getContentManager().registerLanguage(codec);
@@ -39,35 +32,15 @@ public class RoadMonitor extends Agent{
 		DFAgentDescription template = new DFAgentDescription();
         ServiceDescription sd = new ServiceDescription();
         sd.setType("service-provider");
-        sd.setName("MonitorService");
+        sd.setName("RadioService");
         template.addServices(sd);
-        template.setName(this.getAID());
         try {
         	DFService.register(this, template);
         } catch(FIPAException ex) {
         	ex.printStackTrace();
         }
 	        
-		this.addBehaviour(new CheckTransit(this,1500,space));
-	}
-	
-	/*
-	 * Gets & Sets
-	 */
-	
-	public Road getRoad(){
-		return road;
-	}
-	
-	public SLCodec getCodec(){
-		return codec;
-	}
-	
-	public Ontology getOntology(){
-		return ontology;
-	}
-	
-	public Radio getRadio(){
-		return radio;
+		this.addBehaviour(new RadioService(this,1000,space));
+
 	}
 }

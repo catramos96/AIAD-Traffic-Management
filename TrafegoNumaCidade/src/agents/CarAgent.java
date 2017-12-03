@@ -211,6 +211,7 @@ public class CarAgent extends Agent {
         sd.setType("service-provider");
         sd.setName("CarService");
         template.addServices(sd);
+        template.setName(this.getAID());
         //addBehaviour(new DFSubscInit(this, template));
         try {
         	DFService.register(this, template);

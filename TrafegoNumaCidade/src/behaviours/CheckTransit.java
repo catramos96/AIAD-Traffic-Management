@@ -2,10 +2,14 @@ package behaviours;
 
 import agents.RoadMonitor;
 import cityStructure.Road;
+import jade.domain.FIPANames;
+import jade.lang.acl.ACLMessage;
 import repast.simphony.space.grid.Grid;
+import resources.MessagesResources;
 import resources.Point;
 import resources.Resources;
 import resources.SpaceResources;
+import sajas.core.AID;
 import sajas.core.behaviours.TickerBehaviour;
 
 public class CheckTransit extends TickerBehaviour {
@@ -14,15 +18,19 @@ public class CheckTransit extends TickerBehaviour {
 	private static final long serialVersionUID = 1L;
 	private RoadMonitor monitor = null;
 	private Grid<Object> space = null;
+	private boolean warnedRadio = false;
+	private ACLMessage message = null;
 	
 	public CheckTransit(RoadMonitor monitor, long period, Grid<Object> space) {
 		super(monitor, period);
 		
 		this.monitor = monitor;
-		this.space = space;
+		this.space = space;	
 		
-		System.out.println("Check Transit ready");
-		
+		message = new ACLMessage(ACLMessage.INFORM);
+		message.setLanguage(monitor.getCodec().getName()); 
+        message.setOntology(monitor.getOntology().getName()); 
+        message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); 
 	}
 	
 	@Override
@@ -39,20 +47,36 @@ public class CheckTransit extends TickerBehaviour {
 		
 		if(n > SpaceResources.getMaxCarStopped(r.getLength())){
 			
-			System.out.println("Transit in " + r.getName());
-			/*AID receiver = null;
+			if(!warnedRadio){
+				AID receiver = (AID) monitor.getRadio().getAID();
+				
+		        message.setContent(
+		        		MessagesResources.MessageType.TRANSIT+
+		        		MessagesResources.SEPARATOR+
+		        		r.getName()); 
+		         
+		        message.addReceiver(receiver); 
+		        monitor.send(message); 
+		        
+		        warnedRadio = true;
+			}
+		}
+		else{
 			
-			ACLMessage message = new ACLMessage(ACLMessage.INFORM);
-			message.setLanguage(monitor.getCodec().getName()); 
-	        message.setOntology(monitor.getOntology().getName()); 
-	        message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); 
-	        
-	        message.setContent(MessagesResources.MessageType.CAR_IN_TRANSIT+MessagesResources.SEPARATOR+r.getName()); 
-	         
-	        message.addReceiver(receiver); 
-	        monitor.send(message); 
-	         
-	        System.out.println("Message sent!"); */
+			if(warnedRadio == true){
+				AID receiver = (AID) monitor.getRadio().getAID();
+				
+		        message.setContent(
+		        		MessagesResources.MessageType.NO_TRANSIT+
+		        		MessagesResources.SEPARATOR+
+		        		r.getName()); 
+		         
+		        message.addReceiver(receiver); 
+		        monitor.send(message); 	
+		        System.out.println("Sent Message: " + message.getContent());
+			}
+			
+			warnedRadio = false;
 		}
 	}
 

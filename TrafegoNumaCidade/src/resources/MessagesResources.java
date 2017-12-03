@@ -4,7 +4,10 @@ public class MessagesResources {
 
 	public static final String SEPARATOR = "_#_";
 	public static enum MessageType{
-		CAR_IN_TRANSIT,				//When a car is stopped at a semaphore
+		TRANSIT,				//When a road has reached their max capacity of cars allowed
+		NO_TRANSIT,				//When a road has no longer transit
+		BLOCKED,				//When the radio announces that a road is no longer viable
+		UNBLOCKED				//When the radio announces that a road is viable
 		};
 		
 	public static MessageType getMessageType(String content){

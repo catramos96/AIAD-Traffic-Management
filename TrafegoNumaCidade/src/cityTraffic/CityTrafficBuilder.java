@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import agents.CarAgent;
 import agents.City;
+import agents.Radio;
 import agents.RoadMonitor;
 import cityStructure.Road;
 import jade.core.AID;
@@ -59,30 +60,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		return null;
 	}
 
-	/*public int getN() {
-		return N;
-	}
-
-	public void setN(int N) {
-		this.N = N;
-	}
-
-	public int getFILTER_SIZE() {
-		return FILTER_SIZE;
-	}
-
-	public void setFILTER_SIZE(int FILTER_SIZE) {
-		this.FILTER_SIZE = FILTER_SIZE;
-	}
-
-	public int getN_CONTRACTS() {
-		return N_CONTRACTS;
-	}
-
-	public void setN_CONTRACTS(int N_CONTRACTS) {
-		this.N_CONTRACTS = N_CONTRACTS;
-	}*/
-
 	@Override
 	public String getName() {
 		return "Street map -- SAJaS RepastS Test";
@@ -114,9 +91,14 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			agentContainer.acceptNewAgent("city", city).start();
 			space.getAdder().add(space, city);
 			space.moveTo(city, 10, 10);
+
 			
+			Radio radio = new Radio(space);
+			agentContainer.acceptNewAgent("radio", radio).start();
+			
+			//create road monitors (transit)
 			for(Road r : city.getMap().getRoads()){
-				RoadMonitor monitor = new RoadMonitor(r,space);
+				RoadMonitor monitor = new RoadMonitor(r,space, radio);
 				agentContainer.acceptNewAgent("road monitor-" + r.getName(), monitor).start();
 				space.getAdder().add(space, monitor);
 				space.moveTo(monitor, r.getEndPoint().toArray());
