@@ -1,7 +1,4 @@
 package cityTraffic;
-
-import java.util.ArrayList;
-
 import agents.CarAgent;
 import agents.City;
 import agents.Radio;
@@ -30,18 +27,8 @@ import jade.wrapper.StaleProxyException;
 
 public class CityTrafficBuilder extends RepastSLauncher {
 
-	private static int N_CARS = 40;
-	
-	//private static int N = 10;
-	//private static int N_CONSUMERS = N;
-	//private static int N_CONSUMERS_FILTERING_PROVIDERS = N;
-	
+	private static int N_CARS = 30;
 	Grid<Object> space;
-	
-	ArrayList<CarAgent> cars = new ArrayList<CarAgent>();
-	
-	//public static int FILTER_SIZE = 5; 
-	//private int N_CONTRACTS = 100;
 	
 	public static final boolean USE_RESULTS_COLLECTOR = true;
 	
@@ -93,7 +80,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			space.moveTo(city, 10, 10);
 
 			
-			Radio radio = new Radio(space);
+			Radio radio = new Radio();
 			agentContainer.acceptNewAgent("radio", radio).start();
 			
 			//create road monitors (transit)
@@ -136,12 +123,9 @@ public class CityTrafficBuilder extends RepastSLauncher {
 
 				//create car
 				//INICIALMENTE ELES CONHECEM A CIDADE TODA ---> city.getMap()
-				CarAgent car = new CarAgent(space, city.getMap(), origin,destination);
-				cars.add(car);
+				CarAgent car = new CarAgent(space, city.getMap(), origin,destination,startRoad);
 				agentContainer.acceptNewAgent("CarAgent" + i, car).start();
 				space.getAdder().add(space, car);
-
-				car.setRoad(startRoad);
 				car.setPosition(origin);
 				schedule.schedule(car);
 				

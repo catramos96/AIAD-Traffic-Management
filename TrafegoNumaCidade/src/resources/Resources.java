@@ -2,24 +2,18 @@ package resources;
 
 public class Resources {
 	
+	public static final int lightCheck = 1000;
+	public static final int carVelocity = 700;
+	
 	/*
 	 * Semaphore
 	 */
 	public enum Light{Green,Yellow,Red};
+	
+	public static final int GreenLightTimeUnits = 9;
+	
+	public static final int YellowLightTimeUnits = 3;
 
-	public static final int TimeUnitInTicks = 1000000;
-	
-	public static final int GreenLightTimeUnits = 3;
-	
-	public static final int YellowLightTimeUnits = 1;
-	
-	public static int getLightTime(boolean isGreenActive){
-		
-		if(isGreenActive)
-			return Resources.GreenLightTimeUnits;
-		else
-			return Resources.YellowLightTimeUnits;
-	}
 
 	/*
 	 * Direction

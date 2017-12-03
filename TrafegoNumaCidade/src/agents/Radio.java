@@ -9,11 +9,8 @@ import sajas.core.Agent;
 import sajas.domain.DFService;
 
 public class Radio extends Agent{
-
-	private Grid<Object> space = null;
 	
-	public Radio(Grid<Object> space){
-		this.space = space;
+	public Radio(){
 	}
 	
 	@Override
@@ -29,7 +26,7 @@ public class Radio extends Agent{
         	ex.printStackTrace();
         }
 	        
-		this.addBehaviour(new RadioService(this,1000,space));
+		this.addBehaviour(new RadioService(this));
 
 	}
 }

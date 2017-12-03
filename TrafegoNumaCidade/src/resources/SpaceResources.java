@@ -11,6 +11,7 @@ import sajas.core.AID;
 
 public class SpaceResources {
 
+	public static enum PassageType {Road, Intersection, Out};
 	public static final Point REST_CELL = new Point(0,0);
 	
 	public static int getMaxCarStopped(int roadlength){

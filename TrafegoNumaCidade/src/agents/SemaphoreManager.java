@@ -3,6 +3,7 @@ package agents;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import behaviours.SwitchLights;
 import resources.Resources.Light;
 import jade.wrapper.StaleProxyException;
 import repast.simphony.engine.schedule.ScheduledMethod;
@@ -14,12 +15,10 @@ import sajas.core.Agent;
 import sajas.wrapper.ContainerController;
 
 public class SemaphoreManager extends Agent{
-	
-	private int time = 0;
 		
-	private LinkedList<Semaphore> redSemaphores = new LinkedList<Semaphore>();
-	private Semaphore greenSem = null;	//green light
-	private Semaphore yellowSem = null;	//yellow semaphore
+	private LinkedList<SemaphoreRed> redSemaphores = new LinkedList<SemaphoreRed>();
+	private SemaphoreGreen greenSem = null;	//green light
+	private SemaphoreYellow yellowSem = null;	//yellow semaphore
 	
 	private boolean isGreenActive = false;
 	
@@ -68,48 +67,29 @@ public class SemaphoreManager extends Agent{
 			}
 		}
 	}
-	
-	@ScheduledMethod(start=1 , interval=1000000)
-	public void updateLight(){
-		
-		time += 1000000;
-		
-		if(time >= Resources.getLightTime(isGreenActive) * Resources.TimeUnitInTicks){
-			
-			time = 0;
-			
-			//Next Light
-			if(isGreenActive){
-				isGreenActive = false;
 
-				Point activePoint = greenSem.getPosition();
-				
-				//place a yellow light
-				yellowSem.setPosition(activePoint);
-				
-				//remove green light from space
-				greenSem.setPosition(SpaceResources.REST_CELL);
-			}
-			else{
-				isGreenActive = true;
-				
-				//Get next green light semaphore
-				Semaphore tmp = redSemaphores.getFirst();
-				Point green_position = tmp.getPosition();
-				Point red_position = yellowSem.getPosition();
-				
-				yellowSem.setPosition(SpaceResources.REST_CELL);
-				
-				//swap semaphores (red <> green)
-				tmp.setPosition(red_position);
-				greenSem.setPosition(green_position);
-				
-				//add semaphore in the past active 
-				redSemaphores.addLast(tmp);	
-				redSemaphores.removeFirst();
-				
-			}
-			
-		}
+	@Override
+	public void setup(){
+		addBehaviour(new SwitchLights(this,Resources.lightCheck,redSemaphores, yellowSem, greenSem));
+	}
+	
+	public int getLightTime(){
+		
+		if(isGreenActive)
+			return Resources.GreenLightTimeUnits;
+		else
+			return Resources.YellowLightTimeUnits;
+	}
+	
+	/*
+	 * Gets & Sets
+	 */
+	
+	public boolean isGreenActive(){
+		return isGreenActive;
+	}
+	
+	public void setGreenActive(boolean b){
+		isGreenActive = b;
 	}
 }
