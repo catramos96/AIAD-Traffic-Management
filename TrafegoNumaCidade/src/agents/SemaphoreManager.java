@@ -9,6 +9,7 @@ import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
 import resources.Resources;
+import resources.SpaceResources;
 import sajas.core.Agent;
 import sajas.wrapper.ContainerController;
 
@@ -54,11 +55,11 @@ public class SemaphoreManager extends Agent{
 				
 				if(Light.values()[rndLight].equals(Light.Green)){
 					isGreenActive = true;
-					yellowSem.setPosition(Resources.Semaphore_Rest);
+					yellowSem.setPosition(SpaceResources.REST_CELL);
 				}
 				else if(Light.values()[rndLight].equals(Light.Yellow)){
 					isGreenActive = false;
-					greenSem.setPosition(Resources.Semaphore_Rest);
+					greenSem.setPosition(SpaceResources.REST_CELL);
 				}
 			}
 			//red semaphores
@@ -87,7 +88,7 @@ public class SemaphoreManager extends Agent{
 				yellowSem.setPosition(activePoint);
 				
 				//remove green light from space
-				greenSem.setPosition(Resources.Semaphore_Rest);
+				greenSem.setPosition(SpaceResources.REST_CELL);
 			}
 			else{
 				isGreenActive = true;
@@ -97,7 +98,7 @@ public class SemaphoreManager extends Agent{
 				Point green_position = tmp.getPosition();
 				Point red_position = yellowSem.getPosition();
 				
-				yellowSem.setPosition(Resources.Semaphore_Rest);
+				yellowSem.setPosition(SpaceResources.REST_CELL);
 				
 				//swap semaphores (red <> green)
 				tmp.setPosition(red_position);

@@ -1,6 +1,5 @@
 /agents/
-/algorithms/
-/cityStructure/
+/behaviours/
 /cityTraffic/
 /resources/
-/behaviours/
+/cityStructure/

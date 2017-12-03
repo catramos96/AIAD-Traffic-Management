@@ -12,7 +12,7 @@ public class Road{
 	private Resources.Direction direction;
 	private String name = new String();
 	
-	private int length = 0;		//= weight in Dijkstra
+	private int length = 1;		//= weight in Dijkstra
 	
 	public Road(Point start, Point end, Intersection i1, Intersection i2, String name){
 		this.name = name;
@@ -44,10 +44,10 @@ public class Road{
 			
 			switch (direction) {
 				case North: case South:
-					length =  Math.abs(startPoint.y - endPoint.y + 1);
+					length =  Math.abs(startPoint.y - endPoint.y) +1;
 					break;
 				case East: case West:
-					Math.abs(startPoint.x - endPoint.x + 1);
+					length = Math.abs(startPoint.x - endPoint.x) + 1;
 				default:
 					break;
 			}

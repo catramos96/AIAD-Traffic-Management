@@ -8,22 +8,38 @@ import repast.simphony.space.grid.Grid;
 
 public class SpaceResources {
 
+	public static final Point REST_CELL = new Point(0,0);
 	
-	public static boolean hasRedOrYellowSemaphore(Grid<Object> space, Point location){
-
-		if(searchForObject(space, location, SemaphoreRed.class) == null &&
-		searchForObject(space, location, SemaphoreYellow.class) == null)
-			return false;
+	public static int getMaxCarStopped(int roadlength){
+		
+		double value = 0;
+		
+		if(roadlength <= 3)
+			value = 3;
+		else if(roadlength <= 5)
+			value = roadlength - 1;
+		else if(roadlength <= 8)
+			value = ((double)roadlength - ((double)roadlength)/4);
 		else
-			return true;
+			value = ((double)roadlength - ((double)roadlength)/3);
+		
+		return (int) Math.round(value);
 	}
 	
-	public static boolean hasCar(Grid<Object> space, Point location){
+	public static Semaphore hasRedOrYellowSemaphore(Grid<Object> space, Point location){
+		Semaphore s1 = searchForObject(space, location, SemaphoreRed.class);
+		Semaphore s2 = searchForObject(space, location, SemaphoreYellow.class);
 		
-		if(searchForObject(space, location, CarAgent.class) != null)
-			return true;
+		if(s1 == null && s2 == null)
+			return null;
+		else if(s1 == null)
+			return s2;
 		else
-			return false;
+			return s1;
+	}
+	
+	public static CarAgent hasCar(Grid<Object> space, Point location){
+		return searchForObject(space, location, CarAgent.class);
 	}
 	
 	public static <T> T searchForObject(Grid<Object> space, Point location, Class<T> Class){

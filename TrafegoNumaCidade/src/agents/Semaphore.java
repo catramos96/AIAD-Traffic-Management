@@ -1,6 +1,5 @@
 package agents;
 import jade.wrapper.StaleProxyException;
-import repast.simphony.engine.schedule.Schedule;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
 import resources.Resources;

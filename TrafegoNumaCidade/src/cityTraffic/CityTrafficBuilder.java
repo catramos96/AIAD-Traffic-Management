@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import agents.CarAgent;
 import agents.City;
+import agents.RoadMonitor;
 import cityStructure.Road;
 import jade.core.AID;
 import jade.core.Profile;
@@ -28,7 +29,7 @@ import jade.wrapper.StaleProxyException;
 
 public class CityTrafficBuilder extends RepastSLauncher {
 
-	private static int N_CARS = 2;
+	private static int N_CARS = 40;
 	
 	//private static int N = 10;
 	//private static int N_CONSUMERS = N;
@@ -114,19 +115,14 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			space.getAdder().add(space, city);
 			space.moveTo(city, 10, 10);
 			
-			//To test the algorithm of the shortest path
-			/*Road test_road = null;
 			for(Road r : city.getMap().getRoads()){
-				if(r.partOfRoad(new Point(4,20)))
-					test_road = r;
+				RoadMonitor monitor = new RoadMonitor(r,space);
+				agentContainer.acceptNewAgent("road monitor-" + r.getName(), monitor).start();
+				space.getAdder().add(space, monitor);
+				space.moveTo(monitor, r.getEndPoint().toArray());
+				
+				schedule.schedule(monitor);
 			}
-			
-			ArrayList<Road> path = AStar.shortestPath(city.getMap(), test_road, new Point(4,20), new Point(19,14));
-
-			for(Road r : path){
-				System.out.println(r.getName());
-			}*/
-			
 			// create cars
 			for (int i = 0; i < N_CARS; i++) {
 				int rnd_road;
@@ -146,7 +142,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 
 					//check if there are no cars at the location
 					for(int j = 0; j < i; j++){
-						if(SpaceResources.hasCar(space, origin))
+						if(SpaceResources.hasCar(space, origin) != null)
 							position_ok = false;
 					}
 				}
