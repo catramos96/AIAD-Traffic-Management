@@ -12,7 +12,7 @@ import resources.SpaceResources;
 import sajas.core.AID;
 import sajas.core.behaviours.TickerBehaviour;
 
-public class CheckTransit extends TickerBehaviour {
+public class TransitMonitorization extends TickerBehaviour {
 
 
 	private static final long serialVersionUID = 1L;
@@ -21,7 +21,7 @@ public class CheckTransit extends TickerBehaviour {
 	private boolean warnedRadio = false;
 	private ACLMessage message = null;
 	
-	public CheckTransit(RoadMonitor monitor, long period, Grid<Object> space) {
+	public TransitMonitorization(RoadMonitor monitor, long period, Grid<Object> space) {
 		super(monitor, period);
 		
 		this.monitor = monitor;
@@ -31,6 +31,9 @@ public class CheckTransit extends TickerBehaviour {
 		message.setLanguage(monitor.getCodec().getName()); 
         message.setOntology(monitor.getOntology().getName()); 
         message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); 
+        
+		AID receiver = (AID) monitor.getRadio().getAID();
+        message.addReceiver(receiver); 
 	}
 	
 	@Override
@@ -48,34 +51,17 @@ public class CheckTransit extends TickerBehaviour {
 		if(n > SpaceResources.getMaxCarStopped(r.getLength())){
 			
 			if(!warnedRadio){
-				AID receiver = (AID) monitor.getRadio().getAID();
-				
-		        message.setContent(
-		        		MessagesResources.MessageType.TRANSIT+
-		        		MessagesResources.SEPARATOR+
-		        		r.getName()); 
-		         
-		        message.addReceiver(receiver); 
+		        message.setContent(MessagesResources.buildMessage(MessagesResources.MessageType.TRANSIT,r.getName())); 
 		        monitor.send(message); 
-		        
 		        warnedRadio = true;
 			}
 		}
 		else{
 			
 			if(warnedRadio == true){
-				AID receiver = (AID) monitor.getRadio().getAID();
-				
-		        message.setContent(
-		        		MessagesResources.MessageType.NO_TRANSIT+
-		        		MessagesResources.SEPARATOR+
-		        		r.getName()); 
-		         
-		        message.addReceiver(receiver); 
-		        monitor.send(message); 	
-		        System.out.println("Sent Message: " + message.getContent());
+		        message.setContent(MessagesResources.buildMessage(MessagesResources.MessageType.NO_TRANSIT,r.getName())); 
+		        monitor.send(message); 
 			}
-			
 			warnedRadio = false;
 		}
 	}

@@ -56,6 +56,7 @@ public class SpaceResources {
 		return searchForObject(space, location, CarAgent.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static <T> T searchForObject(Grid<Object> space, Point location, Class<T> Class){
 	
 		for(Object o : space.getObjectsAt(location.toArray())){

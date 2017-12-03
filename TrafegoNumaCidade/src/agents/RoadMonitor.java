@@ -1,6 +1,6 @@
 package agents;
 
-import behaviours.CheckTransit;
+import behaviours.TransitMonitorization;
 import cityStructure.Road;
 import cityTraffic.onto.ServiceOntology;
 import jade.content.lang.sl.SLCodec;
@@ -48,7 +48,7 @@ public class RoadMonitor extends Agent{
         	ex.printStackTrace();
         }
 	        
-		this.addBehaviour(new CheckTransit(this,1500,space));
+		this.addBehaviour(new TransitMonitorization(this,1500,space));
 	}
 	
 	/*

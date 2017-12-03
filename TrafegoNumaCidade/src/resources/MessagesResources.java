@@ -3,6 +3,7 @@ package resources;
 public class MessagesResources {
 
 	public static final String SEPARATOR = "_#_";
+	
 	public static enum MessageType{
 		TRANSIT,				//When a road has reached their max capacity of cars allowed
 		NO_TRANSIT,				//When a road has no longer transit
@@ -10,6 +11,10 @@ public class MessagesResources {
 		UNBLOCKED				//When the radio announces that a road is viable
 		};
 		
+	public static String buildMessage(MessageType t, String roadName){		
+		return t.toString() + SEPARATOR + roadName;
+	}
+	
 	public static MessageType getMessageType(String content){
 		MessageType[] types = MessageType.values();
 		

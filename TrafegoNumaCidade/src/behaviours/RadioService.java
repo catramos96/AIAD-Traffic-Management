@@ -3,11 +3,6 @@ package behaviours;
 import java.util.ArrayList;
 
 import agents.Radio;
-import jade.core.Agent;
-import jade.domain.DFService;
-import jade.domain.FIPAException;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import repast.simphony.space.grid.Grid;
 import resources.MessagesResources;
@@ -38,23 +33,17 @@ public class RadioService extends CyclicBehaviour{
 			if(type.equals(MessagesResources.MessageType.TRANSIT) || 
 					type.equals(MessagesResources.MessageType.NO_TRANSIT)){
 				
+				System.out.println("Radio received: " + message.getContent());
+				
 				String content[] = message.getContent().split(MessagesResources.SEPARATOR);
 				String roadName = content[1];
 				
-				System.out.println("Radio received: " + content[0] + " on " + roadName);
-				
 				ArrayList<AID> aids = SpaceResources.getCarsAID(space);
 				
-				if(type.equals(MessagesResources.MessageType.TRANSIT)){
-					message.setContent(MessagesResources.MessageType.BLOCKED + 
-							MessagesResources.SEPARATOR +
-							roadName);
-				}
-				else{
-					message.setContent(MessagesResources.MessageType.UNBLOCKED + 
-							MessagesResources.SEPARATOR +
-							roadName);
-				}
+				if(type.equals(MessagesResources.MessageType.TRANSIT))
+					message.setContent(MessagesResources.buildMessage(MessageType.BLOCKED,roadName));
+				else
+					message.setContent(MessagesResources.buildMessage(MessageType.UNBLOCKED,roadName));
 				
 				//Warn the cars via radio
 				for(AID a : aids){
