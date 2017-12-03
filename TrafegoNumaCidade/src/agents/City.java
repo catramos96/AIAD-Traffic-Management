@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import cityStructure.Intersection;
 import cityStructure.CityMap;
 import cityStructure.Road;
+import cityTraffic.CityTrafficBuilder;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
 import resources.Resources.Direction;
@@ -24,13 +25,15 @@ public class City extends Agent{
 	/**
 	 * Constructor
 	 */
-	public City(Grid<Object> space, ContainerController container){
+	public City(Grid<Object> space, ContainerController container, String map_txt){
 		map = new CityMap();
+		map.load(map_txt);
+		
 		this.space = space;
 		this.container = container;
 		
 		/*Create semaphores in the intersections*/
-	    for(Intersection i : map.getIntersections()){
+	    for(Intersection i : map.getIntersections().values()){
 	    	if(i.getInRoads().size() > 1){
 				ArrayList<Point> controlPoints = new ArrayList<Point>();
 				

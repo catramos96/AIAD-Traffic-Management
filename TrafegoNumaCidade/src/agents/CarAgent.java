@@ -54,6 +54,20 @@ public class CarAgent extends Agent {
 		this.road = startRoad;
 	}
     
+    public CarAgent(Grid<Object> space,Point origin, Point destination, Road startRoad) 
+	{
+		this.space = space;
+		this.destination = destination;
+		this.position = origin;
+		this.map = new CityMap();
+		
+		//Inserir Rua
+		//TODO
+		//--Sem que as interseções tenham acesso às outras ruas
+		
+		this.road = startRoad;
+	}
+    
     //JADE RELATED
     @Override
     public void setup() {

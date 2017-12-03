@@ -27,13 +27,13 @@ public class AStar {
 		HashMap<Road, Integer> final_costs = new HashMap<Road,Integer>();
 		
 		//inits
-		for(Road r : map.getRoads()){
+		for(Road r : map.getRoads().values()){
 			costs.put(r, INFINITE);
 			final_costs.put(r, INFINITE);
 		}
 		
 		Road endRoad = null;
-		for(Road r : map.getRoads()){
+		for(Road r : map.getRoads().values()){
 			if(r.partOfRoad(destination)){
 				endRoad = r;
 				break;

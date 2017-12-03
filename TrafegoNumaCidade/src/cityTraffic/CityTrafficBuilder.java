@@ -3,6 +3,7 @@ import agents.CarAgent;
 import agents.City;
 import agents.Radio;
 import agents.RoadMonitor;
+import cityStructure.CityMap;
 import cityStructure.Road;
 import jade.core.AID;
 import jade.core.Profile;
@@ -65,8 +66,10 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		} else {
 			agentContainer = mainContainer;
 		}
-		
-		launchAgents();
+		CityMap map = new CityMap();
+		map.load("C:\\Users\\Catarina\\Documents\\Académico\\4º Ano\\AIAD\\AIAD-Traffic-Management\\Map.txt");
+		//System.out.println(CityTrafficBuilder.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "\\Map.txt");
+		//launchAgents();
 	}
 	
 	private void launchAgents() {
@@ -74,7 +77,10 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		schedule = new Schedule();
 		
 		try {
-			City city = new City(space,agentContainer);
+			//TMP
+			String map_txt = "C:\\Users\\Catarina\\Documents\\Académico\\4º Ano\\AIAD\\AIAD-Traffic-Management\\Map.txt";
+			
+			City city = new City(space,agentContainer,map_txt);
 			agentContainer.acceptNewAgent("city", city).start();
 			space.getAdder().add(space, city);
 			space.moveTo(city, 10, 10);
@@ -84,7 +90,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			agentContainer.acceptNewAgent("radio", radio).start();
 			
 			//create road monitors (transit)
-			for(Road r : city.getMap().getRoads()){
+			for(Road r : city.getMap().getRoads().values()){
 				RoadMonitor monitor = new RoadMonitor(r,space, radio);
 				agentContainer.acceptNewAgent("road monitor-" + r.getName(), monitor).start();
 				space.getAdder().add(space, monitor);
@@ -122,8 +128,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				destination = city.getRandomRoadPosition(endRoad);
 
 				//create car
-				//INICIALMENTE ELES CONHECEM A CIDADE TODA ---> city.getMap()
-				CarAgent car = new CarAgent(space, city.getMap(), origin,destination,startRoad);
+				CarAgent car = new CarAgent(space,origin,destination,startRoad);		//car doesn't know the cityMap (only the road he is in)
 				agentContainer.acceptNewAgent("CarAgent" + i, car).start();
 				space.getAdder().add(space, car);
 				car.setPosition(origin);
