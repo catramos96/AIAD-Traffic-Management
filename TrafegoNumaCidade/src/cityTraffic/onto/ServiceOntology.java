@@ -24,10 +24,10 @@ public class ServiceOntology extends BeanOntology {
 		
 		try {
 			// add all Concept, Predicate and AgentAction
-			add(ServiceProposal.class);
-			add(ServiceProposalRequest.class);
-			add(ServiceExecutionRequest.class);
-			add(ContractOutcome.class);
+			//add(ServiceProposal.class);
+			//add(ServiceProposalRequest.class);
+			//add(ServiceExecutionRequest.class);
+			//add(ContractOutcome.class);
 			add(Results.class);
 			
 		} catch(BeanOntologyException boe) {

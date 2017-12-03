@@ -12,8 +12,6 @@ public class Resources {
 	public static final int GreenLightTimeUnits = 3;
 	
 	public static final int YellowLightTimeUnits = 1;
-			
-	public static final Point Semaphore_Rest = new Point(0,0);
 	
 	public static int getLightTime(boolean isGreenActive){
 		

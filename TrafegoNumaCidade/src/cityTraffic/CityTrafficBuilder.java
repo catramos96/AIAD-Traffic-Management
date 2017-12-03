@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import agents.CarAgent;
 import agents.City;
-import algorithms.AStar;
-import cityStructure.CityMap;
+import agents.Radio;
+import agents.RoadMonitor;
 import cityStructure.Road;
 import jade.core.AID;
 import jade.core.Profile;
@@ -30,20 +30,18 @@ import jade.wrapper.StaleProxyException;
 
 public class CityTrafficBuilder extends RepastSLauncher {
 
-	private static int N_CARS = 20;
+	private static int N_CARS = 40;
 	
-	private static int N = 10;
-	private static int N_CONSUMERS = N;
-	private static int N_CONSUMERS_FILTERING_PROVIDERS = N;
+	//private static int N = 10;
+	//private static int N_CONSUMERS = N;
+	//private static int N_CONSUMERS_FILTERING_PROVIDERS = N;
 	
 	Grid<Object> space;
 	
 	ArrayList<CarAgent> cars = new ArrayList<CarAgent>();
 	
-	public static int FILTER_SIZE = 5; 
-	
-	
-	private int N_CONTRACTS = 100;
+	//public static int FILTER_SIZE = 5; 
+	//private int N_CONTRACTS = 100;
 	
 	public static final boolean USE_RESULTS_COLLECTOR = true;
 	
@@ -60,30 +58,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			}
 		}
 		return null;
-	}
-
-	public int getN() {
-		return N;
-	}
-
-	public void setN(int N) {
-		this.N = N;
-	}
-
-	public int getFILTER_SIZE() {
-		return FILTER_SIZE;
-	}
-
-	public void setFILTER_SIZE(int FILTER_SIZE) {
-		this.FILTER_SIZE = FILTER_SIZE;
-	}
-
-	public int getN_CONTRACTS() {
-		return N_CONTRACTS;
-	}
-
-	public void setN_CONTRACTS(int N_CONTRACTS) {
-		this.N_CONTRACTS = N_CONTRACTS;
 	}
 
 	@Override
@@ -117,20 +91,20 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			agentContainer.acceptNewAgent("city", city).start();
 			space.getAdder().add(space, city);
 			space.moveTo(city, 10, 10);
-			
-			//To test the algorithm of the shortest path
-			/*Road test_road = null;
-			for(Road r : city.getMap().getRoads()){
-				if(r.partOfRoad(new Point(4,20)))
-					test_road = r;
-			}
-			
-			ArrayList<Road> path = AStar.shortestPath(city.getMap(), test_road, new Point(4,20), new Point(19,14));
 
-			for(Road r : path){
-				System.out.println(r.getName());
-			}*/
 			
+			Radio radio = new Radio(space);
+			agentContainer.acceptNewAgent("radio", radio).start();
+			
+			//create road monitors (transit)
+			for(Road r : city.getMap().getRoads()){
+				RoadMonitor monitor = new RoadMonitor(r,space, radio);
+				agentContainer.acceptNewAgent("road monitor-" + r.getName(), monitor).start();
+				space.getAdder().add(space, monitor);
+				space.moveTo(monitor, r.getEndPoint().toArray());
+				
+				schedule.schedule(monitor);
+			}
 			// create cars
 			for (int i = 0; i < N_CARS; i++) {
 				int rnd_road;
@@ -150,7 +124,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 
 					//check if there are no cars at the location
 					for(int j = 0; j < i; j++){
-						if(SpaceResources.hasCar(space, origin))
+						if(SpaceResources.hasCar(space, origin) != null)
 							position_ok = false;
 					}
 				}
