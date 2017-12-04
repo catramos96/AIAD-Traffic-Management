@@ -12,6 +12,7 @@ public class Road{
 	private Intersection endIntersection = null;
 	private Resources.Direction direction;
 	private String name = new String();
+	private boolean blocked = false;
 	
 	private int length = 1;		//= weight in Dijkstra
 	
@@ -157,5 +158,17 @@ public class Road{
 	
 	public int getLength(){
 		return length;
+	}
+	
+	public void blocked(){
+		blocked = true;
+	}
+	
+	public void unblocked(){
+		blocked = false;
+	}
+	
+	public boolean isBlocked(){
+		return blocked;
 	}
 }

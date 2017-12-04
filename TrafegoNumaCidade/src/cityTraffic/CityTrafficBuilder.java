@@ -129,10 +129,10 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				CarAgent car = null;
 				
 				//Don't know the city
-				if(i < 16)
+				/*if(i < 16)
 					car = new CarAgent(space,new CityMap(),origin,destination,startRoad,true);
 				//Knows the city
-				else
+				else*/
 					car = new CarAgent(space,city.getMap(),origin,destination,startRoad,false);		
 
 					

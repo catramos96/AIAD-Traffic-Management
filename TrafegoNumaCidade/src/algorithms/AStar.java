@@ -6,6 +6,7 @@ import java.util.HashMap;
 import cityStructure.CityMap;
 import cityStructure.Road;
 import resources.Point;
+import resources.Resources;
 
 /**
  * Class that implements the A* algorithm when searching for the best shortest
@@ -76,7 +77,13 @@ public class AStar {
 					if(!costs.containsKey(next))
 						return path;
 						
-					int cost_next = costs.get(current) + current.getEndIntersection().getLength() + next.getLength();
+					//If the road has transit, then it has a penalty to the costs
+					int transitPenalty = 0;
+					
+					if(next.isBlocked())
+						transitPenalty = Resources.transitPenaltyRatio * next.getLength();
+						
+					int cost_next = costs.get(current) + current.getEndIntersection().getLength() + next.getLength() + transitPenalty;
 					
 					if(cost_next < costs.get(next)){
 						cameFrom.put(next, current);

@@ -26,8 +26,6 @@ public class LearnMap extends CyclicBehaviour{
 		//If current road is unknown
 		if(!knowledge.getRoads().containsKey(currentRoad.getName())){
 			
-			//System.out.println("Discovered Road " + currentRoad.getName());
-			
 			//saves in knowledge
 			knowledge.getRoads().put(currentRoad.getName(),currentRoad);
 			
@@ -35,7 +33,6 @@ public class LearnMap extends CyclicBehaviour{
 				//if intersection is unknown then it's saved
 				if(!knowledge.getIntersections().containsKey(i1.getName())){
 					knowledge.getIntersections().put(i1.getName(), i1);
-					//System.out.println("Discovered Intersection " + i1.getName());
 				}
 				//or updated with the current road
 				else
@@ -46,7 +43,6 @@ public class LearnMap extends CyclicBehaviour{
 				//if intersection is unknown then it's saved
 				if(!knowledge.getIntersections().containsKey(i2.getName())){
 					knowledge.getIntersections().put(i2.getName(), i2);
-					//System.out.println("Discovered Intersection " + i2.getName());
 				}
 				//or updated with the current road
 				else

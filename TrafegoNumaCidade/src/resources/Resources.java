@@ -5,6 +5,8 @@ public class Resources {
 	public static final int lightCheck = 1000;
 	public static final int carVelocity = 700;
 	
+	public static final int transitPenaltyRatio = 3;
+	
 	/*
 	 * Semaphore
 	 */

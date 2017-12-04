@@ -2,6 +2,8 @@ package behaviours;
 
 import java.util.ArrayList;
 
+import com.jgoodies.common.internal.Messages;
+
 import agents.CarAgent;
 import algorithms.AStar;
 import cityStructure.Road;
@@ -27,7 +29,7 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 		
 		if(message != null){
 			MessageType type = MessagesResources.getMessageType(message.getContent());
-			System.out.println("Car " + car.getLocalName() + " received: " + message.getContent());
+			//System.out.println("Car " + car.getLocalName() + " received: " + message.getContent());
 
 			if(type.equals(MessagesResources.MessageType.GET_PATH)){
 				
@@ -72,10 +74,42 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 					
 					if(foundRoad){
 						car.setJorney(route);
-						System.out.println("FOUND ROUTE");
+						//System.out.println("FOUND ROUTE");
 					}
 				}
 				
+			}
+			else if(type.equals(MessagesResources.MessageType.BLOCKED)){
+				String roadName = message.getContent().split(MessagesResources.SEPARATOR)[1];
+				
+				if(car.getCityKnowledge().getRoads().containsKey(roadName))
+					car.getCityKnowledge().getRoads().get(roadName).blocked();
+				
+				if(car.getJorney().contains(roadName)){
+					ArrayList<String> jorney = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestination());
+					
+					if(jorney.size() > 0){
+						car.setJorney(jorney);
+						car.jorneyConsume();//consumes the first road -> current road
+						System.out.println("Road was blocked got new jorney");
+					}
+				}
+			}
+			else if(type.equals(MessagesResources.MessageType.UNBLOCKED)){
+				String roadName = message.getContent().split(MessagesResources.SEPARATOR)[1];
+				
+				if(car.getCityKnowledge().getRoads().containsKey(roadName))
+					car.getCityKnowledge().getRoads().get(roadName).unblocked();
+				
+				if(!car.getJorney().contains(roadName)){
+					ArrayList<String> jorney = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestination());
+					
+					if(jorney.size() > 0){
+						car.setJorney(jorney);
+						car.jorneyConsume();//consumes the first road -> current road
+						System.out.println("Road was unblocked got new jorney");
+					}
+				}
 			}
 		}
 	}
