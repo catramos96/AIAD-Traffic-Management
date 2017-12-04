@@ -15,7 +15,7 @@ comunicação com outros automóveis, ou via rádio.
 
     * Implementação do Rádio **Check**
     * Algoritmo para shortest path **Check**
-    * Comunicação com outros automóveis
+    * Comunicação com outros automóveis **Check**
     * Outros Behaviours ?
  
  * Devem ser testadas diferentes configurações, tendo em conta zonas ou direções de maior tráfego, populações de automóveis com diferentes módulos de decisão, agentes BDI, etc. 
