@@ -17,9 +17,16 @@ public class AStar {
 	
 	public static int INFINITE = 999999;
 	
-	public static ArrayList<Road> shortestPath(CityMap map, Road startRoad, Point destination){
+	/**
+	 * Return the shortest path between a startRoad and its destination
+	 * @param map
+	 * @param startRoad
+	 * @param destination
+	 * @return
+	 */
+	public static ArrayList<String> shortestPath(CityMap map, Road startRoad, Point destination){
 		
-		ArrayList<Road> path = new ArrayList<Road>();
+		ArrayList<String> path = new ArrayList<String>();
 		ArrayList<Road> evaluatedSet = new ArrayList<Road>();		
 		ArrayList<Road> toEvaluateSet = new ArrayList<Road>();
 		HashMap<Road, Road> cameFrom = new HashMap<Road,Road>();
@@ -27,13 +34,13 @@ public class AStar {
 		HashMap<Road, Integer> final_costs = new HashMap<Road,Integer>();
 		
 		//inits
-		for(Road r : map.getRoads()){
+		for(Road r : map.getRoads().values()){
 			costs.put(r, INFINITE);
 			final_costs.put(r, INFINITE);
 		}
 		
 		Road endRoad = null;
-		for(Road r : map.getRoads()){
+		for(Road r : map.getRoads().values()){
 			if(r.partOfRoad(destination)){
 				endRoad = r;
 				break;
@@ -65,6 +72,10 @@ public class AStar {
 					if(!toEvaluateSet.contains(next))
 						toEvaluateSet.add(next);
 					
+					//failure
+					if(!costs.containsKey(next))
+						return path;
+						
 					int cost_next = costs.get(current) + current.getEndIntersection().getLength() + next.getLength();
 					
 					if(cost_next < costs.get(next)){
@@ -84,14 +95,14 @@ public class AStar {
 		return path;
 	}
 	
-	private static ArrayList<Road> buildPath(HashMap<Road,Road> cameFrom, Road last){
-		ArrayList<Road> path = new ArrayList<Road>();
+	private static ArrayList<String> buildPath(HashMap<Road,Road> cameFrom, Road last){
+		ArrayList<String> path = new ArrayList<String>();
 		
-		path.add(last);
+		path.add(last.getName());
 		
 		while(cameFrom.containsKey(last)){
 			last = cameFrom.get(last);
-			path.add(0, last);
+			path.add(0, last.getName());
 		}
 		
 		return path;

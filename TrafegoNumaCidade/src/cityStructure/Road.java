@@ -2,6 +2,7 @@ package cityStructure;
 import cityStructure.Intersection.EntryType;
 import resources.Point;
 import resources.Resources;
+import resources.Resources.Direction;
 
 public class Road{
 	private Point startPoint;	//Out road of an intersection
@@ -14,6 +15,14 @@ public class Road{
 	
 	private int length = 1;		//= weight in Dijkstra
 	
+	/**
+	 * Constructor
+	 * @param start
+	 * @param end
+	 * @param i1
+	 * @param i2
+	 * @param name
+	 */
 	public Road(Point start, Point end, Intersection i1, Intersection i2, String name){
 		this.name = name;
 		startPoint = start;
@@ -55,6 +64,38 @@ public class Road{
 		else{
 			System.out.println("Intersection insertion incorrect");
 		}
+	}
+	
+	/**
+	 * Constructor for Perception Road
+	 * @param start
+	 * @param end
+	 * @param endInt
+	 * @param d
+	 * @param length
+	 * @param name
+	 */
+	private Road(Point start,Point end, Intersection startInt, Intersection endInt, Direction d, int length, String name){
+		this.name = name;
+		this.startPoint = start;
+		this.endPoint = end;
+		this.startIntersection = startInt;
+		this.endIntersection = endInt;
+		this.direction = d;
+		this.length = length;
+		
+		endIntersection.insertRoad(this);
+	}
+	
+	/**
+	 * Returns the perception of the road by the
+	 * point of view of a car driver
+	 * @return Road
+	 */
+	public Road getRoadPerception(){
+		Intersection startInt = startIntersection.getIntersectionPerception();
+		Intersection endInt = endIntersection.getIntersectionPerception();
+		return new Road(startPoint,endPoint,startInt,endInt,direction,length,name);
 	}
 	
 	/**

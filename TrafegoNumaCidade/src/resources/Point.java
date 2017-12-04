@@ -34,5 +34,15 @@ public class Point {
 	public String print(){
 		return new String("[" + x + "," + y + "]");
 	}
+	
+	public static Point getPoint(String print){
+		print = print.replace("[", "");
+		print = print.replace("]", "");
+		
+		String coord[] = print.split(",");
+		
+		Point p = new Point(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
+		return p;
+	}
 }
 

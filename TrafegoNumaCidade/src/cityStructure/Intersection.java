@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import agents.SemaphoreManager;
+import cityStructure.Intersection.CellEntry;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
 import sajas.wrapper.ContainerController;
@@ -66,17 +67,39 @@ public abstract class Intersection{
 		length = entries.keySet().size();
 	}
 	
-	public abstract ArrayList<Point> getRouteToRoad(Road roadEntry,Road roadOut);
+	/**
+	 * Constructor for Intersection Perception
+	 * @param entries
+	 * @param length
+	 * @param name
+	 */
+	protected Intersection(HashMap<Point, HashMap<CellEntry, Road>> entries, int length, String name){
+		this.entries = entries;
+		this.length = length;
+		this.name = name;
+	}
+	
+	public abstract ArrayList<Point> getRouteToRoad(String roadEntry,String roadOut);
+	
+	public abstract Intersection getIntersectionPerception();
 
 	/*
 	 * GETS & SETS
 	 */
-	public boolean isOutRoad(Road r){
+	public Road isOutRoad(String roadName){
 		for(int i = 0; i < outRoads.size(); i++){
-			if(outRoads.get(i).equals(r))
-				return true;
+			if(outRoads.get(i).getName().equals(roadName))
+				return outRoads.get(i);
 		}
-		return false;
+		return null;
+	}
+	
+	public Road isInRoad(String roadName){
+		for(int i = 0; i < inRoads.size(); i++){
+			if(inRoads.get(i).getName().equals(roadName))
+				return inRoads.get(i);
+		}
+		return null;
 	}
 	
 	public EntryType insertRoad(Road r){
@@ -192,10 +215,36 @@ public abstract class Intersection{
 		return length;
 	}
 	
+	/**
+	 * Method that returns the entries of the intersection
+	 * without any roads associated
+	 * @return
+	 */
+	public HashMap<Point,HashMap<CellEntry,Road>> getCleanedEntries(){
+		HashMap<Point, HashMap<CellEntry, Road>> tmp = new HashMap<Point, HashMap<CellEntry, Road>>();
+		
+		//Remove the roads associated
+		for(Point area: entries.keySet()){
+			
+			HashMap<CellEntry, Road> tmp2 = new HashMap<CellEntry, Road>();
+			
+			for(CellEntry entry : entries.get(area).keySet()){
+				tmp2.put(entry, null);
+			}
+			tmp.put(area, tmp2);
+		}
+		
+		return tmp;
+	}
+	
 	//getEntry
 	public Point getOneEntry(){
 		for(Point p : entries.keySet())
 			return p;
 		return null;
+	}
+	
+	public String getName(){
+		return name;
 	}
 }

@@ -1,6 +1,7 @@
 package cityStructure;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import resources.Point;
 import resources.Resources;
@@ -14,14 +15,39 @@ public class ComplexIntersection extends Intersection{
 		super(area, name);
 		loadCircuit(area);
 	}
-
+	
+	/**
+	 * Constructor
+	 * Creates a new ComplexIntersection equal to ci
+	 * but withour any roads associated
+	 * @param entries
+	 * @param name
+	 * @param circuit
+	 * @param length
+	 */
+	private ComplexIntersection(ComplexIntersection ci) {
+		super(ci.getCleanedEntries(),ci.getLength(),ci.getName());
+		this.circuit = ci.getCircuit();
+	}
+	
 	@Override
-	public ArrayList<Point> getRouteToRoad(Road roadEntry, Road roadOut) {
+	public ComplexIntersection getIntersectionPerception(){
+		return new ComplexIntersection(this);
+	}
+	
+	@Override
+	public ArrayList<Point> getRouteToRoad(String roadEntryName, String roadOutName) {
 		
 		ArrayList<Point> route = new ArrayList<Point>();
 		
-		Point areaOfEntry = getAreaPointOfEntry(roadEntry.getEndPoint());
-		Point areaOfOut = getAreaPointOfEntry(roadOut.getStartPoint());
+		Road in = isInRoad(roadEntryName);
+		Road out = isOutRoad(roadOutName);
+		
+		if(in == null || out == null)
+			return route;
+		
+		Point areaOfEntry = getAreaPointOfEntry(in.getEndPoint());
+		Point areaOfOut = getAreaPointOfEntry(out.getStartPoint());
 		
 		if(areaOfEntry == null || areaOfOut == null)
 			return route;
@@ -54,7 +80,7 @@ public class ComplexIntersection extends Intersection{
 			route.add(lastPoint);
 		}while(!lastPoint.equals(areaOfOut));
 		
-		route.add(roadOut.getStartPoint());
+		route.add(out.getStartPoint());
 		
 		return route;
 	}
@@ -111,5 +137,8 @@ public class ComplexIntersection extends Intersection{
 		}
 		
 	}
-
+	
+	public ArrayList<Point> getCircuit(){
+		return circuit;
+	}
 }

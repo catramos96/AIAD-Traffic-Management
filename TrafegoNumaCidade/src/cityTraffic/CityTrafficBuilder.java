@@ -3,6 +3,7 @@ import agents.CarAgent;
 import agents.City;
 import agents.Radio;
 import agents.RoadMonitor;
+import cityStructure.CityMap;
 import cityStructure.Road;
 import jade.core.AID;
 import jade.core.Profile;
@@ -74,7 +75,10 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		schedule = new Schedule();
 		
 		try {
-			City city = new City(space,agentContainer);
+			//TMP
+			String map_txt = "C:\\Users\\Catarina\\Documents\\Académico\\4º Ano\\AIAD\\AIAD-Traffic-Management\\Map.txt";
+			
+			City city = new City(space,agentContainer,map_txt);
 			agentContainer.acceptNewAgent("city", city).start();
 			space.getAdder().add(space, city);
 			space.moveTo(city, 10, 10);
@@ -84,7 +88,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			agentContainer.acceptNewAgent("radio", radio).start();
 			
 			//create road monitors (transit)
-			for(Road r : city.getMap().getRoads()){
+			for(Road r : city.getMap().getRoads().values()){
 				RoadMonitor monitor = new RoadMonitor(r,space, radio);
 				agentContainer.acceptNewAgent("road monitor-" + r.getName(), monitor).start();
 				space.getAdder().add(space, monitor);
@@ -104,7 +108,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				while(!position_ok){
 					
 					rnd_road = (int)(Math.random() * city.getMap().getRoads().size());
-					startRoad = city.getMap().getRoads().get(rnd_road);
+					startRoad = (Road) city.getMap().getRoads().values().toArray()[rnd_road];
 					origin = city.getRandomRoadPosition(startRoad);
 					
 					position_ok = true;
@@ -118,12 +122,20 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				
 				//Search Destination Random
 				rnd_road = (int)(Math.random() * city.getMap().getRoads().size());
-				endRoad = city.getMap().getRoads().get(rnd_road);
+				endRoad = (Road) city.getMap().getRoads().values().toArray()[rnd_road];
 				destination = city.getRandomRoadPosition(endRoad);
 
 				//create car
-				//INICIALMENTE ELES CONHECEM A CIDADE TODA ---> city.getMap()
-				CarAgent car = new CarAgent(space, city.getMap(), origin,destination,startRoad);
+				CarAgent car = null;
+				
+				//Don't know the city
+				if(i < 16)
+					car = new CarAgent(space,new CityMap(),origin,destination,startRoad,true);
+				//Knows the city
+				else
+					car = new CarAgent(space,city.getMap(),origin,destination,startRoad,false);		
+
+					
 				agentContainer.acceptNewAgent("CarAgent" + i, car).start();
 				space.getAdder().add(space, car);
 				car.setPosition(origin);

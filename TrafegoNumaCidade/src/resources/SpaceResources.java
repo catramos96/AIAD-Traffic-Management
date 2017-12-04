@@ -59,7 +59,7 @@ public class SpaceResources {
 	
 	@SuppressWarnings("unchecked")
 	public static <T> T searchForObject(Grid<Object> space, Point location, Class<T> Class){
-	
+		
 		for(Object o : space.getObjectsAt(location.toArray())){
 			if(o.getClass().equals(Class)){
 				return (T) o;
