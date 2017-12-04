@@ -1,6 +1,7 @@
 package cityStructure;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import resources.Point;
 import resources.Resources;
@@ -14,7 +15,26 @@ public class ComplexIntersection extends Intersection{
 		super(area, name);
 		loadCircuit(area);
 	}
-
+	
+	/**
+	 * Constructor
+	 * Creates a new ComplexIntersection equal to ci
+	 * but withour any roads associated
+	 * @param entries
+	 * @param name
+	 * @param circuit
+	 * @param length
+	 */
+	private ComplexIntersection(ComplexIntersection ci) {
+		super(ci.getCleanedEntries(),ci.getLength(),ci.getName());
+		this.circuit = ci.getCircuit();
+	}
+	
+	@Override
+	public ComplexIntersection getIntersectionPerception(){
+		return new ComplexIntersection(this);
+	}
+	
 	@Override
 	public ArrayList<Point> getRouteToRoad(Road roadEntry, Road roadOut) {
 		
@@ -111,5 +131,8 @@ public class ComplexIntersection extends Intersection{
 		}
 		
 	}
-
+	
+	public ArrayList<Point> getCircuit(){
+		return circuit;
+	}
 }

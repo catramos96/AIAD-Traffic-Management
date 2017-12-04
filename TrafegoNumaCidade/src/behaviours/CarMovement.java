@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import agents.CarAgent;
 import algorithms.AStar;
+import cityStructure.Intersection;
 import cityStructure.Road;
 import resources.Point;
 import resources.Resources;
@@ -26,9 +27,9 @@ public class CarMovement extends TickerBehaviour{
 		super(car,time);
 		this.car = car;
 		
-		ArrayList<Road> j = AStar.shortestPath(car.getMap(), car.getRoad(), car.getDestination());
-		j.remove(0);
-		car.setJorney(j);	
+		ArrayList<Road> j = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestination());
+		car.setJorney(j);
+		car.jorneyConsume();
 	}
 
 	@Override
@@ -76,19 +77,25 @@ public class CarMovement extends TickerBehaviour{
 							valid = false;
 						
 						if(!valid){
-							int road_index = (int) (Math.random() * car.getIntersection().getOutRoads().size());
-							nextRoad = car.getIntersection().getOutRoads().get(road_index);
-							intersectionRoute = car.getIntersection().getRouteToRoad(car.getRoad(), nextRoad);
+							//randomly chooses a road out (real city structure)
+
+							String intName = car.getIntersection().getName();
+							Intersection realDataInt = car.getMap().getIntersections().get(intName);
+							
+							int road_index = (int) (Math.random() * realDataInt.getOutRoads().size());
+							nextRoad = realDataInt.getOutRoads().get(road_index);
+							intersectionRoute = realDataInt.getRouteToRoad(car.getRoad(), nextRoad);
 						}
 						
 						car.setRoad(nextRoad);
 						
 						//Calculate a new path starting on the nextRoad in case
 						//the current path is not valid
+						//using the their city knowledge
 						if(!valid){
-							ArrayList<Road> j = AStar.shortestPath(car.getMap(), car.getRoad(), car.getDestination());
-							j.remove(0);
+							ArrayList<Road> j = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestination());
 							car.setJorney(j);	
+							car.jorneyConsume();
 						}
 						
 						passageType = SpaceResources.PassageType.Intersection;

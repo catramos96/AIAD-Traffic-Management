@@ -1,15 +1,29 @@
 package cityStructure;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import resources.Point;
 
 public class SimpleIntersection extends Intersection{
 		
-
-
 	public SimpleIntersection(Point area, String name) {
 		super(area, name);
+	}
+
+	/**
+	 * Constructor
+	 * Creates a new SimpleIntersection equal to i
+	 * but withour any roads associated
+	 * @param i
+	 */
+	private SimpleIntersection(SimpleIntersection i){
+		super(i.getCleanedEntries(),i.getLength(),i.getName());
+	}
+	
+	@Override
+	public SimpleIntersection getIntersectionPerception(){
+		return new SimpleIntersection(this);
 	}
 
 	@Override

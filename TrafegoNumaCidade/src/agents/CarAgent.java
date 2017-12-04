@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import behaviours.CarMessagesReceiver;
 import behaviours.CarMovement;
+import behaviours.LearnMap;
 import cityStructure.CityMap;
 import cityStructure.Intersection;
 import cityStructure.Road;
@@ -28,7 +29,8 @@ public class CarAgent extends Agent {
 	private Intersection intersection = null;
 	
 	//Origin and Destination
-	private CityMap map;
+	private CityMap cityKnowledge;				//What the agent knows about the city
+	private CityMap map;						//City structure (Full)
 	private Point position;
 	private Point destination;
 	private ArrayList<Road> jorney = new ArrayList<Road>();
@@ -38,6 +40,8 @@ public class CarAgent extends Agent {
     private Codec codec;
     private Ontology serviceOntology;
     
+    private boolean knowsTheCity = false;
+    
     /**
      * Constructor
      * @param space
@@ -45,27 +49,20 @@ public class CarAgent extends Agent {
      * @param origin
      * @param destination
      */
-    public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad) 
+    public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad, boolean knowsTheCity) 
 	{
 		this.space = space;
 		this.destination = destination;
 		this.position = origin;
 		this.map = map;			
 		this.road = startRoad;
-	}
-    
-    public CarAgent(Grid<Object> space,Point origin, Point destination, Road startRoad) 
-	{
-		this.space = space;
-		this.destination = destination;
-		this.position = origin;
-		this.map = new CityMap();
 		
-		//Inserir Rua
-		//TODO
-		//--Sem que as interseções tenham acesso às outras ruas
+		this.knowsTheCity = knowsTheCity;
 		
-		this.road = startRoad;
+		if(knowsTheCity)
+			cityKnowledge = map;
+		else
+			cityKnowledge = new CityMap();
 	}
     
     //JADE RELATED
@@ -93,6 +90,9 @@ public class CarAgent extends Agent {
         
         addBehaviour(new CarMessagesReceiver(this));
         addBehaviour(new CarMovement(this, Resources.carVelocity));
+        
+        if(!knowsTheCity)
+        	addBehaviour(new LearnMap(this));
     }
 
     @Override
@@ -159,7 +159,8 @@ public class CarAgent extends Agent {
 	}
     
 	public void jorneyConsume(){
-		jorney.remove(0);
+		if(jorney.size() > 0)
+			jorney.remove(0);
 	}
 	
 	public Intersection getIntersection(){
@@ -168,5 +169,9 @@ public class CarAgent extends Agent {
 	
 	public void setIntersection(Intersection i){
 		intersection = i;
+	}
+	
+	public CityMap getCityKnowledge(){
+		return cityKnowledge;
 	}
 }
