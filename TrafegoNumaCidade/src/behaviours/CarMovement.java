@@ -89,10 +89,20 @@ public class CarMovement extends TickerBehaviour{
 						
 						//if the previous jorney wasn't valid
 						if(!valid){
-							//randomly chooses a road out (of the intersection he is in) and calculates the route for it
+							//chooses a road not visited before
+							//if it visited all roads, then the next road would be random
+							ArrayList<Road> unvisitedRoads = car.getIntersection().getOutRoads();
 							
-							int road_index = (int) (Math.random() * car.getIntersection().getOutRoads().size());
-							nextRoad = car.getIntersection().getOutRoads().get(road_index);
+							for(Road r : unvisitedRoads){
+								if(car.getCityKnowledge().getRoads().containsKey(r))
+									unvisitedRoads.remove(r);
+							}
+							
+							if(unvisitedRoads.size() == 0)
+								unvisitedRoads = car.getIntersection().getOutRoads();
+							
+							int road_index = (int) (Math.random() * unvisitedRoads.size());
+							nextRoad = unvisitedRoads.get(road_index);
 							intersectionRoute = car.getIntersection().getRouteToRoad(car.getRoad().getName(), nextRoad.getName());
 						}
 						
@@ -105,7 +115,7 @@ public class CarMovement extends TickerBehaviour{
 							//calculate the path to the destination based on the knowledge he haves
 							ArrayList<String> j = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestination());
 							car.setJorney(j);
-							car.jorneyConsume();		//current road
+							car.jorneyConsume();		
 						}
 						
 						//Perform the intersection route
