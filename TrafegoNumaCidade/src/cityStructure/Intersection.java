@@ -79,19 +79,27 @@ public abstract class Intersection{
 		this.name = name;
 	}
 	
-	public abstract ArrayList<Point> getRouteToRoad(Road roadEntry,Road roadOut);
+	public abstract ArrayList<Point> getRouteToRoad(String roadEntry,String roadOut);
 	
 	public abstract Intersection getIntersectionPerception();
 
 	/*
 	 * GETS & SETS
 	 */
-	public boolean isOutRoad(Road r){
+	public Road isOutRoad(String roadName){
 		for(int i = 0; i < outRoads.size(); i++){
-			if(outRoads.get(i).equals(r))
-				return true;
+			if(outRoads.get(i).getName().equals(roadName))
+				return outRoads.get(i);
 		}
-		return false;
+		return null;
+	}
+	
+	public Road isInRoad(String roadName){
+		for(int i = 0; i < inRoads.size(); i++){
+			if(inRoads.get(i).getName().equals(roadName))
+				return inRoads.get(i);
+		}
+		return null;
 	}
 	
 	public EntryType insertRoad(Road r){

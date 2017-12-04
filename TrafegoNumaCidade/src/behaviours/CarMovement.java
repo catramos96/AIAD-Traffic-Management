@@ -27,9 +27,10 @@ public class CarMovement extends TickerBehaviour{
 		super(car,time);
 		this.car = car;
 		
-		ArrayList<Road> j = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestination());
+		//calculate the path to the destination based on the knowledge he haves
+		ArrayList<String> j = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestination());
 		car.setJorney(j);
-		car.jorneyConsume();
+		car.jorneyConsume();	
 	}
 
 	@Override
@@ -62,48 +63,60 @@ public class CarMovement extends TickerBehaviour{
 						Road nextRoad = null;
 						boolean valid = true;
 						
+						//follow the jorney
 						if(car.getJorney().size() != 0){
-							nextRoad = car.getJorney().get(0);
-							car.jorneyConsume();
-							intersectionRoute = car.getIntersection().getRouteToRoad(car.getRoad(), nextRoad);
 							
-							//no route found
-							if(intersectionRoute.size() == 0){
+							//checks if the next road to follow is a road out of the intersection (real world)
+							nextRoad = car.getIntersection().isOutRoad(car.getJorney().get(0));
+							
+							if(nextRoad == null)
 								valid = false;
-								car.setJorney(new ArrayList<Road>());
+							else{
+								car.jorneyConsume();
+								
+								//get route to go to the road
+								intersectionRoute = car.getIntersection().getRouteToRoad(car.getRoad().getName(), nextRoad.getName());
+								
+								//no valid route
+								if(intersectionRoute.size() == 0){
+									valid = false;
+									car.setJorney(new ArrayList<String>());
+								}
 							}
 						}
 						else
 							valid = false;
 						
+						//if the previous jorney wasn't valid
 						if(!valid){
-							//randomly chooses a road out (real city structure)
-
-							String intName = car.getIntersection().getName();
-							Intersection realDataInt = car.getMap().getIntersections().get(intName);
+							//randomly chooses a road out (of the intersection he is in) and calculates the route for it
 							
-							int road_index = (int) (Math.random() * realDataInt.getOutRoads().size());
-							nextRoad = realDataInt.getOutRoads().get(road_index);
-							intersectionRoute = realDataInt.getRouteToRoad(car.getRoad(), nextRoad);
+							int road_index = (int) (Math.random() * car.getIntersection().getOutRoads().size());
+							nextRoad = car.getIntersection().getOutRoads().get(road_index);
+							intersectionRoute = car.getIntersection().getRouteToRoad(car.getRoad().getName(), nextRoad.getName());
 						}
 						
+						//update the current road
 						car.setRoad(nextRoad);
 						
-						//Calculate a new path starting on the nextRoad in case
-						//the current path is not valid
-						//using the their city knowledge
+						//if previous jorney wasn't valid
 						if(!valid){
-							ArrayList<Road> j = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestination());
-							car.setJorney(j);	
-							car.jorneyConsume();
+							
+							//calculate the path to the destination based on the knowledge he haves
+							ArrayList<String> j = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestination());
+							car.setJorney(j);
+							car.jorneyConsume();		//current road
 						}
 						
+						//Perform the intersection route
 						passageType = SpaceResources.PassageType.Intersection;
 					}
 				}
+				//Continue in the current road
 				else{
 					Point next_position = Resources.incrementDirection(car.getRoad().getDirection(), pos);
 
+					//Only advance if there is no car in the next position
 					if(SpaceResources.hasCar(car.getSpace(), next_position) == null)
 						car.setPosition(next_position);
 				}
@@ -111,13 +124,15 @@ public class CarMovement extends TickerBehaviour{
 			
 			if(passageType.equals(PassageType.Intersection)){	
 				
+				//Follow the route to get out of the intersection
 				Point next_position = intersectionRoute.get(0);
 
+				//Only advance if there is no car in the next position
 				if(SpaceResources.hasCar(car.getSpace(), next_position) == null){
-					
 					car.setPosition(next_position);
 					intersectionRoute.remove(0);
 					
+					//if out of the intersection -> continue in the road
 					if(intersectionRoute.size()== 0)
 						passageType = PassageType.Road;
 				}

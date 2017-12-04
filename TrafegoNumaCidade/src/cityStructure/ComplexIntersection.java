@@ -36,12 +36,18 @@ public class ComplexIntersection extends Intersection{
 	}
 	
 	@Override
-	public ArrayList<Point> getRouteToRoad(Road roadEntry, Road roadOut) {
+	public ArrayList<Point> getRouteToRoad(String roadEntryName, String roadOutName) {
 		
 		ArrayList<Point> route = new ArrayList<Point>();
 		
-		Point areaOfEntry = getAreaPointOfEntry(roadEntry.getEndPoint());
-		Point areaOfOut = getAreaPointOfEntry(roadOut.getStartPoint());
+		Road in = isInRoad(roadEntryName);
+		Road out = isOutRoad(roadOutName);
+		
+		if(in == null || out == null)
+			return route;
+		
+		Point areaOfEntry = getAreaPointOfEntry(in.getEndPoint());
+		Point areaOfOut = getAreaPointOfEntry(out.getStartPoint());
 		
 		if(areaOfEntry == null || areaOfOut == null)
 			return route;
@@ -74,7 +80,7 @@ public class ComplexIntersection extends Intersection{
 			route.add(lastPoint);
 		}while(!lastPoint.equals(areaOfOut));
 		
-		route.add(roadOut.getStartPoint());
+		route.add(out.getStartPoint());
 		
 		return route;
 	}

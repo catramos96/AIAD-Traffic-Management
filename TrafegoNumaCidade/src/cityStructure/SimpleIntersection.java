@@ -27,12 +27,14 @@ public class SimpleIntersection extends Intersection{
 	}
 
 	@Override
-	public ArrayList<Point> getRouteToRoad(Road roadEntry, Road roadOut) {
+	public ArrayList<Point> getRouteToRoad(String roadInName, String roadOutName) {
 		ArrayList<Point> route = new ArrayList<Point>();
+		Road out = isOutRoad(roadOutName);
+		Road in = isInRoad(roadInName);
 		
-		if(isOutRoad(roadOut)){
+		if(out != null && in !=null){
 			route.add(getArea());
-			route.add(roadOut.getStartPoint());
+			route.add(out.getStartPoint());
 		}
 		
 		return route;

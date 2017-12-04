@@ -1,6 +1,5 @@
 package agents;
 
-import jade.content.lang.Codec;
 import jade.content.lang.sl.SLCodec;
 import jade.content.onto.Ontology;
 import repast.simphony.space.grid.Grid;
@@ -15,6 +14,7 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 import java.util.ArrayList;
 
+import behaviours.AskDirections;
 import behaviours.CarMessagesReceiver;
 import behaviours.CarMovement;
 import behaviours.LearnMap;
@@ -25,45 +25,34 @@ import cityTraffic.onto.ServiceOntology;
 
 public class CarAgent extends Agent {
 
-	private Road road = null;
-	private Intersection intersection = null;
+	private Road road = null;							//Current road he is in (real world)
+	private Intersection intersection = null;			//Latest intersection (real world)
 	
 	//Origin and Destination
-	private CityMap cityKnowledge;				//What the agent knows about the city
-	private CityMap map;						//City structure (Full)
+	private CityMap cityKnowledge;						//What the agent knows about the city -> calculate the jorney to the destination
 	private Point position;
 	private Point destination;
-	private ArrayList<Road> jorney = new ArrayList<Road>();
+	private ArrayList<String> jorney = new ArrayList<String>();	//jorney to reach the destination (composed by the names of the roads to follow)
 
-	private Grid<Object> space;
+	private Grid<Object> space = null;
     
-    private Codec codec;
+    private SLCodec codec;
     private Ontology serviceOntology;
     
-    private boolean knowsTheCity = false;
+    private boolean enableCityLearning = false;
     
-    /**
-     * Constructor
-     * @param space
-     * @param map
-     * @param origin
-     * @param destination
-     */
-    public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad, boolean knowsTheCity) 
+    public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad,boolean enableCityLearning) 
 	{
 		this.space = space;
 		this.destination = destination;
 		this.position = origin;
-		this.map = map;			
 		this.road = startRoad;
 		
-		this.knowsTheCity = knowsTheCity;
+		this.enableCityLearning = enableCityLearning;
 		
-		if(knowsTheCity)
-			cityKnowledge = map;
-		else
-			cityKnowledge = new CityMap();
+		this.cityKnowledge = map;
 	}
+    
     
     //JADE RELATED
     @Override
@@ -91,8 +80,10 @@ public class CarAgent extends Agent {
         addBehaviour(new CarMessagesReceiver(this));
         addBehaviour(new CarMovement(this, Resources.carVelocity));
         
-        if(!knowsTheCity)
+        if(enableCityLearning){
         	addBehaviour(new LearnMap(this));
+        	addBehaviour(new AskDirections(this,5000));
+        }
     }
 
     @Override
@@ -109,10 +100,6 @@ public class CarAgent extends Agent {
      * GETS & SETS
      */
     
-    public CityMap getMap(){
-    	return map;
-    }
-    
     public Road getRoad(){
     	return road;
     }
@@ -126,7 +113,7 @@ public class CarAgent extends Agent {
     	return destination;
     }
     
-    public void setJorney(ArrayList<Road> jorney){
+    public void setJorney(ArrayList<String> jorney){
     	this.jorney = jorney;
     }
     
@@ -154,7 +141,7 @@ public class CarAgent extends Agent {
 		this.space = space;
 	}
 	
-	public ArrayList<Road> getJorney(){
+	public ArrayList<String> getJorney(){
 		return jorney;
 	}
     
@@ -173,5 +160,13 @@ public class CarAgent extends Agent {
 	
 	public CityMap getCityKnowledge(){
 		return cityKnowledge;
+	}
+	
+	public SLCodec getCodec(){
+		return codec;
+	}
+	
+	public Ontology getOntology(){
+		return serviceOntology;
 	}
 }
