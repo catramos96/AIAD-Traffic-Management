@@ -32,26 +32,26 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 		
 		if(message != null){
 			MessageType type = MessagesResources.getMessageType(message.getContent());
-			//System.out.println("Car " + car.getLocalName() + " received: " + message.getContent());
+			System.out.println("Car " + car.getLocalName() + " received: " + message.getContent());
 
 			if(type.equals(MessagesResources.MessageType.GET_PATH)){
 				
 				String parts[] = message.getContent().split(MessagesResources.SEPARATOR);
 				
 				String roadName = parts[1];
-				Point destination = Point.getPoint(parts[2]);
+				String destinationName = parts[2];
 				Road r = null;
 				
 				//If the car knows the road
 				if(car.getCityKnowledge().getRoads().containsKey(roadName)){
 					r = car.getCityKnowledge().getRoads().get(roadName);
-					ArrayList<String> route = AStar.shortestPath(car.getCityKnowledge(), r, destination);
+					ArrayList<String> route = AStar.shortestPath(car.getCityKnowledge(), r, destinationName);
 					
 					//If it knows the path to the destination
 					if(route.size() > 0){
 						AID receiver = message.getSender();
 						message = new ACLMessage(ACLMessage.INFORM);
-						message.setContent(MessagesResources.buildMessagePath(route));
+						message.setContent(MessagesResources.buildMessagePath(destinationName,route));
 						message.addReceiver(receiver);
 						car.send(message);
 					}
@@ -64,23 +64,59 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 					
 					String parts[] = message.getContent().split(MessagesResources.SEPARATOR);
 					
-					ArrayList<String> route = new ArrayList<String>();
-					boolean foundRoad = true;
+					String destination = parts[1];
 					
-					//Looks for the current road in the route and builds the jorney path from there
-					for(int i = 1; i < parts.length; i++){
-						if(foundRoad)
-							route.add(parts[i]);
-						if(car.getRoad().getName().equals(parts[i]))
-							foundRoad = true;
-					}
+					//Answer to GET_PATH message
+					if(car.getDestinationName().equals(destination)){
 					
-					if(foundRoad){
-						car.setJorney(route);
-						//System.out.println("FOUND ROUTE");
+						ArrayList<String> route = new ArrayList<String>();
+						boolean foundRoad = true;
+						
+						//Looks for the current road in the route and builds the jorney path from there
+						for(int i = 2; i < parts.length; i++){
+							if(foundRoad)
+								route.add(parts[i]);
+							if(car.getRoad().getName().equals(parts[i]))
+								foundRoad = true;
+						}
+						
+						if(foundRoad){
+							car.setJorney(route);
+						}
 					}
 				}
 				
+			}
+			else if(type.equals(MessagesResources.MessageType.WHICH_ROAD)){
+				String parts[] = message.getContent().split(MessagesResources.SEPARATOR);
+				Point destination = Point.getPoint(parts[1]);
+				
+				Road road = car.getCityKnowledge().isPartOfRoad(destination);
+				
+				if(road != null){
+					AID receiver = message.getSender();
+					message = new ACLMessage(ACLMessage.INFORM);
+					message.setContent(MessagesResources.buildMessagePartOfRoad(destination, road.getName()));
+					message.addReceiver(receiver);
+					car.send(message);
+				}
+			}
+			else if(type.equals(MessagesResources.MessageType.PART_OF_ROAD)){
+				String parts[] = message.getContent().split(MessagesResources.SEPARATOR);
+				Point destination = Point.getPoint(parts[1]);
+				String roadName = parts[2];
+				
+				//Destination points matched!
+				if(destination.equals(car.getDestination())){
+					car.setDestinationName(roadName);
+					
+					//Try to find the path
+					car.setJorney(AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), roadName));
+					car.jorneyConsume();
+					
+					if(car.getJorney().size() > 0)
+						System.out.println("Found path by it self");
+				}
 			}
 			else if(type.equals(MessagesResources.MessageType.BLOCKED)){
 				String roadName = message.getContent().split(MessagesResources.SEPARATOR)[1];
@@ -88,13 +124,13 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 				if(car.getCityKnowledge().getRoads().containsKey(roadName))
 					car.getCityKnowledge().getRoads().get(roadName).blocked();
 				
-				if(car.getJorney().contains(roadName)){
-					ArrayList<String> jorney = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestination());
+				if(car.getJorney().contains(roadName) && car.getDestinationName() != null){
+					ArrayList<String> jorney = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestinationName());
 					
 					if(jorney.size() > 0){
 						car.setJorney(jorney);
 						car.jorneyConsume();//consumes the first road -> current road
-						System.out.println("Road was blocked got new jorney");
+						//System.out.println("Road was blocked got new jorney");
 					}
 				}
 			}
@@ -104,13 +140,13 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 				if(car.getCityKnowledge().getRoads().containsKey(roadName))
 					car.getCityKnowledge().getRoads().get(roadName).unblocked();
 				
-				if(!car.getJorney().contains(roadName)){
-					ArrayList<String> jorney = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestination());
+				if(!car.getJorney().contains(roadName) && car.getDestinationName() != null){
+					ArrayList<String> jorney = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestinationName());
 					
 					if(jorney.size() > 0){
 						car.setJorney(jorney);
 						car.jorneyConsume();//consumes the first road -> current road
-						System.out.println("Road was unblocked got new jorney");
+						//System.out.println("Road was unblocked got new jorney");
 					}
 				}
 			}

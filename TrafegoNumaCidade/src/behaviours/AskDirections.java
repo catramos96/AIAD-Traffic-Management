@@ -42,7 +42,7 @@ public class AskDirections extends TickerBehaviour{
 	protected void onTick() {
 		
 		//If it didn't received any valuable directions before
-		if(car.getJorney().size() == 0){
+		if(car.getJorney().size() == 0 || car.getDestinationName() == null){
 			
 			if(!car.getRoad().getName().equals(lastRoadName)){
 				lastRoadName = car.getRoad().getName();
@@ -54,7 +54,12 @@ public class AskDirections extends TickerBehaviour{
 			message.setLanguage(codec.getName()); 
 	        message.setOntology(serviceOntology.getName()); 
 	        message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); 
-	        message.setContent(MessagesResources.buildMessageGetPath(car.getRoad().getName(),car.getDestination()));
+	        
+	       
+	        if(car.getDestinationName() == null)
+	        	message.setContent(MessagesResources.buildMessageWhichRoad(car.getDestination()));
+	        else if(car.getJorney().size() == 0)
+		       	message.setContent(MessagesResources.buildMessageGetPath(car.getRoad().getName(),car.getDestinationName()));
 
 			//Get cells inside the car comunication radius
 			for(int i = 0; i < MessagesResources.CommunicationRadius * 2 + 1; i++){

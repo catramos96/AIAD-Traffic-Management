@@ -30,6 +30,7 @@ public class CarAgent extends Agent {
 	private CityMap cityKnowledge;						//What the agent knows about the city -> calculate the jorney to the destination
 	private Point position;
 	private Point destination;
+	private String destinationName = null;
 	private ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
 
 	private Grid<Object> space = null;
@@ -43,6 +44,19 @@ public class CarAgent extends Agent {
 		this.destination = destination;
 		this.position = origin;
 		this.road = startRoad;
+		
+		this.enableCityLearning = enableCityLearning;
+		
+		this.cityKnowledge = map;
+	}
+    
+    public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, String endRoad, Road startRoad,boolean enableCityLearning) 
+	{
+		this.space = space;
+		this.destination = destination;
+		this.position = origin;
+		this.road = startRoad;
+		this.destinationName = endRoad;
 		
 		this.enableCityLearning = enableCityLearning;
 		
@@ -150,5 +164,13 @@ public class CarAgent extends Agent {
 	
 	public CityMap getCityKnowledge(){
 		return cityKnowledge;
+	}
+	
+	public String getDestinationName(){
+		return destinationName;
+	}
+	
+	public void setDestinationName(String n){
+		destinationName = n;
 	}
 }

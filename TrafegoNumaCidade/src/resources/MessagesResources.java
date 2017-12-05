@@ -13,21 +13,36 @@ public class MessagesResources {
 		BLOCKED,				//When the radio announces that a road is no longer viable
 		UNBLOCKED,				//When the radio announces that a road is viable
 		GET_PATH,				//When a car asks directions to others
-		PATH					//When a car answers directions from others
+		PATH,					//When a car answers directions from others
+		WHICH_ROAD,				//When a car doesn't know the name of the destination road
+		PART_OF_ROAD			//When a car answers a WHICH_ROAD message
 		};
 		
 	public static String buildMessage(MessageType t, String roadName){		
 		return t.toString() + SEPARATOR + roadName;
 	}
 	
-	public static String buildMessageGetPath(String currentRoad, Point destination){
-		return MessageType.GET_PATH + SEPARATOR + 
-				currentRoad + SEPARATOR + 
+	public static String buildMessageWhichRoad(Point destination){
+		return MessageType.WHICH_ROAD + SEPARATOR + 
 				destination.print();
 	}
 	
-	public static String buildMessagePath(ArrayList<String> path){
-		String s = MessageType.PATH.toString();
+	public static String buildMessagePartOfRoad(Point destination,String roadName){
+		return MessageType.PART_OF_ROAD + SEPARATOR +
+				destination.print() + SEPARATOR +
+				roadName;
+				
+	}
+	
+	public static String buildMessageGetPath(String currentRoad, String destinationRoad){
+		return MessageType.GET_PATH + SEPARATOR + 
+				currentRoad + SEPARATOR + 
+				destinationRoad;
+	}
+	
+	public static String buildMessagePath(String destinationRoad, ArrayList<String> path){
+		String s = MessageType.PATH.toString() + SEPARATOR + 
+				destinationRoad;
 		
 		for(int i = 0; i < path.size(); i++){
 			s+= SEPARATOR + path.get(i);

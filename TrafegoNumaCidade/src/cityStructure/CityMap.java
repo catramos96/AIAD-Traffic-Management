@@ -127,6 +127,18 @@ public class CityMap extends Agent
 		return roads;
 	}
 	
+	public Road isPartOfRoad(Point p){
+		for(Road r : roads.values()){
+			if(r.partOfRoad(p))
+				return r;
+		}
+		
+		return null;
+	}
+	
+	/*
+	 * SAVE & LOAD
+	 */
 	
 	public boolean load(String path){
 		

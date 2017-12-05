@@ -18,14 +18,7 @@ public class AStar {
 	
 	public static int INFINITE = 999999;
 	
-	/**
-	 * Return the shortest path between a startRoad and its destination
-	 * @param map
-	 * @param startRoad
-	 * @param destination
-	 * @return
-	 */
-	public static ArrayList<String> shortestPath(CityMap map, Road startRoad, Point destination){
+	public static ArrayList<String> shortestPath(CityMap map, Road startRoad, String destinationName){
 		
 		ArrayList<String> path = new ArrayList<String>();
 		ArrayList<Road> evaluatedSet = new ArrayList<Road>();		
@@ -41,14 +34,11 @@ public class AStar {
 		}
 		
 		Road endRoad = null;
-		for(Road r : map.getRoads().values()){
-			if(r.partOfRoad(destination)){
-				endRoad = r;
-				break;
-			}
-		}
 		
-		if(endRoad == null)
+		if(map.getRoads().containsKey(destinationName))
+			endRoad = map.getRoads().get(destinationName);
+		
+		if(endRoad == null || endRoad.getStartIntersection() == null || startRoad.getName().equals(destinationName))
 			return path;
 		
 		toEvaluateSet.add(startRoad);
@@ -109,7 +99,7 @@ public class AStar {
 			
 		}
 		
-		System.out.println("Failed to get the shortest path between" + startRoad.getName() + " " + destination.x + "_" + destination.y);
+		System.out.println("Failed to get the shortest path between" + startRoad.getName() + " " + destinationName);
 		return path;
 	}
 	

@@ -27,10 +27,12 @@ public class CarMovement extends TickerBehaviour{
 		super(car,time);
 		this.car = car;
 		
-		//calculate the path to the destination based on the knowledge he haves
-		ArrayList<String> j = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestination());
-		car.setJorney(j);
-		car.jorneyConsume();	
+		if(car.getDestinationName() != null){
+			//calculate the path to the destination based on the knowledge he haves
+			ArrayList<String> j = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestinationName());
+			car.setJorney(j);
+			car.jorneyConsume();	
+		}
 	}
 
 	@Override
@@ -110,10 +112,10 @@ public class CarMovement extends TickerBehaviour{
 						car.setRoad(nextRoad);
 						
 						//if previous jorney wasn't valid
-						if(!valid){
+						if(!valid && car.getDestinationName() != null){
 							
-							//calculate the path to the destination based on the knowledge he haves
-							ArrayList<String> j = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestination());
+							//calculate the path to the destination based on the knowledge that he haves
+							ArrayList<String> j = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestinationName());
 							car.setJorney(j);
 							car.jorneyConsume();		
 						}
