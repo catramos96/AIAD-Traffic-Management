@@ -3,6 +3,7 @@ import cityStructure.Intersection.EntryType;
 import resources.Point;
 import resources.Resources;
 import resources.Resources.Direction;
+import resources.SpaceResources;
 
 public class Road{
 	private Point startPoint;	//Out road of an intersection
@@ -14,7 +15,7 @@ public class Road{
 	private String name = new String();
 	private boolean blocked = false;
 	
-	private int length = 1;		//= weight in Dijkstra
+	private int length = SpaceResources.INFINITE;		//= weight in Dijkstra
 	
 	/**
 	 * Constructor
@@ -71,7 +72,6 @@ public class Road{
 	 * Constructor for Perception Road
 	 * @param start
 	 * @param end
-	 * @param endInt
 	 * @param d
 	 * @param length
 	 * @param name
@@ -80,23 +80,18 @@ public class Road{
 		this.name = name;
 		this.startPoint = start;
 		this.endPoint = end;
+		this.direction = d;
 		this.startIntersection = startInt;
 		this.endIntersection = endInt;
-		this.direction = d;
 		this.length = length;
-		
-		endIntersection.insertRoad(this);
 	}
 	
-	/**
-	 * Returns the perception of the road by the
-	 * point of view of a car driver
-	 * @return Road
-	 */
-	public Road getRoadPerception(){
-		Intersection startInt = startIntersection.getIntersectionPerception();
-		Intersection endInt = endIntersection.getIntersectionPerception();
-		return new Road(startPoint,endPoint,startInt,endInt,direction,length,name);
+	public Road getRoadPerceptionAtStart(){
+		return new Road(startPoint,null,null, null,direction,SpaceResources.INFINITE,name);
+	}
+
+	public Road getRoadPerceptionAtEnd(){
+		return new Road(null,endPoint,null, null, direction,SpaceResources.INFINITE,name);
 	}
 	
 	/**
@@ -108,29 +103,84 @@ public class Road{
 	 */
 	public boolean partOfRoad(Point point){
 
-		if(direction.equals(Resources.Direction.East)){
-			if(point.x >= startPoint.x && point.x <= endPoint.x && point.y == startPoint.y)
-				return true;
+		if(startPoint != null && endPoint != null){
+			if(direction.equals(Resources.Direction.East)){
+				if(point.x >= startPoint.x && point.x <= endPoint.x && point.y == startPoint.y)
+					return true;
+			}
+			else if(direction.equals(Resources.Direction.West)){
+				if(point.x <= startPoint.x && point.x >= endPoint.x && point.y == startPoint.y)
+					return true;
+			}
+			else if(direction.equals(Resources.Direction.North)){
+				if(point.y >= startPoint.y && point.y <= endPoint.y && point.x == startPoint.x)
+					return true;
+			}
+			else if(direction.equals(Resources.Direction.South)){
+				if(point.y <= startPoint.y && point.y >= endPoint.y && point.x == startPoint.x)
+					return true;
+			}
 		}
-		else if(direction.equals(Resources.Direction.West)){
-			if(point.x <= startPoint.x && point.x >= endPoint.x && point.y == startPoint.y)
-				return true;
-		}
-		else if(direction.equals(Resources.Direction.North)){
-			if(point.y >= startPoint.y && point.y <= endPoint.y && point.x == startPoint.x)
-				return true;
-		}
-		else if(direction.equals(Resources.Direction.South)){
-			if(point.y <= startPoint.y && point.y >= endPoint.y && point.x == startPoint.x)
-				return true;
-		}
+		
 			
 		return false;
+	}
+	
+	public String print(){
+		String s = "RoadName: " + name;
+		
+		s+= " Direction: " + direction.toString();
+		
+		s+=" StartPoint: ";
+		
+		if(startPoint == null)	s+= "?";
+		else					s+= startPoint.print();
+		
+		s+= " EndPoint: ";
+		
+		if(endPoint == null)	s+= "?";
+		else					s+= endPoint.print();
+		
+		s+= " StartInterName: ";
+		
+		if(startIntersection == null)	s+= "?";
+		else							s+= startIntersection.getName();
+		
+		s+= " EndInterName: ";
+		
+		if(endIntersection == null)		s+= "?";
+		else							s+= endIntersection.getName();
+		
+		s+= " Length: " + length;
+		
+		return s;
 	}
 	
 	/*
 	 * GETS & SETS
 	 */
+	
+	public void setStartPoint(Point s){
+		startPoint = s;
+	}
+	
+	public void setEndPoint(Point e){
+		endPoint = e;
+	}
+	
+	public void updateLength(){
+		if(startPoint != null && endPoint != null){
+			switch (direction) {
+			case North: case South:
+				this.length =  Math.abs(startPoint.y - endPoint.y) +1;
+				break;
+			case East: case West:
+				this.length = Math.abs(startPoint.x - endPoint.x) + 1;
+			default:
+				break;
+			}
+		}
+	}
 	
 	public Intersection getEndIntersection(){
 		return endIntersection;
@@ -138,6 +188,22 @@ public class Road{
 	
 	public Intersection getStartIntersection(){
 		return startIntersection;
+	}
+	
+	/**
+	 * To be used just by the behaviour LearnMap
+	 * @param endInt
+	 */
+	public void setEndIntersection(Intersection endInt){
+		endIntersection = endInt;
+	}
+	
+	/**
+	 * To be used just by the behaviour LearnMap
+	 * @param endInt
+	 */
+	public void setStartIntersection(Intersection startInt){
+		startIntersection = startInt;
 	}
 	
 	public Resources.Direction getDirection(){

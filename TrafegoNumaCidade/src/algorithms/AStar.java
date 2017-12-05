@@ -53,8 +53,12 @@ public class AStar {
 		
 		toEvaluateSet.add(startRoad);
 		costs.put(startRoad, 0);
-		final_costs.put(startRoad,Point.getDistance(startRoad.getEndIntersection().getOneEntry(), 
+		
+		if(startRoad.getEndIntersection() != null)
+			final_costs.put(startRoad,Point.getDistance(startRoad.getEndIntersection().getOneEntry(), 
 				endRoad.getStartIntersection().getOneEntry()));
+		else
+			return path;
 		
 		while(!toEvaluateSet.isEmpty()){
 
@@ -66,35 +70,42 @@ public class AStar {
 			toEvaluateSet.remove(current);
 			evaluatedSet.add(current);
 			
-			for(Road next : current.getEndIntersection().getOutRoads()){
+			//If the end Intersection of the current road is known
+			if(current.getEndIntersection() != null) {
 				
-				if(!evaluatedSet.contains(next)){
+				//Look for possible nextRoads
+				for(Road next : current.getEndIntersection().getOutRoads()){
 					
-					if(!toEvaluateSet.contains(next))
-						toEvaluateSet.add(next);
-					
-					//failure
-					if(!costs.containsKey(next))
-						return path;
+					//If end intersection of nextRoad is known
+					if(!evaluatedSet.contains(next)  && next.getEndIntersection() != null){
 						
-					//If the road has transit, then it has a penalty to the costs
-					int transitPenalty = 0;
-					
-					if(next.isBlocked())
-						transitPenalty = Resources.transitPenaltyRatio * next.getLength();
+						if(!toEvaluateSet.contains(next))
+							toEvaluateSet.add(next);
 						
-					int cost_next = costs.get(current) + current.getEndIntersection().getLength() + next.getLength() + transitPenalty;
-					
-					if(cost_next < costs.get(next)){
-						cameFrom.put(next, current);
-						costs.put(next, cost_next);
+						//failure
+						if(!costs.containsKey(next))
+							return path;
+							
+						//If the road has transit, then it has a penalty to the costs
+						int transitPenalty = 0;
 						
-						//custos finais = custo até à rua actual + possível custo até ao final
-						final_costs.put(next, cost_next + Point.getDistance(next.getEndIntersection().getOneEntry(), 
-								endRoad.getStartIntersection().getOneEntry()));
+						if(next.isBlocked())
+							transitPenalty = Resources.transitPenaltyRatio * next.getLength();
+				
+						int cost_next = costs.get(current) + current.getEndIntersection().getLength() + next.getLength() + transitPenalty;
+						
+						if(cost_next < costs.get(next)){
+							cameFrom.put(next, current);
+							costs.put(next, cost_next);
+							
+							//custos finais = custo até à rua actual + possível custo até ao final
+							final_costs.put(next, cost_next + Point.getDistance(next.getEndIntersection().getOneEntry(), 
+									endRoad.getStartIntersection().getOneEntry()));
+						}
 					}
 				}
 			}
+			
 			
 		}
 		

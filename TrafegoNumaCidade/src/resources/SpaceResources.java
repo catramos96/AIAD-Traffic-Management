@@ -13,6 +13,7 @@ public class SpaceResources {
 
 	public static enum PassageType {Road, Intersection, Out};
 	public static final Point REST_CELL = new Point(0,0);
+	public static final int INFINITE = 99999;
 	
 	public static int getMaxCarStopped(int roadlength){
 		

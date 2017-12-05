@@ -1,5 +1,7 @@
 package behaviours;
 
+import java.util.ArrayList;
+
 import agents.CarAgent;
 import cityStructure.CityMap;
 import cityStructure.Intersection;
@@ -19,34 +21,53 @@ public class LearnMap extends CyclicBehaviour{
 	public void action() {
 		CityMap knowledge = car.getCityKnowledge();
 		
-		Road currentRoad = car.getRoad();
-		Intersection i1 = currentRoad.getStartIntersection();
-		Intersection i2 = currentRoad.getEndIntersection();
+		Intersection latestIntersection = car.getIntersection();
 		
-		//If current road is unknown
-		if(!knowledge.getRoads().containsKey(currentRoad.getName())){
+		if(latestIntersection != null){
 			
-			//saves in knowledge
-			knowledge.getRoads().put(currentRoad.getName(),currentRoad);
-			
-			if(i1 != null){
-				//if intersection is unknown then it's saved
-				if(!knowledge.getIntersections().containsKey(i1.getName())){
-					knowledge.getIntersections().put(i1.getName(), i1);
+			//Don't know the intersection
+			if(!knowledge.getIntersections().containsKey(latestIntersection.getName())){
+				
+				//Get the perception of the intersection
+				//Knows the intersection roads (in/out) but only with the "visible" information
+				//at the moment: the outRoads will only have the startPoint, Direction and Name
+				//and the inRoads the endPoint, Direction and aname
+				Intersection intersection = latestIntersection.getPerception();
+				
+				//Saves the discovered intersection
+				knowledge.getIntersections().put(intersection.getName(),intersection);
+				
+				ArrayList<Road> inRoads = intersection.getInRoads();
+				ArrayList<Road> outRoads = intersection.getOutRoads();
+				
+				for(Road i : inRoads){
+					//New road discovered
+					if(!knowledge.getRoads().containsKey(i.getName())){
+						knowledge.getRoads().put(i.getName(), i);
+					}
+					else{
+						//Update the missing information
+						Road knownRoad = knowledge.getRoads().get(i.getName());
+						knownRoad.setEndIntersection(intersection);
+						knownRoad.setEndPoint(i.getEndPoint());
+						knownRoad.updateLength();
+					}
 				}
-				//or updated with the current road
-				else
-					knowledge.getIntersections().get(i1.getName()).insertRoad(currentRoad);
-			}
-			
-			if(i2 != null){
-				//if intersection is unknown then it's saved
-				if(!knowledge.getIntersections().containsKey(i2.getName())){
-					knowledge.getIntersections().put(i2.getName(), i2);
+				
+				for(Road o : outRoads){
+					//New road discovered
+					if(!knowledge.getRoads().containsKey(o.getName())){
+						knowledge.getRoads().put(o.getName(), o);
+					}
+					else{
+						//Update the missing information
+						Road knownRoad = knowledge.getRoads().get(o.getName());
+						knownRoad.setStartIntersection(intersection);
+						knownRoad.setStartPoint(o.getEndPoint());
+						knownRoad.updateLength();
+					}
+
 				}
-				//or updated with the current road
-				else
-					knowledge.getIntersections().get(i2.getName()).insertRoad(currentRoad);
 			}
 		}
 	}

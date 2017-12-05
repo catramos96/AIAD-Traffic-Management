@@ -67,21 +67,17 @@ public abstract class Intersection{
 		length = entries.keySet().size();
 	}
 	
-	/**
-	 * Constructor for Intersection Perception
-	 * @param entries
-	 * @param length
-	 * @param name
-	 */
-	protected Intersection(HashMap<Point, HashMap<CellEntry, Road>> entries, int length, String name){
+	protected Intersection(HashMap<Point,HashMap<CellEntry,Road>> entries, ArrayList<Road> inRoads, ArrayList<Road> outRoads, String name, int length){
 		this.entries = entries;
-		this.length = length;
+		this.inRoads = inRoads;
+		this.outRoads = outRoads;
 		this.name = name;
+		this.length = length;
 	}
 	
-	public abstract ArrayList<Point> getRouteToRoad(String roadEntry,String roadOut);
+	public abstract Intersection getPerception();
 	
-	public abstract Intersection getIntersectionPerception();
+	public abstract ArrayList<Point> getRouteToRoad(String roadEntry,String roadOut);
 
 	/*
 	 * GETS & SETS
@@ -215,21 +211,36 @@ public abstract class Intersection{
 		return length;
 	}
 	
-	/**
-	 * Method that returns the entries of the intersection
-	 * without any roads associated
-	 * @return
-	 */
-	public HashMap<Point,HashMap<CellEntry,Road>> getCleanedEntries(){
-		HashMap<Point, HashMap<CellEntry, Road>> tmp = new HashMap<Point, HashMap<CellEntry, Road>>();
+	protected HashMap<Point,HashMap<CellEntry,Road>> getPerceptionsEntries(ArrayList<Road> inR,ArrayList<Road> outR){
+		HashMap<Point,HashMap<CellEntry,Road>> tmp = new HashMap<Point,HashMap<CellEntry,Road>>();
+		inR.clear();
+		outR.clear();
 		
-		//Remove the roads associated
 		for(Point area: entries.keySet()){
 			
 			HashMap<CellEntry, Road> tmp2 = new HashMap<CellEntry, Road>();
 			
 			for(CellEntry entry : entries.get(area).keySet()){
-				tmp2.put(entry, null);
+				
+				Road r = entries.get(area).get(entry);
+				Road roadPerc = null;
+				
+				if(r != null){
+					if(r.getEndIntersection().equals(this)){		//inRoad
+						roadPerc = r.getRoadPerceptionAtEnd();
+						tmp2.put(entry,roadPerc);
+						inR.add(roadPerc);
+					}
+					else	{										//endRoad
+						roadPerc = r.getRoadPerceptionAtStart();
+						tmp2.put(entry, roadPerc);
+						outR.add(roadPerc);
+
+					}
+				}
+				else
+					tmp2.put(entry, null);
+
 			}
 			tmp.put(area, tmp2);
 		}

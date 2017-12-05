@@ -136,6 +136,7 @@ public class CarMovement extends TickerBehaviour{
 				
 				//Follow the route to get out of the intersection
 				Point next_position = intersectionRoute.get(0);
+				
 
 				//Only advance if there is no car in the next position
 				if(SpaceResources.hasCar(car.getSpace(), next_position) == null){
@@ -150,7 +151,7 @@ public class CarMovement extends TickerBehaviour{
 			
 		}
 		catch(Exception e){
-			System.out.println(e.getMessage());
+			System.out.println("Exception " + e.getMessage());
 		}
 		
 	}

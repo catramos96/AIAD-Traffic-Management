@@ -3,6 +3,7 @@ package cityStructure;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cityStructure.Intersection.CellEntry;
 import resources.Point;
 import resources.Resources;
 import resources.Resources.Direction;
@@ -16,23 +17,27 @@ public class ComplexIntersection extends Intersection{
 		loadCircuit(area);
 	}
 	
-	/**
-	 * Constructor
-	 * Creates a new ComplexIntersection equal to ci
-	 * but withour any roads associated
-	 * @param entries
-	 * @param name
-	 * @param circuit
-	 * @param length
-	 */
-	private ComplexIntersection(ComplexIntersection ci) {
-		super(ci.getCleanedEntries(),ci.getLength(),ci.getName());
-		this.circuit = ci.getCircuit();
+	private ComplexIntersection(HashMap<Point,HashMap<CellEntry,Road>> entries, ArrayList<Road> inRoads, ArrayList<Road> outRoads, String name, int length, ArrayList<Point> circuit){
+		super(entries,inRoads,outRoads,name,length);
+		this.circuit = circuit;
 	}
 	
-	@Override
-	public ComplexIntersection getIntersectionPerception(){
-		return new ComplexIntersection(this);
+	public ComplexIntersection getPerception(){
+		HashMap<Point,HashMap<CellEntry,Road>> e = null;
+		ArrayList<Road> iR = new ArrayList<Road>();
+		ArrayList<Road> oR = new ArrayList<Road>();
+		
+		e = this.getPerceptionsEntries(iR, oR);
+		
+		ComplexIntersection inter = new ComplexIntersection(e,iR,oR,name,length,circuit);
+		
+		for(Road i : inter.getInRoads())
+			i.setEndIntersection(inter);
+		
+		for(Road o : inter.getOutRoads())
+			o.setStartIntersection(inter);
+		
+		return inter;
 	}
 	
 	@Override

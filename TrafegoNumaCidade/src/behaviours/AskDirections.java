@@ -3,6 +3,9 @@ package behaviours;
 import java.util.ArrayList;
 
 import agents.CarAgent;
+import cityTraffic.onto.ServiceOntology;
+import jade.content.lang.sl.SLCodec;
+import jade.content.onto.Ontology;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import repast.simphony.space.grid.Grid;
@@ -18,11 +21,21 @@ public class AskDirections extends TickerBehaviour{
 	private CarAgent car = null;
 	private ArrayList<AID> carsAsked = new ArrayList<AID>();
 	private String lastRoadName = "";
+	
+	//Messages specification
+    private SLCodec codec;
+    private Ontology serviceOntology;
 	 
 	public AskDirections(CarAgent car, long time) {
 		super(car,time);
 		this.car = car;
 		lastRoadName = car.getRoad().getName();
+		
+		 // register language and ontology
+        codec = new SLCodec();
+        serviceOntology = ServiceOntology.getInstance();
+        car.getContentManager().registerLanguage(codec);
+        car.getContentManager().registerOntology(serviceOntology);
 	}
 
 	@Override
@@ -38,8 +51,8 @@ public class AskDirections extends TickerBehaviour{
 			
 			//prepare message
 			ACLMessage message = new ACLMessage(ACLMessage.INFORM);
-			message.setLanguage(car.getCodec().getName()); 
-	        message.setOntology(car.getOntology().getName()); 
+			message.setLanguage(codec.getName()); 
+	        message.setOntology(serviceOntology.getName()); 
 	        message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); 
 	        message.setContent(MessagesResources.buildMessageGetPath(car.getRoad().getName(),car.getDestination()));
 

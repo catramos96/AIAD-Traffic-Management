@@ -1,7 +1,5 @@
 package agents;
 
-import jade.content.lang.sl.SLCodec;
-import jade.content.onto.Ontology;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import resources.Point;
@@ -32,12 +30,9 @@ public class CarAgent extends Agent {
 	private CityMap cityKnowledge;						//What the agent knows about the city -> calculate the jorney to the destination
 	private Point position;
 	private Point destination;
-	private ArrayList<String> jorney = new ArrayList<String>();	//jorney to reach the destination (composed by the names of the roads to follow)
+	private ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
 
 	private Grid<Object> space = null;
-    
-    private SLCodec codec;
-    private Ontology serviceOntology;
     
     private boolean enableCityLearning = false;
     
@@ -58,12 +53,6 @@ public class CarAgent extends Agent {
     //JADE RELATED
     @Override
     public void setup() {
-
-        // register language and ontology
-        codec = new SLCodec();
-        serviceOntology = ServiceOntology.getInstance();
-        getContentManager().registerLanguage(codec);
-        getContentManager().registerOntology(serviceOntology);
         
         // subscribe DF
         DFAgentDescription template = new DFAgentDescription();
@@ -115,7 +104,7 @@ public class CarAgent extends Agent {
     }
     
     public void setJorney(ArrayList<String> jorney){
-    	this.jorney = jorney;
+    	this.journey = jorney;
     }
     
     public void setRoad(Road r){
@@ -143,12 +132,12 @@ public class CarAgent extends Agent {
 	}
 	
 	public ArrayList<String> getJorney(){
-		return jorney;
+		return journey;
 	}
     
 	public void jorneyConsume(){
-		if(jorney.size() > 0)
-			jorney.remove(0);
+		if(journey.size() > 0)
+			journey.remove(0);
 	}
 	
 	public Intersection getIntersection(){
@@ -161,13 +150,5 @@ public class CarAgent extends Agent {
 	
 	public CityMap getCityKnowledge(){
 		return cityKnowledge;
-	}
-	
-	public SLCodec getCodec(){
-		return codec;
-	}
-	
-	public Ontology getOntology(){
-		return serviceOntology;
 	}
 }

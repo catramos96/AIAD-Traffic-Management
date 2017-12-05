@@ -28,7 +28,7 @@ import jade.wrapper.StaleProxyException;
 
 public class CityTrafficBuilder extends RepastSLauncher {
 
-	private static int N_CARS = 30;
+	private static int N_CARS = 1;
 	Grid<Object> space;
 	
 	public static final boolean USE_RESULTS_COLLECTOR = true;
@@ -133,7 +133,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 					car = new CarAgent(space,new CityMap(),origin,destination,startRoad,true);
 				//Knows the city
 				else*/
-					car = new CarAgent(space,city.getMap(),origin,destination,startRoad,false);		
+					car = new CarAgent(space,new CityMap(), origin,destination,startRoad,true);		
 
 					
 				agentContainer.acceptNewAgent("CarAgent" + i, car).start();
