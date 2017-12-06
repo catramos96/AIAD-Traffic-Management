@@ -32,7 +32,7 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 		
 		if(message != null){
 			MessageType type = MessagesResources.getMessageType(message.getContent());
-			System.out.println("Car " + car.getLocalName() + " received: " + message.getContent());
+			//System.out.println("Car " + car.getLocalName() + " received: " + message.getContent());
 
 			if(type.equals(MessagesResources.MessageType.GET_PATH)){
 				
@@ -113,8 +113,8 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 					//Try to find the path
 					car.calculateAndUpdateJourney();
 					
-					if(car.getJorney().size() > 0)
-						System.out.println("Found path by it self");
+					//if(car.getJorney().size() > 0)
+						//System.out.println("Found path by it self");
 				}
 			}
 			else if(type.equals(MessagesResources.MessageType.BLOCKED)){

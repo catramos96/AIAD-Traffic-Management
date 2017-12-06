@@ -11,8 +11,10 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import algorithms.AStar;
+import algorithms.QLearning;
 import behaviours.AskDirections;
 import behaviours.CarMessagesReceiver;
 import behaviours.CarMovement;
@@ -35,7 +37,11 @@ public class CarAgent extends Agent {
 	private ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
 
 	private Grid<Object> space = null;
+	
+	//private HashMap<Integer,QLearning> transitKnowledge = new HashMap<Integer,QLearning>();
     
+	private QLearning qlearning = new QLearning(this, 1, 0.8);
+	
     private boolean enableCityLearning = false;
     
     
@@ -104,6 +110,10 @@ public class CarAgent extends Agent {
     /*
      * GETS & SETS
      */
+    
+    public QLearning getQLearning(){
+    	return qlearning;
+    }
     
     /**
      * Calculates and updates the journey of itself

@@ -12,9 +12,12 @@ public class LearnMap extends CyclicBehaviour{
 
 	private CarAgent car = null;
 	private static final long serialVersionUID = 1L;
+	private Road latestRoad = null;
+	private boolean latestTransit = false;
 	
 	public LearnMap(CarAgent car){
 		this.car = car;
+		this.latestRoad = car.getRoad();
 	}
 
 	@Override
@@ -54,6 +57,9 @@ public class LearnMap extends CyclicBehaviour{
 						
 						car.calculateAndUpdateJourney();
 					}
+					
+					car.getQLearning().insertNewRoad(i, outRoads);
+
 				}
 				
 				for(Road o : outRoads){
@@ -73,6 +79,16 @@ public class LearnMap extends CyclicBehaviour{
 
 				}
 			}
+		}
+		
+		if(!car.getRoad().equals(latestRoad)){
+			
+			//Reinforcment Learning
+			car.getQLearning().updateQualityValues(latestRoad.getName(), car.getRoad().getName(), latestTransit);
+			latestRoad = car.getRoad();
+		}
+		else if(latestTransit == false){
+			latestTransit = latestRoad.isBlocked();					
 		}
 	}
 
