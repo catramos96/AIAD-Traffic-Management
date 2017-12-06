@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import cityStructure.Intersection;
 import cityStructure.CityMap;
 import cityStructure.Road;
-import cityTraffic.CityTrafficBuilder;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
 import resources.Resources.Direction;

@@ -8,7 +8,6 @@ import jade.content.lang.sl.SLCodec;
 import jade.content.onto.Ontology;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
-import repast.simphony.space.grid.Grid;
 import resources.MessagesResources;
 import resources.Point;
 import resources.SpaceResources;

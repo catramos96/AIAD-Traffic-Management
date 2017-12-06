@@ -2,14 +2,13 @@ package cityStructure;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import cityStructure.Intersection.CellEntry;
 import resources.Point;
 import resources.Resources;
 import resources.Resources.Direction;
 
-public class ComplexIntersection extends Intersection{
+public class ComplexIntersection extends Intersection {
 
+	private static final long serialVersionUID = 1L;
 	ArrayList<Point> circuit = new ArrayList<Point>();
 	
 	public ComplexIntersection(ArrayList<Point> area, String name) {

@@ -27,15 +27,14 @@ public class CarAgent extends Agent {
 	protected Intersection intersection = null;			//Latest intersection (real world)
 	
 	//Origin and Destination
-	protected CityMap cityKnowledge;						//What the agent knows about the city -> calculate the jorney to the destination
 	protected Point position;
 	protected Point destination;
 	protected String destinationName = null;
 	protected ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
-
 	protected Grid<Object> space = null;
 	protected boolean enableCityLearning = false;
-    
+	
+	protected Knowledge knowledge;
     
     public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad,boolean enableCityLearning) 
 	{
@@ -45,8 +44,7 @@ public class CarAgent extends Agent {
 		this.road = startRoad;
 		
 		this.enableCityLearning = enableCityLearning;
-		
-		this.cityKnowledge = map;
+		this.knowledge.setCityKnowledge(map);
 	}
     
     public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, String endRoad, Road startRoad,boolean enableCityLearning) 
@@ -58,8 +56,7 @@ public class CarAgent extends Agent {
 		this.destinationName = endRoad;
 		
 		this.enableCityLearning = enableCityLearning;
-		
-		this.cityKnowledge = map;
+		this.knowledge.setCityKnowledge(map);
 	}
     
     
@@ -111,7 +108,7 @@ public class CarAgent extends Agent {
     	
     	if(destinationName != null){
     		
-    		ArrayList<String> j = AStar.shortestPath(cityKnowledge, road, destinationName);
+    		ArrayList<String> j = AStar.shortestPath(knowledge.getCityKnowledge(), road, destinationName);
     		
     		if(j.size() > 0){
 	    		setJorney(j);
@@ -128,7 +125,7 @@ public class CarAgent extends Agent {
      * @return
      */
     public ArrayList<String> getJourneyCalculations(Road road, String destinationName){
-    	return AStar.shortestPath(cityKnowledge, road, destinationName);
+    	return AStar.shortestPath(knowledge.getCityKnowledge(), road, destinationName);
     }
     
     public Road getRoad(){
@@ -190,7 +187,7 @@ public class CarAgent extends Agent {
 	}
 	
 	public CityMap getCityKnowledge(){
-		return cityKnowledge;
+		return knowledge.getCityKnowledge();
 	}
 	
 	public String getDestinationName(){

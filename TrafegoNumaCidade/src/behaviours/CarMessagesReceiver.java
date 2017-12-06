@@ -1,15 +1,8 @@
 package behaviours;
 
 import java.util.ArrayList;
-
-import com.jgoodies.common.internal.Messages;
-
 import agents.CarAgent;
-import algorithms.AStar;
 import cityStructure.Road;
-import cityTraffic.onto.ServiceOntology;
-import jade.content.lang.sl.SLCodec;
-import jade.content.onto.Ontology;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import resources.MessagesResources;

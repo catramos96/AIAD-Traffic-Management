@@ -2,12 +2,12 @@ package cityStructure;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import cityStructure.Intersection.CellEntry;
 import resources.Point;
 
 public class SimpleIntersection extends Intersection{
 		
+	private static final long serialVersionUID = 1L;
+
 	public SimpleIntersection(Point area, String name) {
 		super(area, name);
 	}

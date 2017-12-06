@@ -1,7 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <parameters>
+					<parameter name="randomSeed" displayName="Default Random Seed" type="int" 
+						defaultValue="__NULL__"
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+									
+		/>
+				<parameter name="carCount" displayName="Number of Random Cars" type="int" 
+						defaultValue="10" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+									
+		/>
+				<parameter name="originX" displayName="Agent Origin ( X )" type="int" 
+						defaultValue="1" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+									
+		/>
+				<parameter name="destX" displayName="Agent Destination ( X )" type="int" 
+						defaultValue="1" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+									
+		/>
+				<parameter name="originY" displayName="Agent Origin ( Y )" type="int" 
+						defaultValue="19" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+									
+		/>
+				<parameter name="destY" displayName="Agent Destination Y" type="int" 
+						defaultValue="18" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+									
+		/>
+		</parameters>
 
-	<parameter name="randomSeed" displayName="Default Random Seed" type="int" defaultValue="__NULL__" />
-	<parameter name="carCount" displayName="Cars Count" type="int" defaultValue="10" isReadOnly="false" converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 
-</parameters>

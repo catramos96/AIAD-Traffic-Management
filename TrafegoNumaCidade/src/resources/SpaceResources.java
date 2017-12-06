@@ -3,6 +3,8 @@ package resources;
 import java.util.ArrayList;
 
 import agents.CarAgent;
+import agents.MonitoredCarAgent;
+import agents.RandomCarAgent;
 import agents.Semaphore;
 import agents.SemaphoreRed;
 import agents.SemaphoreYellow;
@@ -55,7 +57,10 @@ public class SpaceResources {
 	}
 	
 	public static CarAgent hasCar(Grid<Object> space, Point location){
-		return searchForObject(space, location, CarAgent.class);
+		CarAgent temp = searchForObject(space, location, MonitoredCarAgent.class);
+		if(temp == null)
+			return searchForObject(space, location, RandomCarAgent.class);
+		return temp;
 	}
 	
 	@SuppressWarnings("unchecked")
