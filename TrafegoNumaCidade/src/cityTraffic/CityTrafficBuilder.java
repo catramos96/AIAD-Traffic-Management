@@ -89,12 +89,14 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			
 			//create road monitors (transit)
 			for(Road r : city.getMap().getRoads().values()){
-				RoadMonitor monitor = new RoadMonitor(r,space, radio);
-				agentContainer.acceptNewAgent("road monitor-" + r.getName(), monitor).start();
-				space.getAdder().add(space, monitor);
-				space.moveTo(monitor, r.getEndPoint().toArray());
-				
-				schedule.schedule(monitor);
+				if(r.getLength() > 3){
+					RoadMonitor monitor = new RoadMonitor(r,space, radio);
+					agentContainer.acceptNewAgent("road monitor-" + r.getName(), monitor).start();
+					space.getAdder().add(space, monitor);
+					space.moveTo(monitor, r.getEndPoint().toArray());
+					
+					schedule.schedule(monitor);
+				}
 			}
 			// create cars
 			for (int i = 0; i < N_CARS; i++) {
