@@ -1,7 +1,7 @@
 package cityTraffic;
-import agents.CarAgent;
 import agents.City;
 import agents.Radio;
+import agents.RandomCarAgent;
 import agents.RoadMonitor;
 import cityStructure.CityMap;
 import cityStructure.Road;
@@ -28,7 +28,7 @@ import jade.wrapper.StaleProxyException;
 
 public class CityTrafficBuilder extends RepastSLauncher {
 
-	private static int N_CARS = 2;
+	private static int N_CARS = 15;
 	Grid<Object> space;
 	
 	public static final boolean USE_RESULTS_COLLECTOR = true;
@@ -98,8 +98,13 @@ public class CityTrafficBuilder extends RepastSLauncher {
 					schedule.schedule(monitor);
 				}
 			}
-			// create cars
-			for (int i = 0; i < N_CARS; i++) {
+			//random probability of cars learning the city
+			double prob = Math.random()*100;
+			System.out.println("Probability to learn the city = "+prob+ " %");
+			
+			// create cars in random positions
+			for (int i = 0; i < N_CARS; i++) 
+			{
 				int rnd_road;
 				Road startRoad = null, endRoad = null;
 				Point origin = null, destination = null;
@@ -128,34 +133,40 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				destination = city.getRandomRoadPosition(endRoad);
 
 				//create car
-				CarAgent car = null;
-				
-				//Don't know the city
-				/*if(i < 16)
-					car = new CarAgent(space,new CityMap(),origin,destination,startRoad,true);
-				//Knows the city
-				else*/
-					car = new CarAgent(space,new CityMap(), origin,destination,startRoad,true);		
-
-					
+				RandomCarAgent car = null;
+				double randProb = Math.random()*100;
+				if(randProb <= prob) 
+				{	
+					//the car must learn 
+					car = new RandomCarAgent(space, new CityMap(),origin,destination,startRoad,true);
+				}
+				else 
+				{
+					//the car has previous knowledge of the city
+					car = new RandomCarAgent(space,city.getMap(),origin,destination,startRoad,false);
+				}
+									
 				agentContainer.acceptNewAgent("CarAgent" + i, car).start();
 				space.getAdder().add(space, car);
 				car.setPosition(origin);
 				schedule.schedule(car);
 				
-				System.out.println(car.print());
+				System.out.println("Random Car " + i +" : "+car.print()+"  Prob : "+randProb);
 			}
+			
+			//create monitored car
+			//MonitoredCarAgent car = new MonitoredCarAgent(space,new CityMap(), origin,destination,startRoad,true);
+			
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
 		}
-		
-		
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Context build(Context<Object> context) {		
 		Parameters params = RunEnvironment.getInstance().getParameters();
-		int carCount = (Integer) params.getValue("carCount");
+		int nCars = (Integer) params.getValue("carCount");
 		
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
 		space = gridFactory.createGrid(new String("street_map"), context, 

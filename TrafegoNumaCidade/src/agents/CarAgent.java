@@ -20,23 +20,21 @@ import behaviours.LearnMap;
 import cityStructure.CityMap;
 import cityStructure.Intersection;
 import cityStructure.Road;
-import cityTraffic.onto.ServiceOntology;
 
 public class CarAgent extends Agent {
 
-	private Road road = null;							//Current road he is in (real world)
-	private Intersection intersection = null;			//Latest intersection (real world)
+	protected Road road = null;							//Current road he is in (real world)
+	protected Intersection intersection = null;			//Latest intersection (real world)
 	
 	//Origin and Destination
-	private CityMap cityKnowledge;						//What the agent knows about the city -> calculate the jorney to the destination
-	private Point position;
-	private Point destination;
-	private String destinationName = null;
-	private ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
+	protected CityMap cityKnowledge;						//What the agent knows about the city -> calculate the jorney to the destination
+	protected Point position;
+	protected Point destination;
+	protected String destinationName = null;
+	protected ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
 
-	private Grid<Object> space = null;
-    
-    private boolean enableCityLearning = false;
+	protected Grid<Object> space = null;
+	protected boolean enableCityLearning = false;
     
     
     public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad,boolean enableCityLearning) 
