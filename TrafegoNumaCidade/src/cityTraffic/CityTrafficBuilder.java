@@ -188,7 +188,8 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		x = (Integer) params.getValue("destX");
 		y = (Integer) params.getValue("destY");
 		myDest = new Point(x, y);
-
+		String filename = (String) params.getValue("path");
+		
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
 		space = gridFactory.createGrid(new String("street_map"), context,
 				new GridBuilderParameters<Object>(new StrictBorders(), new SimpleGridAdder<Object>(), true, 21, 21));
@@ -196,9 +197,10 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		// load knowledge
 		myKnowledge = new Knowledge();
 		try {
-			String file = new File("").getAbsolutePath();
-			file += "\\objs\\car.ser";
-			FileInputStream fileIn = new FileInputStream(file);
+			String path = new File("").getAbsolutePath();
+			path += "\\objs\\"+filename;
+			File ser = new File(path);
+			FileInputStream fileIn = new FileInputStream(ser);
 			ObjectInputStream in = new ObjectInputStream(fileIn);
 			myKnowledge = (Knowledge) in.readObject();
 			in.close();
@@ -211,6 +213,9 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		} catch (ClassNotFoundException c) {
 			System.out.println("MonitoredCarAgent class not found");
 		}
+		
+		myKnowledge.setFilename(filename);
+		
 		return super.build(context);
 	}
 

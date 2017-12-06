@@ -1,7 +1,6 @@
 package agents;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -22,18 +21,18 @@ public class MonitoredCarAgent extends CarAgent {
 	@Override
 	public void takeDown() {
     	super.takeDown();
-    	//serialize agent knowledge
+    	//serialize agent knowledge    	
     	try {
-			String file = new File("").getAbsolutePath();
-			file += "\\objs\\car.ser";
-            FileOutputStream fileOut = new FileOutputStream(file);
+    		String path = new File("").getAbsolutePath();
+			path += "\\objs\\"+this.knowledge.getFilename();
+			File ser = new File(path);
+    		ser.createNewFile();
+            FileOutputStream fileOut = new FileOutputStream(ser);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(this.knowledge);
             out.close();
             fileOut.close();
-            System.out.printf("Serialized data is saved in car.ser\n");
-         } catch (FileNotFoundException f) {
-        	 System.out.print("File not loaded");
+            System.out.printf("Serialized data in car.ser\n");
          }catch (IOException i) {
             i.printStackTrace();
          }

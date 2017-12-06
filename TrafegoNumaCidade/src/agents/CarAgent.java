@@ -34,7 +34,7 @@ public class CarAgent extends Agent {
 	protected Grid<Object> space = null;
 	protected boolean enableCityLearning = false;
 	
-	protected Knowledge knowledge;
+	protected Knowledge knowledge = new Knowledge();
     
     public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad,boolean enableCityLearning) 
 	{
