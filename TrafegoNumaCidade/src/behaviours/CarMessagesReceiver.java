@@ -45,7 +45,7 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 				//If the car knows the road
 				if(car.getCityKnowledge().getRoads().containsKey(roadName)){
 					r = car.getCityKnowledge().getRoads().get(roadName);
-					ArrayList<String> route = AStar.shortestPath(car.getCityKnowledge(), r, destinationName);
+					ArrayList<String> route = car.getJourneyCalculations(r, destinationName);
 					
 					//If it knows the path to the destination
 					if(route.size() > 0){
@@ -111,8 +111,7 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 					car.setDestinationName(roadName);
 					
 					//Try to find the path
-					car.setJorney(AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), roadName));
-					car.jorneyConsume();
+					car.calculateAndUpdateJourney();
 					
 					if(car.getJorney().size() > 0)
 						System.out.println("Found path by it self");
@@ -124,14 +123,8 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 				if(car.getCityKnowledge().getRoads().containsKey(roadName))
 					car.getCityKnowledge().getRoads().get(roadName).blocked();
 				
-				if(car.getJorney().contains(roadName) && car.getDestinationName() != null){
-					ArrayList<String> jorney = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestinationName());
-					
-					if(jorney.size() > 0){
-						car.setJorney(jorney);
-						car.jorneyConsume();//consumes the first road -> current road
-						//System.out.println("Road was blocked got new jorney");
-					}
+				if(car.getJorney().contains(roadName)){
+					car.calculateAndUpdateJourney();
 				}
 			}
 			else if(type.equals(MessagesResources.MessageType.UNBLOCKED)){
@@ -140,14 +133,8 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 				if(car.getCityKnowledge().getRoads().containsKey(roadName))
 					car.getCityKnowledge().getRoads().get(roadName).unblocked();
 				
-				if(!car.getJorney().contains(roadName) && car.getDestinationName() != null){
-					ArrayList<String> jorney = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestinationName());
-					
-					if(jorney.size() > 0){
-						car.setJorney(jorney);
-						car.jorneyConsume();//consumes the first road -> current road
-						//System.out.println("Road was unblocked got new jorney");
-					}
+				if(!car.getJorney().contains(roadName)){
+					car.calculateAndUpdateJourney();
 				}
 			}
 		}

@@ -51,6 +51,8 @@ public class LearnMap extends CyclicBehaviour{
 						knownRoad.setEndIntersection(intersection);
 						knownRoad.setEndPoint(i.getEndPoint());
 						knownRoad.updateLength();
+						
+						car.calculateAndUpdateJourney();
 					}
 				}
 				
@@ -65,6 +67,8 @@ public class LearnMap extends CyclicBehaviour{
 						knownRoad.setStartIntersection(intersection);
 						knownRoad.setStartPoint(o.getEndPoint());
 						knownRoad.updateLength();
+						
+						car.calculateAndUpdateJourney();
 					}
 
 				}

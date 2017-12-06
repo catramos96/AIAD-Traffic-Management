@@ -12,6 +12,7 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 import java.util.ArrayList;
 
+import algorithms.AStar;
 import behaviours.AskDirections;
 import behaviours.CarMessagesReceiver;
 import behaviours.CarMovement;
@@ -103,6 +104,34 @@ public class CarAgent extends Agent {
     /*
      * GETS & SETS
      */
+    
+    /**
+     * Calculates and updates the journey of itself
+     * only if it was successful at calculating a new route
+     */
+    public void calculateAndUpdateJourney(){
+    	
+    	if(destinationName != null){
+    		
+    		ArrayList<String> j = AStar.shortestPath(cityKnowledge, road, destinationName);
+    		
+    		if(j.size() > 0){
+	    		setJorney(j);
+	    		jorneyConsume();
+    		}
+    	}
+    	
+    }
+    
+    /**
+     * Calculates the journey of others
+     * @param road
+     * @param destinationName
+     * @return
+     */
+    public ArrayList<String> getJourneyCalculations(Road road, String destinationName){
+    	return AStar.shortestPath(cityKnowledge, road, destinationName);
+    }
     
     public Road getRoad(){
     	return road;

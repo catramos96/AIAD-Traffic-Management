@@ -27,12 +27,7 @@ public class CarMovement extends TickerBehaviour{
 		super(car,time);
 		this.car = car;
 		
-		if(car.getDestinationName() != null){
-			//calculate the path to the destination based on the knowledge he haves
-			ArrayList<String> j = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestinationName());
-			car.setJorney(j);
-			car.jorneyConsume();	
-		}
+		car.calculateAndUpdateJourney();
 	}
 
 	@Override
@@ -96,8 +91,14 @@ public class CarMovement extends TickerBehaviour{
 							ArrayList<Road> unvisitedRoads = car.getIntersection().getOutRoads();
 							
 							for(Road r : unvisitedRoads){
-								if(car.getCityKnowledge().getRoads().containsKey(r))
+								
+								//If knows the road
+								if(car.getCityKnowledge().getRoads().containsKey(r)){
+									
+									//In knows all the information about the road
+									if(r.getEndIntersection() != null && r.getStartIntersection() != null)
 									unvisitedRoads.remove(r);
+								}
 							}
 							
 							if(unvisitedRoads.size() == 0)
@@ -112,13 +113,8 @@ public class CarMovement extends TickerBehaviour{
 						car.setRoad(nextRoad);
 						
 						//if previous jorney wasn't valid
-						if(!valid && car.getDestinationName() != null){
-							
-							//calculate the path to the destination based on the knowledge that he haves
-							ArrayList<String> j = AStar.shortestPath(car.getCityKnowledge(), car.getRoad(), car.getDestinationName());
-							car.setJorney(j);
-							car.jorneyConsume();		
-						}
+						if(!valid)
+							car.calculateAndUpdateJourney();	
 						
 						//Perform the intersection route
 						passageType = SpaceResources.PassageType.Intersection;
