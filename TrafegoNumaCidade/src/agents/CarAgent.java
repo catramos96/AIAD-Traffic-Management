@@ -26,6 +26,8 @@ import cityTraffic.onto.ServiceOntology;
 
 public class CarAgent extends Agent {
 
+	public static enum LearningMode {LEARNING, APPLYING, NONE};
+	
 	private Road road = null;							//Current road he is in (real world)
 	private Intersection intersection = null;			//Latest intersection (real world)
 	
@@ -41,23 +43,24 @@ public class CarAgent extends Agent {
 	//private HashMap<Integer,QLearning> transitKnowledge = new HashMap<Integer,QLearning>();
     
 	private QLearning qlearning = new QLearning(this, 1, 0.8);
+	private Point spaceDimensions = null;
 	
-    private boolean enableCityLearning = false;
+    private LearningMode learningMode = null;
     
     
-    public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad,boolean enableCityLearning) 
+    public CarAgent(Grid<Object> space, Point spaceD, CityMap map, Point origin, Point destination, Road startRoad,LearningMode mode) 
 	{
 		this.space = space;
+		this.spaceDimensions = spaceD;
 		this.destination = destination;
 		this.position = origin;
 		this.road = startRoad;
 		
-		this.enableCityLearning = enableCityLearning;
-		
+		this.learningMode = mode;
 		this.cityKnowledge = map;
 	}
     
-    public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, String endRoad, Road startRoad,boolean enableCityLearning) 
+    public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, String endRoad, Road startRoad,LearningMode mode) 
 	{
 		this.space = space;
 		this.destination = destination;
@@ -65,8 +68,7 @@ public class CarAgent extends Agent {
 		this.road = startRoad;
 		this.destinationName = endRoad;
 		
-		this.enableCityLearning = enableCityLearning;
-		
+		this.learningMode = mode;		
 		this.cityKnowledge = map;
 	}
     
@@ -91,7 +93,7 @@ public class CarAgent extends Agent {
         addBehaviour(new CarMessagesReceiver(this));
         addBehaviour(new CarMovement(this, Resources.carVelocity));
         
-        if(enableCityLearning){
+        if(learningMode.equals(LearningMode.LEARNING)){
         	addBehaviour(new LearnMap(this));
         	addBehaviour(new AskDirections(this,5000));
         }
@@ -123,7 +125,13 @@ public class CarAgent extends Agent {
     	
     	if(destinationName != null){
     		
-    		ArrayList<String> j = AStar.shortestPath(cityKnowledge, road, destinationName);
+    		ArrayList<String> j =new ArrayList<String>();
+    		
+    		if(!learningMode.equals(learningMode.APPLYING))
+    			j = AStar.shortestPath(cityKnowledge, road, destinationName);
+    		else{
+    			j.add(qlearning.getMaxQualityRoad(road).toString());
+    		}
     		
     		if(j.size() > 0){
 	    		setJorney(j);
@@ -184,7 +192,7 @@ public class CarAgent extends Agent {
 		this.space = space;
 	}
 	
-	public ArrayList<String> getJorney(){
+	public ArrayList<String> getJourney(){
 		return journey;
 	}
     
@@ -211,5 +219,9 @@ public class CarAgent extends Agent {
 	
 	public void setDestinationName(String n){
 		destinationName = n;
+	}
+	
+	public Point getSpaceDimensions(){
+		return spaceDimensions;
 	}
 }

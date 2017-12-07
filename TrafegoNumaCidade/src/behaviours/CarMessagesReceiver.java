@@ -60,7 +60,7 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 			else if(type.equals(MessagesResources.MessageType.PATH)){
 				
 				//Don't process the same information
-				if(car.getJorney().size() == 0){
+				if(car.getJourney().size() == 0){
 					
 					String parts[] = message.getContent().split(MessagesResources.SEPARATOR);
 					
@@ -123,7 +123,7 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 				if(car.getCityKnowledge().getRoads().containsKey(roadName))
 					car.getCityKnowledge().getRoads().get(roadName).blocked();
 				
-				if(car.getJorney().contains(roadName)){
+				if(car.getJourney().contains(roadName)){
 					car.calculateAndUpdateJourney();
 				}
 			}
@@ -133,7 +133,7 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 				if(car.getCityKnowledge().getRoads().containsKey(roadName))
 					car.getCityKnowledge().getRoads().get(roadName).unblocked();
 				
-				if(!car.getJorney().contains(roadName)){
+				if(!car.getJourney().contains(roadName)){
 					car.calculateAndUpdateJourney();
 				}
 			}

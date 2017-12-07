@@ -7,12 +7,16 @@ import agents.CarAgent;
 import cityStructure.Road;
 import resources.Point;
 import resources.Resources;
+import resources.SpaceResources;
 
 /**
  * Executed only after knowing the destination road name
  *
  */
 public class QLearning {
+	
+	private final double IMPORTANCE1 = 0.6;			//Importance of reaching the destination
+	private final double IMPORTANCE2 = 0.4;			//Importance of choosing paths with less transit and less length
 	/*
 	 * Auxiliary Classes
 	 */
@@ -30,15 +34,15 @@ public class QLearning {
 	private class Quality{
 		public State state = null;
 		public String action_road = null;
-		public int value = 0;
+		public double value = 0;
 		
-		public Quality(State state,String action_road,int value){
+		public Quality(State state,String action_road,double value){
 			this.state = state;
 			this.action_road = action_road;
 			this.value = value;
 		}
 		
-		public void setValue(int value){
+		public void setValue(double value){
 			this.value = value;
 		}	
 		
@@ -74,8 +78,8 @@ public class QLearning {
 			qs.add(q1);
 			qs.add(q2);
 			
-			System.out.println("Insert QL: " + q1.print());
-			System.out.println("Insert QL: " + q2.print());
+			//System.out.println("Insert QL: " + q1.print());
+			//System.out.println("Insert QL: " + q2.print());
 
 			
 			actions.put(r.getName(), qs);
@@ -105,15 +109,36 @@ public class QLearning {
 
 				q.setValue(quality_value);
 
-				System.out.println("QL: " +  q.print());
+				System.out.println(car.getLocalName() + " QL: " +  q.print());
 
 				break;
 			}
 		}
 	}
 	
+	public Road getMaxQualityRoad(Road currentRoad){
+		Road nextRoad = null;
+		double maxValue = 0;
+		
+		for(Road r2 : currentRoad.getEndIntersection().getOutRoads()){
+			
+			if(qualityValues.containsKey(r2.getName())){
+				
+				double value = getMaxQualityActionValue(new State(r2.getName(),r2.isBlocked()));
+				
+				if(maxValue < value){
+					maxValue = value;
+					nextRoad = r2;
+				}
+				
+			}
+		}
+		
+		return nextRoad;
+	}
+	
 	private Quality getMaxQuality(String fromRoad){
-		int max = 0;
+		double max = 0;
 		Quality q =null;
 		
 		if(!qualityValues.containsKey(fromRoad))
@@ -131,15 +156,35 @@ public class QLearning {
 		return q;
 	}
 	
-	private int getReward(String fromRoad, String toRoad, boolean withTransit){
+	private double getMaxQualityActionValue(State state){
+		double max = -99999;
 		
-		int reward = 0;
+		if(!qualityValues.containsKey(state.road))
+			return max;
+		
+		for(String toRoad : qualityValues.get(state.road).keySet()){
+			
+			for(Quality tmpQ : qualityValues.get(state.road).get(toRoad)){
+				
+				if(max < tmpQ.value && tmpQ.state.hasTransit == state.hasTransit)
+					max = tmpQ.value;
+			}
+			
+		}
+		
+		return max;
+	}
+	
+	private double getReward(String fromRoad, String toRoad, boolean withTransit){
+		
+		double reward = 0;
 		
 		if(car.getCityKnowledge().getRoads().containsKey(fromRoad) &&
 				car.getCityKnowledge().getRoads().containsKey(toRoad)){
 			
 			Road r1 = car.getCityKnowledge().getRoads().get(fromRoad);
 			Point destination = null;
+			
 			
 			if(car.getDestinationName() != null){
 				
@@ -157,18 +202,25 @@ public class QLearning {
 				destination = car.getDestination();
 			
 			int transitPenalty = 0;
+			int length = r1.getLength();
 			
-			if(withTransit)
-				transitPenalty = r1.getLength() * Resources.transitPenaltyRatio * 10;
+			if(withTransit){
+				//Number of cells that the car could pass if he wasn't stopped at the transit
+				transitPenalty = (r1.getEndIntersection().getInRoads().size()-1) * 
+						(Resources.lightCheck*Resources.GreenLightTimeUnits + Resources.lightCheck + Resources.YellowLightTimeUnits) /
+						Resources.carVelocity;
 				
-			if(toRoad.equals(car.getDestinationName()))
-				reward = 1000 + transitPenalty;
-			
-			
-			else if(r1.getEndIntersection() != null){
-				int distance = Point.getDistance(r1.getEndIntersection().getOneEntry(), destination);
-				reward = 1000 - (distance * 10);
+				if(transitPenalty == 0)
+					transitPenalty = r1.getLength();
 			}
+			
+			//If he doesn't know the length of the road
+			if(length == SpaceResources.INFINITE)
+				length = Math.max(car.getSpaceDimensions().x, car.getSpaceDimensions().y);		//assume worst case
+			
+			reward = 1.5 * (car.getSpaceDimensions().x + car.getSpaceDimensions().y) - 
+					Point.getDistance(r1.getEndIntersection().getOneEntry(), destination) * 2 * IMPORTANCE1 - 
+					(length + transitPenalty) * 2 * IMPORTANCE2;
 			
 		}
 		

@@ -61,10 +61,10 @@ public class CarMovement extends TickerBehaviour{
 						boolean valid = true;
 						
 						//follow the jorney
-						if(car.getJorney().size() != 0){
+						if(car.getJourney().size() != 0){
 							
 							//checks if the next road to follow is a road out of the intersection (real world)
-							nextRoad = car.getIntersection().isOutRoad(car.getJorney().get(0));
+							nextRoad = car.getIntersection().isOutRoad(car.getJourney().get(0));
 							
 							if(nextRoad == null)
 								valid = false;
@@ -81,11 +81,16 @@ public class CarMovement extends TickerBehaviour{
 								}
 							}
 						}
-						else
-							valid = false;
+						else{
+							car.calculateAndUpdateJourney();
+							
+							if(car.getJourney().size() == 0)
+								valid = false;
+						}
 						
-						//if the previous jorney wasn't valid
+						//failed to calculate journey
 						if(!valid){
+							
 							//chooses a road not visited before
 							//if it visited all roads, then the next road would be random
 							ArrayList<Road> unvisitedRoads = car.getIntersection().getOutRoads();
