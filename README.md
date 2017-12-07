@@ -21,12 +21,21 @@ comunicação com outros automóveis, ou via rádio.
  * Devem ser testadas diferentes configurações, tendo em conta zonas ou direções de maior tráfego, populações de automóveis com diferentes módulos de decisão, agentes BDI, etc. 
 
     * 3 ou 2 Mapas: Grande e Pequeno
-    * Diferentes Módulos de decisão (Alterar A*):
+    * Diferentes Módulos de decisão:
         * Por distância mínima **Check**
-        * Por menos semáforos (Interceções com + de 1 via de entrada)
-        
-    * Agentes BDI:
-        * Semáforos: Dar preferência a ruas nas interceções com mais carros em espera ?
-        * Carros: ?
+        * Pelo trânsito **Check**
         
  * Deve ser equacionada a possibilidade de implementar agentes com aprendizagem por reforço, que aprendam quais os melhores trajetos para determinados destinos em determinadas horas do dia.
+
+    * Estado(NomeDaRua,Trânsito)
+    * Acção(NomeDaRua)
+
+    * Função de recompensa
+        * Com trânsito: 3 * (width + height)/(Distância(IntersecçãoDoFimDeRua,IntersecçãoDOInicioDestino) + (tamanho da rua * velocidade + (Nº de semáforos no fim da intersecção - 1) * (tempo em verde + tempo em amarelo))/velocidade)
+        * Sem trânsito: 3 * (width + height)/(Distância(IntersecçãoDoFimDeRua,IntersecçãoDOInicioDestino) + (tamanho da rua * velocidade)/velocidade)
+    
+    * Treino (Aprendizagem)
+        * Preenchimento da matriz de qualidade - **Check**
+        
+    * Utilização do conhecimento
+        * Verificar em cada intersecção, ir buscar os valores de qualidade, tendo em conta o trânsito em cada rua, e ir pela rua com um valor de qualidade mais alto.
