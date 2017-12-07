@@ -31,8 +31,8 @@ comunicação com outros automóveis, ou via rádio.
     * Acção(NomeDaRua)
 
     * Função de recompensa
-        * Com trânsito: 3 * (width + height)/(Distância(IntersecçãoDoFimDeRua,IntersecçãoDOInicioDestino) + (tamanho da rua * velocidade + (Nº de semáforos no fim da intersecção - 1) * (tempo em verde + tempo em amarelo))/velocidade)
-        * Sem trânsito: 3 * (width + height)/(Distância(IntersecçãoDoFimDeRua,IntersecçãoDOInicioDestino) + (tamanho da rua * velocidade)/velocidade)
+        * Com trânsito: 1.5*(mapa.width + mapa.height) - dist(FimIntersecção,InicioIntersecçãoDestino)*Importância1 - (roadLength - ((N semaforos do FimIntersecção - 1) * (TimeYellow + TimeGreen))/TimeDrive)*Importancia2
+        * Sem trânsito: 3 * 1.5*(mapa.width + mapa.height) - dist(FimIntersecção,InicioIntersecçãoDestino)*Importância1 - roadLength*Importancia2
     
     * Treino (Aprendizagem)
         * Preenchimento da matriz de qualidade - **Check**
