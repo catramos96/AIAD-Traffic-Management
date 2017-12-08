@@ -5,15 +5,18 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import agents.CarAgent;
+import agents.CarAgent.LearningMode;
+import algorithms.Quality;
 import agents.City;
 import agents.Knowledge;
 import agents.MonitoredCarAgent;
 import agents.Radio;
 import agents.RandomCarAgent;
 import agents.RoadMonitor;
-import cityStructure.CityMap;
 import cityStructure.Road;
 import jade.core.AID;
 import jade.core.Profile;
@@ -51,7 +54,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	private static Point spaceDimensions = new Point(21,21);
 	
 	Grid<Object> space;
-	private static Point spaceDimensions = new Point(21,21);
 
 	public static final boolean USE_RESULTS_COLLECTOR = true;
 
@@ -135,7 +137,9 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			Road myStartRoad = city.getMap().isPartOfRoad(myOrigin);
 			if (myStartRoad != null) 
 			{
-				MonitoredCarAgent car = new MonitoredCarAgent(space, myKnowledge.getCityKnowledge(), myOrigin, myDest, myStartRoad,CarAgent.LearningMode.LEARNING);
+				myKnowledge.setLearningMode(LearningMode.LEARNING);
+				MonitoredCarAgent car = new MonitoredCarAgent(space, myOrigin, myDest, myStartRoad,myKnowledge);
+				
 				agentContainer.acceptNewAgent("MonitoredCarAgent", car).start();
 				space.getAdder().add(space, car);
 				car.setPosition(myOrigin);
@@ -188,10 +192,12 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		double randProb = Math.random() * 100;
 		if (randProb <= prob) {
 			// the car must learn
-			car = new RandomCarAgent(space, new CityMap(spaceDimensions), origin, destination, startRoad, CarAgent.LearningMode.LEARNING);
+			car = new RandomCarAgent(space, origin, destination, startRoad, new Knowledge(spaceDimensions));
 		} else {
 			// the car has previous knowledge of the city
-			car = new RandomCarAgent(space, city.getMap(), origin, destination, startRoad, CarAgent.LearningMode.LEARNING);
+			Knowledge know = new Knowledge(spaceDimensions);
+			know.setCityKnowledge(city.getMap());
+			car = new RandomCarAgent(space, origin, destination, startRoad,know);
 		}
 
 		agentContainer.acceptNewAgent("RandomCarAgent"+n, car).start();
@@ -236,6 +242,16 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			System.out.println("MonitoredCarAgent class not found");
 		}
 		myKnowledge.setFilename(filename);
+		
+		HashMap<String, ArrayList<Quality>> map = myKnowledge.getQualityValues();
+		for (Map.Entry<String, ArrayList<Quality>> entry : map.entrySet()) {
+		    String key = entry.getKey();
+		    ArrayList<Quality> value = entry.getValue();
+		    System.out.println("Key : "+key);
+		    for (Quality q : value) {
+				System.out.println(q.value + " , ");
+			}
+		}
 		
 		//map path
 		path = new File("").getAbsolutePath();
