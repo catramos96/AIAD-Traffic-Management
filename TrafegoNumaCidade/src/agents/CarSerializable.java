@@ -4,14 +4,14 @@ import java.io.Serializable;
 import cityStructure.CityMap;
 import resources.Point;
 
-public class Knowledge implements Serializable {
+public class CarSerializable implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	//What the agent knows about the city -> calculate the journey to the destination
 	private CityMap cityMap = null;
 	private String filename = "car.ser";
 	
-	public Knowledge(Point p) { 
+	public CarSerializable(Point p) { 
 		cityMap = new CityMap(p);
 	}
 

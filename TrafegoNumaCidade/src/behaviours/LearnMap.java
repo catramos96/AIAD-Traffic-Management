@@ -1,8 +1,10 @@
 package behaviours;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import agents.CarAgent;
+import agents.CarAgent.LearningMode;
 import cityStructure.CityMap;
 import cityStructure.Intersection;
 import cityStructure.Road;
@@ -14,12 +16,17 @@ public class LearnMap extends CyclicBehaviour{
 	private static final long serialVersionUID = 1L;
 	private Intersection latestIntersection = null;
 	private Road latestRoad = null;
-	private boolean latestTransit = false;
 	
 	public LearnMap(CarAgent car){
 		this.car = car;
 		this.latestIntersection = car.getIntersection();
 		this.latestRoad = car.getRoad();
+		
+		for(Road r : latestRoad.getStartIntersection().getInRoads())
+			car.getUnexploredRoads().put(r.getName(), r);
+		
+		for(Road r : latestRoad.getStartIntersection().getOutRoads())
+			car.getUnexploredRoads().put(r.getName(), r);
 	}
 
 	@Override
@@ -47,9 +54,11 @@ public class LearnMap extends CyclicBehaviour{
 				ArrayList<Road> outRoads = intersection.getOutRoads();
 				
 				for(Road i : inRoads){
+					
 					//New road discovered
 					if(!knowledge.getRoads().containsKey(i.getName())){
 						knowledge.getRoads().put(i.getName(), i);
+						car.getUnexploredRoads().put(i.getName(),i);
 					}
 					else{
 						//Update the missing information
@@ -58,7 +67,8 @@ public class LearnMap extends CyclicBehaviour{
 						knownRoad.setEndPoint(i.getEndPoint());
 						knownRoad.updateLength();
 						
-						car.calculateAndUpdateJourney();
+						if(car.getJourney().size() == 0)
+							car.calculateAndUpdateJourney();
 					}
 
 				}
@@ -67,6 +77,7 @@ public class LearnMap extends CyclicBehaviour{
 					//New road discovered
 					if(!knowledge.getRoads().containsKey(o.getName())){
 						knowledge.getRoads().put(o.getName(), o);
+						car.getUnexploredRoads().put(o.getName(),o);
 					}
 					else{
 						//Update the missing information
@@ -75,7 +86,8 @@ public class LearnMap extends CyclicBehaviour{
 						knownRoad.setStartPoint(o.getEndPoint());
 						knownRoad.updateLength();
 						
-						car.calculateAndUpdateJourney();
+						if(car.getJourney().size() == 0)
+							car.calculateAndUpdateJourney();
 					}
 
 				}
@@ -86,16 +98,22 @@ public class LearnMap extends CyclicBehaviour{
 		if(!car.getRoad().equals(latestRoad) && latestIntersection != null){
 			
 			//Reinforcment Learning
-			car.getQLearning().updateQualityValues(latestIntersection.getName(), latestRoad.getName(), latestTransit);
+			car.getQLearning().updateQualityValues(latestIntersection.getName(), latestRoad.getName());
 			
 			latestRoad = car.getRoad();
-			latestTransit = latestRoad.isBlocked();
-		}
-		else if(latestTransit == false){
-			latestTransit = latestRoad.isBlocked();					
+			
+			if(car.getUnexploredRoads().containsKey(latestRoad.getName()))
+				car.getUnexploredRoads().remove(latestRoad.getName());
 		}
 		
 		latestIntersection = car.getIntersection();
+		
+		//Knows all the city
+		if(car.getUnexploredRoads().size() == 0){
+			System.out.println(car.getLocalName() + " is applying his knowledge from qLearning values");
+			car.setLearningMode(LearningMode.APPLYING);
+			car.removeBehaviour(this);
+		}
 
 	}
 

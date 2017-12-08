@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 
 import agents.CarAgent;
 import agents.City;
-import agents.Knowledge;
+import agents.CarSerializable;
 import agents.MonitoredCarAgent;
 import agents.Radio;
 import agents.RandomCarAgent;
@@ -42,13 +42,12 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	//params
 	private static Point myOrigin;
 	private static Point myDest;
-	private static Knowledge myKnowledge;
+	private static CarSerializable myKnowledge;
 	private static String path;
 
 	private static int nCars;
-	private static int n = -1; 	//number of the car being produced
+	private static int n = -1; 		//number of the car being produced
 	private static int prob = 0; 	//probability to learn the city
-	private static Point spaceDimensions = new Point(21,21);
 	
 	Grid<Object> space;
 	private static Point spaceDimensions = new Point(21,21);
@@ -122,20 +121,22 @@ public class CityTrafficBuilder extends RepastSLauncher {
 					agentContainer.acceptNewAgent("road monitor-" + r.getName(), monitor).start();
 					space.getAdder().add(space, monitor);
 					space.moveTo(monitor, r.getEndPoint().toArray());
-					//schedule.schedule(monitor);
 				}
 			}
 
 			// create cars in random positions
-			for (int i = 0; i < nCars; i++) {
+			/*for (int i = 0; i < nCars; i++) {
 				createRandomCar(city);
-			}
+			}*/
 
 			// create monitored car
 			Road myStartRoad = city.getMap().isPartOfRoad(myOrigin);
 			if (myStartRoad != null) 
 			{
-				MonitoredCarAgent car = new MonitoredCarAgent(space, myKnowledge.getCityKnowledge(), myOrigin, myDest, myStartRoad,CarAgent.LearningMode.LEARNING);
+				//MonitoredCarAgent car = new MonitoredCarAgent(space, myKnowledge.getCityKnowledge(), myOrigin, myDest, myStartRoad,CarAgent.LearningMode.LEARNING);
+				
+				MonitoredCarAgent car = new MonitoredCarAgent(space, new CityMap(spaceDimensions), myOrigin, myDest, myStartRoad,CarAgent.LearningMode.LEARNING);
+
 				agentContainer.acceptNewAgent("MonitoredCarAgent", car).start();
 				space.getAdder().add(space, car);
 				car.setPosition(myOrigin);
@@ -217,14 +218,14 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		String filename = (String) params.getValue("objPath");
 		
 		//load knowledge
-		myKnowledge = new Knowledge(spaceDimensions);
+		myKnowledge = new CarSerializable(spaceDimensions);
 		try {
 			String path = new File("").getAbsolutePath();
 			path += "\\objs\\"+filename;
 			File ser = new File(path);
 			FileInputStream fileIn = new FileInputStream(ser);
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			myKnowledge = (Knowledge) in.readObject();
+			myKnowledge = (CarSerializable) in.readObject();
 			in.close();
 			fileIn.close();
 			System.out.println("Data loaded from car.ser\n");

@@ -10,6 +10,8 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import algorithms.AStar;
 import algorithms.QLearning;
 import behaviours.AskDirections;
@@ -35,14 +37,12 @@ public class CarAgent extends Agent {
 	private ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
 
 	private Grid<Object> space = null;
-	
-	//private HashMap<Integer,QLearning> transitKnowledge = new HashMap<Integer,QLearning>();
     
 	private QLearning qlearning = new QLearning(this, 1f, 0.8f);
-	
     private LearningMode learningMode = null;
+    private HashMap<String,Road> unexploredRoads = new HashMap<String,Road>();
    
-	protected Knowledge knowledge = new Knowledge(null);
+	protected CarSerializable knowledge = new CarSerializable(null);
 
     public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad,LearningMode mode) 
 	{
@@ -122,25 +122,42 @@ public class CarAgent extends Agent {
      * only if it was successful at calculating a new route
      */
     public void calculateAndUpdateJourney(){
-    	
-    	if(destinationName != null){
     		
     		ArrayList<String> j =new ArrayList<String>();
     		
-    		if(!learningMode.equals(learningMode.APPLYING))
-    			j = AStar.shortestPath(cityKnowledge, road, destinationName);
-    		else{
-    			String road = qlearning.getNextRoad(intersection);
-    			if(road != null)
-    				j.add(road);
+    		switch(learningMode){
+	    		case NONE:{
+	    			if(destinationName != null)
+	    				j = AStar.shortestPath(cityKnowledge, road, destinationName);
+	    			break;
+	    		}
+	    		case LEARNING:{
+	    			//Chooses a path to an unvisited road
+    				System.out.println("PATH TO UNVISITED");
+
+	    			for(String unexploredRoad : unexploredRoads.keySet()){
+	    				System.out.println("UNVISITED: " + unexploredRoad);
+	    				j = AStar.shortestPath(cityKnowledge, road, unexploredRoad);
+	    				if(j.size() > 0){
+	    					System.out.println("Path to unvisited road");
+	    					break;
+	    				}
+	    			}
+	    			break;
+	    		}
+	    		case APPLYING: {
+	    			String road = qlearning.getNextRoad(intersection);
+	    			if(road != null)
+	    				j.add(road);
+	    			break;
+	    		}
     		}
 
     		
     		if(j.size() > 0){
-	    		setJorney(j);
+	    		setJourney(j);
 	    		jorneyConsume();
     		}
-    	}
     	
     }
     
@@ -167,8 +184,8 @@ public class CarAgent extends Agent {
     	return destination;
     }
     
-    public void setJorney(ArrayList<String> jorney){
-    	this.journey = jorney;
+    public void setJourney(ArrayList<String> journey){
+    	this.journey = journey;
     }
     
     public void setRoad(Road r){
@@ -222,5 +239,17 @@ public class CarAgent extends Agent {
 	
 	public void setDestinationName(String n){
 		destinationName = n;
+	}
+	
+	public void setLearningMode(LearningMode mode){
+		learningMode = mode;
+	}
+	
+	public HashMap<String,Road> getUnexploredRoads(){
+		return unexploredRoads;
+	}
+	
+	public LearningMode getLearningMode(){
+		return learningMode;
 	}
 }

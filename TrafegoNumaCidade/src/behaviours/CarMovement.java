@@ -2,6 +2,7 @@ package behaviours;
 
 import java.util.ArrayList;
 import agents.CarAgent;
+import agents.CarAgent.LearningMode;
 import cityStructure.Road;
 import resources.Point;
 import resources.Resources;
@@ -24,7 +25,8 @@ public class CarMovement extends TickerBehaviour{
 		super(car,time);
 		this.car = car;
 		
-		car.calculateAndUpdateJourney();
+		if(car.getJourney().size() == 0)
+			car.calculateAndUpdateJourney();
 	}
 
 	@SuppressWarnings("unlikely-arg-type")
@@ -35,7 +37,7 @@ public class CarMovement extends TickerBehaviour{
 		{
 			Point pos = car.getPosition();
 			
-			if(car.getDestination().equals(pos)){
+			if(car.getDestination().equals(pos) && !car.getLearningMode().equals(LearningMode.LEARNING)){
 				passageType = PassageType.Out;
 				car.takeDown();
 			}
@@ -75,7 +77,7 @@ public class CarMovement extends TickerBehaviour{
 								//no valid route
 								if(intersectionRoute.size() == 0){
 									valid = false;
-									car.setJorney(new ArrayList<String>());
+									car.getJourney().clear();
 								}
 							}
 						}
@@ -91,24 +93,20 @@ public class CarMovement extends TickerBehaviour{
 							
 							//chooses a road not visited before
 							//if it visited all roads, then the next road would be random
-							ArrayList<Road> unvisitedRoads = car.getIntersection().getOutRoads();
+							ArrayList<Road> possibleRoads = car.getIntersection().getOutRoads();
 							
-							for(Road r : unvisitedRoads){
-								
-								//If knows the road
-								if(car.getCityKnowledge().getRoads().containsKey(r)){
-									
-									//In knows all the information about the road
-									if(r.getEndIntersection() != null && r.getStartIntersection() != null)
-									unvisitedRoads.remove(r);
+							for(Road r : possibleRoads){
+								if(car.getUnexploredRoads().containsKey(r.getName())){
+									nextRoad = r;
+									break;
 								}
 							}
 							
-							if(unvisitedRoads.size() == 0)
-								unvisitedRoads = car.getIntersection().getOutRoads();
+							if(nextRoad == null){
+								int road_index = (int) (Math.random() * car.getIntersection().getOutRoads().size());
+								nextRoad = possibleRoads.get(road_index);
+							}
 							
-							int road_index = (int) (Math.random() * unvisitedRoads.size());
-							nextRoad = unvisitedRoads.get(road_index);
 							intersectionRoute = car.getIntersection().getRouteToRoad(car.getRoad().getName(), nextRoad.getName());
 						}
 						

@@ -3,6 +3,7 @@ package behaviours;
 import java.util.ArrayList;
 
 import agents.CarAgent;
+import agents.CarAgent.LearningMode;
 import cityTraffic.onto.ServiceOntology;
 import jade.content.lang.sl.SLCodec;
 import jade.content.onto.Ontology;
@@ -39,6 +40,10 @@ public class AskDirections extends TickerBehaviour{
 
 	@Override
 	protected void onTick() {
+		
+		//Car already learned enough
+		if(car.getQLearning().equals(LearningMode.APPLYING))
+			car.removeBehaviour(this);
 		
 		//If it didn't received any valuable directions before
 		if(car.getJourney().size() == 0 || car.getDestinationName() == null){

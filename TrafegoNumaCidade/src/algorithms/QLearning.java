@@ -73,30 +73,30 @@ public class QLearning {
 			actions.add(q2);
 			
 			System.out.println("ADDED: " + q1.print());
+			
+			updateQualityValues(intersection.getName(),r.getName());
 		}
 		
 		qualityValues.put(intersection.getName(),actions);
 
 	}
 	
-	public void updateQualityValues(String intersection,String toRoad, boolean transit){
+	public void updateQualityValues(String intersection,String toRoad){
 		
 		if(!(qualityValues.containsKey(intersection)))
 			return;
 					
 		for(Quality q : qualityValues.get(intersection)){
 
-			if(q.action_transit == transit && q.action_road.equals(toRoad)){
-				
-				System.out.println("Matched road");
+			if(q.action_road.equals(toRoad)){
 								
 				Quality maxQnextState = getMaxQuality(toRoad);
 				int quality_value = 0;
 				
 				if(maxQnextState != null)
-					quality_value =  (int) (100 * (q.value + learningRate * (getReward(intersection, toRoad, transit) + discount * maxQnextState.value - q.value)));
+					quality_value =  (int) (100 * (q.value + learningRate * (getReward(intersection, toRoad, q.action_transit) + discount * maxQnextState.value - q.value)));
 				else
-					quality_value =  (int) (100 * (q.value + learningRate * (getReward(intersection, toRoad, transit) + discount * 0 - q.value)));
+					quality_value =  (int) (100 * (q.value + learningRate * (getReward(intersection, toRoad, q.action_transit) + discount * 0 - q.value)));
 
 				q.setValue(((float)quality_value)/100);
 
@@ -105,9 +105,6 @@ public class QLearning {
 				return;
 			}
 		}
-		
-		System.out.println("Matched road failed - " + intersection + " " + toRoad + " " + transit);
-
 	}
 	
 	private Quality getMaxQuality(String intersection){

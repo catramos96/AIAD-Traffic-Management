@@ -64,17 +64,26 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 					
 						ArrayList<String> route = new ArrayList<String>();
 						boolean foundRoad = true;
+						boolean allRoadsVisited = true;
 						
 						//Looks for the current road in the route and builds the jorney path from there
 						for(int i = 2; i < parts.length; i++){
+							
+							if(!car.getCityKnowledge().getRoads().containsKey(parts[i]) ||
+									car.getUnexploredRoads().containsKey(parts[i])){
+								allRoadsVisited = false;
+							}
+							
 							if(foundRoad)
 								route.add(parts[i]);
+							
 							if(car.getRoad().getName().equals(parts[i]))
 								foundRoad = true;
 						}
 						
-						if(foundRoad){
-							car.setJorney(route);
+						//Only sets the new journey if it's a new journey with unvisited roads
+						if(foundRoad && !allRoadsVisited){
+							car.setJourney(route);
 						}
 					}
 				}
