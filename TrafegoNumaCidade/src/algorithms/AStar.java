@@ -67,12 +67,12 @@ public class AStar {
 
 			Road current = getMinimumCost(toEvaluateSet,final_costs);
 
-			if(endRoad != null){											//if destination is a road
-				if(current.equals(endRoad))
+			if(destinationIsRoad){											//if destination is a road
+				if(current.getName().equals(destinationName))
 					return buildPath(cameFrom, current);
 			}
 			else if(current.getEndIntersection() != null){					//if destination is an intersection
-				if(current.getEndIntersection().equals(endIntersection))
+				if(current.getEndIntersection().getName().equals(destinationName))
 					return buildPath(cameFrom,current);
 			}
 			

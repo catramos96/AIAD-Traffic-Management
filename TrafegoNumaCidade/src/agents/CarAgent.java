@@ -121,18 +121,30 @@ public class CarAgent extends Agent {
     		switch(knowledge.getLearningMode()){
 	    		case NONE:{
 	    			if(destinationName != null)
-	    				j = AStar.shortestPath(cityKnowledge, road, destinationName,true);
+	    				j = AStar.shortestPath(knowledge.getCityKnowledge(), road, destinationName,true);
 	    			break;
 	    		}
 	    		case LEARNING:{
-	    			//Chooses a path to an unvisited road
-	    			for(String unexploredRoad : unexploredRoads.keySet()){
-	    				j = AStar.shortestPath(cityKnowledge, road, unexploredRoads.get(unexploredRoad),false);
-	    				if(j.size() > 0){
-	    					break;
-	    				}
+	    			
+	    			if(journey.size() == 0){
+	    				//Chooses a path to an unvisited road
+		    			for(String unexploredRoad : unexploredRoads.keySet()){
+		    				
+		    				String intersection = unexploredRoads.get(unexploredRoad);
+		    				
+		    				if(intersection != ""){
+		    					if(this.getClass().equals(MonitoredCarAgent.class))
+		    						System.out.println("TRY finding path to " + unexploredRoad + " by " + intersection);
+		    					j = AStar.shortestPath(knowledge.getCityKnowledge(), road, intersection,false);
+			    				if(j.size() > 0){
+			    					System.out.println("FOUND PATH");
+			    					break;
+			    				}
+		    				}
+		    			}
+		    			break;
 	    			}
-	    			break;
+	    			
 	    		}
 	    		case APPLYING: {
 	    			String road = qlearning.getNextRoad(intersection);

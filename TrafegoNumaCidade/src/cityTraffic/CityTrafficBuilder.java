@@ -57,7 +57,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 
 	private Schedule schedule = new Schedule();
 	
-	private static Point spaceDimensions = new Point(62,62);
+	private static Point spaceDimensions = new Point(21,21);//new Point(62,62);
 
 	public static Agent getAgent(Context<?> context, AID aid) {
 		for (Object obj : context.getObjects(Agent.class)) {
@@ -102,7 +102,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			
 			agentContainer.acceptNewAgent("city", city).start();
 			space.getAdder().add(space, city);
-			space.moveTo(city, 30, 20);
+			space.moveTo(city, 10,10);//30, 20);
 			
 			//update map with new cars
 			ScheduleParameters params = ScheduleParameters.createRepeating(1, 2000);

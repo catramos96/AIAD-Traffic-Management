@@ -4,7 +4,7 @@ import agents.CarAgent;
 import agents.MonitoredCarAgent;
 import agents.Radio;
 import agents.RoadMonitor;
-import algorithms.QLearning.Quality;
+import algorithms.Quality;
 import sajas.core.Agent;
 
 public class Debug {
