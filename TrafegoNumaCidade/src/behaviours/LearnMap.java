@@ -40,11 +40,15 @@ public class LearnMap extends CyclicBehaviour{
 				//and the inRoads the endPoint, Direction and aname
 				Intersection intersection = car.getIntersection().getPerception();
 				
-				car.getQLearning().insertNewIntersection(intersection);
+				
+				if(car.getLearningMode().equals(LearningMode.LEARNING))
+					car.getQLearning().insertNewIntersection(intersection);
 
 				
 				//Saves the discovered intersection
 				knowledge.getIntersections().put(intersection.getName(),intersection);
+				System.out.println("Insert INTERSECTION " + intersection.getName());
+				
 				
 				ArrayList<Road> inRoads = intersection.getInRoads();
 				ArrayList<Road> outRoads = intersection.getOutRoads();
@@ -65,6 +69,8 @@ public class LearnMap extends CyclicBehaviour{
 						knownRoad.setEndPoint(i.getEndPoint());
 						knownRoad.updateLength();
 						
+						i = knownRoad;	//update on the intersection side
+						
 						car.calculateAndUpdateJourney();
 					}
 
@@ -82,8 +88,10 @@ public class LearnMap extends CyclicBehaviour{
 						//Update the missing information
 						Road knownRoad = knowledge.getRoads().get(o.getName());
 						knownRoad.setStartIntersection(intersection);
-						knownRoad.setStartPoint(o.getEndPoint());
+						knownRoad.setStartPoint(o.getStartPoint());
 						knownRoad.updateLength();
+						
+						o = knownRoad;	//update on the intersection side
 						
 						//If road is still unexplored
 						if(car.getUnexploredRoads().containsKey(o))
@@ -101,7 +109,8 @@ public class LearnMap extends CyclicBehaviour{
 		if(!car.getRoad().equals(latestRoad) && latestIntersection != null){
 			
 			//Reinforcment Learning
-			car.getQLearning().updateQualityValues(latestIntersection.getName(), latestRoad.getName());
+			if(car.getLearningMode().equals(LearningMode.LEARNING))
+				car.getQLearning().updateQualityValues(latestIntersection.getName(), latestRoad.getName());
 			
 			latestRoad = car.getRoad();
 			
@@ -112,7 +121,7 @@ public class LearnMap extends CyclicBehaviour{
 		latestIntersection = car.getIntersection();
 		
 		//Knows all the city
-		if(car.getUnexploredRoads().size() == 0){
+		if(car.getUnexploredRoads().size() == 0 && car.getLearningMode().equals(LearningMode.LEARNING)){
 			car.setLearningMode(LearningMode.APPLYING);
 			car.removeBehaviour(this);
 		}

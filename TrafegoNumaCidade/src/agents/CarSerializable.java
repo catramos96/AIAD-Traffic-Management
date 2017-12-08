@@ -7,20 +7,24 @@ import java.util.HashMap;
 import agents.CarAgent.LearningMode;
 import algorithms.Quality;
 import cityStructure.CityMap;
+import cityStructure.Road;
 import resources.Point;
 
 public class CarSerializable implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	//What the agent knows about the city -> calculate the journey to the destination
 	private CityMap cityMap = null;
+	
     private LearningMode learningMode = LearningMode.NONE;
     private HashMap<String, ArrayList<Quality>> qualityValues = new HashMap<String, ArrayList<Quality>>();
 
 	private String filename = "car.ser";
 	
-	public CarSerializable(Point p) { 
+	public CarSerializable(Point p, LearningMode mode) { 
 		cityMap = new CityMap(p);
+		learningMode = mode;
 	}
 
 	public CityMap getCityKnowledge() {

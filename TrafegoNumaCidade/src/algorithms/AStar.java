@@ -63,9 +63,17 @@ public class AStar {
 		else
 			return path;
 		
+		System.out.println("");
+
+		
 		while(!toEvaluateSet.isEmpty()){
 
+			System.out.println("");
+
+			
 			Road current = getMinimumCost(toEvaluateSet,final_costs);
+			
+			System.out.println("CURRENT " + current.getName());
 
 			if(destinationIsRoad){											//if destination is a road
 				if(current.getName().equals(destinationName))
@@ -84,6 +92,13 @@ public class AStar {
 				
 				//Look for possible nextRoads
 				for(Road next : current.getEndIntersection().getOutRoads()){
+					
+					System.out.println("CHILDREN " + next.getName());
+
+					
+					if(next.getEndIntersection() == null)
+						System.out.println("CHILDREN END NULL");
+
 					
 					//If end intersection of nextRoad is known
 					if(!evaluatedSet.contains(next)  && next.getEndIntersection() != null){

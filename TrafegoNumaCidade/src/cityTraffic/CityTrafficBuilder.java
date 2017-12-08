@@ -124,15 +124,15 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			}
 
 			// create cars in random positions
-			for (int i = 0; i < nCars; i++) {
+			/*for (int i = 0; i < nCars; i++) {
 				createRandomCar(city);
-			}
+			}*/
 
 			// create monitored car
 			Road myStartRoad = city.getMap().isPartOfRoad(myOrigin);
 			if (myStartRoad != null) 
-			{
-				myKnowledge.setLearningMode(LearningMode.LEARNING);
+			{				
+				myKnowledge.setLearningMode(LearningMode.SHORT_LEARNING);
 				MonitoredCarAgent car = new MonitoredCarAgent(space, myOrigin, myDest, myStartRoad,myKnowledge);
 				agentContainer.acceptNewAgent("MonitoredCarAgent", car).start();
 				space.getAdder().add(space, car);
@@ -185,10 +185,10 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		double randProb = Math.random() * 100;
 		if (randProb <= prob) {
 			// the car must learn
-			car = new RandomCarAgent(space, origin, destination, startRoad, new CarSerializable(spaceDimensions));
+			car = new RandomCarAgent(space, origin, destination, startRoad, new CarSerializable(spaceDimensions,LearningMode.SHORT_LEARNING));
 		} else {
 			// the car has previous knowledge of the city
-			CarSerializable know = new CarSerializable(spaceDimensions);
+			CarSerializable know = new CarSerializable(spaceDimensions,LearningMode.NONE);
 			know.setCityKnowledge(city.getMap());
 			car = new RandomCarAgent(space, origin, destination, startRoad,know);
 		}
@@ -216,25 +216,30 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		String filename = (String) params.getValue("objPath");
 		
 		//load knowledge
-		myKnowledge = new CarSerializable(spaceDimensions);
-		try {
-			String path = new File("").getAbsolutePath();
-			path += "\\objs\\"+filename;
-			File ser = new File(path);
-			FileInputStream fileIn = new FileInputStream(ser);
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			myKnowledge = (CarSerializable) in.readObject();
-			in.close();
-			fileIn.close();
-			System.out.println("Data loaded from car.ser\n");
-		} catch (FileNotFoundException f) {
-			System.out.println("Car file not found");
-		} catch (IOException i) {
-			i.printStackTrace();
-		} catch (ClassNotFoundException c) {
-			System.out.println("MonitoredCarAgent class not found");
+		myKnowledge = new CarSerializable(spaceDimensions,LearningMode.LEARNING);
+		
+		if(new File(filename).exists()){
+			try {
+				String path = new File("").getAbsolutePath();
+				path += "\\objs\\"+filename;
+				File ser = new File(path);
+				FileInputStream fileIn = new FileInputStream(ser);
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				myKnowledge = (CarSerializable) in.readObject();
+				in.close();
+				fileIn.close();
+				System.out.println("Data loaded from car.ser\n");
+			} catch (FileNotFoundException f) {
+				System.out.println("Car file not found");
+			} catch (IOException i) {
+				i.printStackTrace();
+			} catch (ClassNotFoundException c) {
+				System.out.println("MonitoredCarAgent class not found");
+			}
 		}
+		
 		myKnowledge.setFilename(filename);
+
 		
 		//map path
 		path = new File("").getAbsolutePath();

@@ -2,6 +2,7 @@ package behaviours;
 
 import java.util.ArrayList;
 import agents.CarAgent;
+import agents.MonitoredCarAgent;
 import agents.CarAgent.LearningMode;
 import cityStructure.Road;
 import resources.Point;
@@ -37,10 +38,14 @@ public class CarMovement extends TickerBehaviour{
 		{
 			Point pos = car.getPosition();
 			
-			if(car.getDestination().equals(pos) && !car.getLearningMode().equals(LearningMode.LEARNING)){
+			if(car.getDestination().equals(pos)){
+				car.setDestinationName(car.getRoad().getName());
+			}
+			
+			/*if(car.getDestination().equals(pos) && !car.getLearningMode().equals(LearningMode.LEARNING)){
 				passageType = PassageType.Out;
 				car.takeDown();
-			}
+			}*/
 			
 			if(passageType.equals(PassageType.Road) && car.getRoad() != null){
 				
@@ -63,12 +68,18 @@ public class CarMovement extends TickerBehaviour{
 						//follow the jorney
 						if(car.getJourney().size() != 0){
 							
+	    					if(this.getClass().equals(MonitoredCarAgent.class))
+	    						System.out.println("NextRoad: " + car.getJourney().get(0));
+							
 							//checks if the next road to follow is a road out of the intersection (real world)
 							nextRoad = car.getIntersection().isOutRoad(car.getJourney().get(0));
 							
 							if(nextRoad == null)
 								valid = false;
 							else{
+		    					if(this.getClass().equals(MonitoredCarAgent.class))
+		    						System.out.println("Valid Road");
+
 								car.jorneyConsume();
 								
 								//get route to go to the road
@@ -79,6 +90,9 @@ public class CarMovement extends TickerBehaviour{
 									valid = false;
 									car.getJourney().clear();
 								}
+		    					if(this.getClass().equals(MonitoredCarAgent.class))
+		    						System.out.println("Route Good");
+
 							}
 						}
 						else{

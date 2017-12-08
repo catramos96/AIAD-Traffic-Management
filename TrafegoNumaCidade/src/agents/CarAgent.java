@@ -24,7 +24,7 @@ import cityStructure.Road;
 
 public class CarAgent extends Agent {
 
-	public static enum LearningMode {LEARNING, APPLYING, NONE};
+	public static enum LearningMode {SHORT_LEARNING,LEARNING, APPLYING, NONE};
 	
 	private Road road = null;							//Current road he is in (real world)
 	private Intersection intersection = null;			//Latest intersection (real world)
@@ -41,7 +41,7 @@ public class CarAgent extends Agent {
     private LearningMode learningMode = null;
     private HashMap<String,String> unexploredRoads = new HashMap<String,String>();		//<RoadUnexplored,Intersection>
    
-	protected CarSerializable knowledge = new CarSerializable(null);
+	protected CarSerializable knowledge = null;
 
     public CarAgent(Grid<Object> space, Point origin, Point destination, Road startRoad,CarSerializable knowledge) 
 	{
@@ -87,7 +87,8 @@ public class CarAgent extends Agent {
         addBehaviour(new CarMessagesReceiver(this));
         addBehaviour(new CarMovement(this, Resources.carVelocity));
         
-        if(knowledge.getLearningMode().equals(LearningMode.LEARNING)){
+        if(knowledge.getLearningMode().equals(LearningMode.LEARNING) ||
+        		knowledge.getLearningMode().equals(LearningMode.SHORT_LEARNING)){
         	addBehaviour(new LearnMap(this));
         	addBehaviour(new AskDirections(this,5000));
         }
@@ -116,49 +117,103 @@ public class CarAgent extends Agent {
      */
     public void calculateAndUpdateJourney(){
     		
-    		ArrayList<String> j =new ArrayList<String>();
-    		
-    		switch(knowledge.getLearningMode()){
-	    		case NONE:{
-	    			if(destinationName != null)
-	    				j = AStar.shortestPath(knowledge.getCityKnowledge(), road, destinationName,true);
-	    			break;
-	    		}
-	    		case LEARNING:{
-	    			
-	    			if(journey.size() == 0){
-	    				//Chooses a path to an unvisited road
+		ArrayList<String> j =new ArrayList<String>();
+		
+		switch(knowledge.getLearningMode()){
+    		case NONE: {
+    			if(destinationName != null){
+    				if(knowledge.getCityKnowledge().getRoads().containsKey(road.getName())){
+    					Road r = knowledge.getCityKnowledge().getRoads().get(road.getName());
+    					j = AStar.shortestPath(knowledge.getCityKnowledge(), r, destinationName,true);
+    				}
+    			}
+    			break;
+    		}
+    		case SHORT_LEARNING:{
+    			if(destinationName != null){
+    				if(knowledge.getCityKnowledge().getRoads().containsKey(road.getName())){
+        				System.out.println("Trying calculating ...");
+    					Road r = knowledge.getCityKnowledge().getRoads().get(road.getName());
+    					j = AStar.shortestPath(knowledge.getCityKnowledge(), r, destinationName,true);
+    				}
+    			}
+    			//Look for the paths to unvisited roads the end of the current road is unknown
+    			/*if(journey.size() == 0 && j.size() == 0 && 
+    					knowledge.getCityKnowledge().getIntersections().containsKey(road.getEndIntersection().getName())){
+    				
+    				boolean hasUnvisited = false;
+    				
+    				//check if next intersection has unvisited roads
+    				for(Road r : road.getEndIntersection().getOutRoads()){
+    					if(!knowledge.getCityKnowledge().getRoads().containsKey(r.getName()) ||
+    							unexploredRoads.containsKey(r.getName())){
+    						hasUnvisited = true;
+    						break;
+    					}
+    				}
+    				
+    				if(!hasUnvisited){
+    				//Chooses a path to an unvisited road
 		    			for(String unexploredRoad : unexploredRoads.keySet()){
 		    				
 		    				String intersection = unexploredRoads.get(unexploredRoad);
 		    				
 		    				if(intersection != ""){
+		    					
 		    					if(this.getClass().equals(MonitoredCarAgent.class))
 		    						System.out.println("TRY finding path to " + unexploredRoad + " by " + intersection);
+		    					
 		    					j = AStar.shortestPath(knowledge.getCityKnowledge(), road, intersection,false);
-			    				if(j.size() > 0){
-			    					System.out.println("FOUND PATH");
+			    				
+		    					if(j.size() != 0){
+			    					
+		    						j.add(unexploredRoad);
+		    						
+		    						if(this.getClass().equals(MonitoredCarAgent.class))
+			    						System.out.println("FOUND PATH - " + unexploredRoad + " " + j.size());
 			    					break;
 			    				}
 		    				}
 		    			}
-		    			break;
+    				}
+    			}*/
+    			break;
+    		}
+    		case LEARNING:{
+    			
+    			if(journey.size() == 0){
+    				//Chooses a path to an unvisited road
+	    			for(String unexploredRoad : unexploredRoads.keySet()){
+	    				
+	    				String intersection = unexploredRoads.get(unexploredRoad);
+	    				
+	    				if(intersection != ""){
+	    					if(this.getClass().equals(MonitoredCarAgent.class))
+	    						System.out.println("TRY finding path to " + unexploredRoad + " by " + intersection);
+	    					//j = AStar.shortestPath(knowledge.getCityKnowledge(), road, intersection,false);
+		    				if(j.size() > 1){
+		    					System.out.println("FOUND PATH");
+		    					break;
+		    				}
+	    				}
 	    			}
-	    			
-	    		}
-	    		case APPLYING: {
-	    			String road = qlearning.getNextRoad(intersection);
-	    			if(road != null)
-	    				j.add(road);
 	    			break;
-	    		}
+    			}
+    			
     		}
+    		case APPLYING: {
+    			String road = qlearning.getNextRoad(intersection);
+    			if(road != null)
+    				j.add(road);
+    			break;
+    		}
+		}
 
-    		
-    		if(j.size() > 0){
-	    		setJourney(j);
-	    		jorneyConsume();
-    		}
+		
+		if(j.size() > 0){
+    		setJourney(j);
+    		jorneyConsume();
+		}
     	
     }
     
