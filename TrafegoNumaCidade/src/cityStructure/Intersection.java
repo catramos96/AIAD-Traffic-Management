@@ -1,13 +1,9 @@
 package cityStructure;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import agents.SemaphoreManager;
-import cityStructure.Intersection.CellEntry;
-import repast.simphony.space.grid.Grid;
 import resources.Point;
-import sajas.wrapper.ContainerController;
 
 /*
  * Area with 4 points		Area with 1 point
@@ -19,7 +15,10 @@ import sajas.wrapper.ContainerController;
  *  _X|X_	 					 | |
  * 	 |||
  */
-public abstract class Intersection{
+public abstract class Intersection implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	enum EntryType {In,Out,NotPart}
 	enum CellEntry {North, South, East, West}
 	

@@ -22,10 +22,10 @@ import behaviours.LearnMap;
 import cityStructure.CityMap;
 import cityStructure.Intersection;
 import cityStructure.Road;
-import cityTraffic.onto.ServiceOntology;
 
 public class CarAgent extends Agent {
 
+<<<<<<< HEAD
 	public static enum LearningMode {LEARNING, APPLYING, NONE};
 	
 	private Road road = null;							//Current road he is in (real world)
@@ -46,6 +46,20 @@ public class CarAgent extends Agent {
 	
     private LearningMode learningMode = null;
     
+=======
+	protected Road road = null;							//Current road he is in (real world)
+	protected Intersection intersection = null;			//Latest intersection (real world)
+	
+	//Origin and Destination
+	protected Point position;
+	protected Point destination;
+	protected String destinationName = null;
+	protected ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
+	protected Grid<Object> space = null;
+	protected boolean enableCityLearning = false;
+	
+	protected Knowledge knowledge = new Knowledge();
+>>>>>>> caragents
     
     public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad,LearningMode mode) 
 	{
@@ -54,8 +68,13 @@ public class CarAgent extends Agent {
 		this.position = origin;
 		this.road = startRoad;
 		
+<<<<<<< HEAD
 		this.learningMode = mode;
 		this.cityKnowledge = map;
+=======
+		this.enableCityLearning = enableCityLearning;
+		this.knowledge.setCityKnowledge(map);
+>>>>>>> caragents
 	}
     
     public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, String endRoad, Road startRoad,LearningMode mode) 
@@ -67,8 +86,13 @@ public class CarAgent extends Agent {
 
 		this.destinationName = endRoad;
 		
+<<<<<<< HEAD
 		this.learningMode = mode;		
 		this.cityKnowledge = map;
+=======
+		this.enableCityLearning = enableCityLearning;
+		this.knowledge.setCityKnowledge(map);
+>>>>>>> caragents
 	}
     
     
@@ -124,6 +148,7 @@ public class CarAgent extends Agent {
     	
     	if(destinationName != null){
     		
+<<<<<<< HEAD
     		ArrayList<String> j =new ArrayList<String>();
     		
     		if(!learningMode.equals(learningMode.APPLYING))
@@ -133,6 +158,9 @@ public class CarAgent extends Agent {
     			if(road != null)
     				j.add(road);
     		}
+=======
+    		ArrayList<String> j = AStar.shortestPath(knowledge.getCityKnowledge(), road, destinationName);
+>>>>>>> caragents
     		
     		if(j.size() > 0){
 	    		setJorney(j);
@@ -149,7 +177,7 @@ public class CarAgent extends Agent {
      * @return
      */
     public ArrayList<String> getJourneyCalculations(Road road, String destinationName){
-    	return AStar.shortestPath(cityKnowledge, road, destinationName);
+    	return AStar.shortestPath(knowledge.getCityKnowledge(), road, destinationName);
     }
     
     public Road getRoad(){
@@ -211,7 +239,7 @@ public class CarAgent extends Agent {
 	}
 	
 	public CityMap getCityKnowledge(){
-		return cityKnowledge;
+		return knowledge.getCityKnowledge();
 	}
 	
 	public String getDestinationName(){

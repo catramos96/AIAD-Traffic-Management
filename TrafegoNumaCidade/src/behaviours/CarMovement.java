@@ -1,10 +1,7 @@
 package behaviours;
 
 import java.util.ArrayList;
-
 import agents.CarAgent;
-import algorithms.AStar;
-import cityStructure.Intersection;
 import cityStructure.Road;
 import resources.Point;
 import resources.Resources;
@@ -30,6 +27,7 @@ public class CarMovement extends TickerBehaviour{
 		car.calculateAndUpdateJourney();
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	protected void onTick() {
 		
