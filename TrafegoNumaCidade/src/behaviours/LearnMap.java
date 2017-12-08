@@ -25,13 +25,11 @@ public class LearnMap extends CyclicBehaviour{
 	@Override
 	public void action() {
 		CityMap knowledge = car.getCityKnowledge();
-		boolean newIntersection = false;
 		
 		if(car.getIntersection() != null){
 			
 			//Don't know the intersection
 			if(!knowledge.getIntersections().containsKey(car.getIntersection().getName())){
-				newIntersection = true;
 				
 				//Get the perception of the intersection
 				//Knows the intersection roads (in/out) but only with the "visible" information
@@ -88,7 +86,7 @@ public class LearnMap extends CyclicBehaviour{
 		if(!car.getRoad().equals(latestRoad) && latestIntersection != null){
 			
 			//Reinforcment Learning
-			car.getQLearning().updateQualityValues(latestIntersection.getName(), latestRoad.getName(), car.getRoad().isBlocked());
+			car.getQLearning().updateQualityValues(latestIntersection.getName(), latestRoad.getName(), latestTransit);
 			
 			latestRoad = car.getRoad();
 			latestTransit = latestRoad.isBlocked();
@@ -97,8 +95,7 @@ public class LearnMap extends CyclicBehaviour{
 			latestTransit = latestRoad.isBlocked();					
 		}
 		
-		if(newIntersection)
-			latestIntersection = car.getIntersection();
+		latestIntersection = car.getIntersection();
 
 	}
 

@@ -87,6 +87,8 @@ public class QLearning {
 		for(Quality q : qualityValues.get(intersection)){
 
 			if(q.action_transit == transit && q.action_road.equals(toRoad)){
+				
+				System.out.println("Matched road");
 								
 				Quality maxQnextState = getMaxQuality(toRoad);
 				int quality_value = 0;
@@ -100,9 +102,12 @@ public class QLearning {
 
 				System.out.println(car.getLocalName() + " QL: " +  q.print());
 
-				break;
+				return;
 			}
 		}
+		
+		System.out.println("Matched road failed - " + intersection + " " + toRoad + " " + transit);
+
 	}
 	
 	private Quality getMaxQuality(String intersection){

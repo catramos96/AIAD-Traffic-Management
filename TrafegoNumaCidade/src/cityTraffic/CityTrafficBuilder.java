@@ -28,7 +28,7 @@ import jade.wrapper.StaleProxyException;
 
 public class CityTrafficBuilder extends RepastSLauncher {
 
-	private static int N_CARS = 2;
+	private static int N_CARS = 1;
 	private static Point spaceDimensions = new Point(21,21);
 	
 	Grid<Object> space;
