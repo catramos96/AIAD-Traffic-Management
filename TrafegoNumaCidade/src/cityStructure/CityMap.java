@@ -44,6 +44,14 @@ public class CityMap extends Agent implements Serializable
 		return null;
 	}
 	
+	public String print() {
+		String ret = "Roads :\n";
+		for(Road r : roads.values()){
+			ret += r.getName()+ " , ";
+		}
+		return ret;
+	}
+	
 	/*
 	 * SAVE & LOAD
 	 */

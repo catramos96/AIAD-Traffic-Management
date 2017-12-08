@@ -6,16 +6,16 @@
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="path" displayName="Agent Knowledge filename" type="java.lang.String" 
-						defaultValue="car.ser" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
-									
-		/>
-				<parameter name="carCount" displayName="Number of Random Cars" type="int" 
+				<parameter name="hour" displayName="Hour of the day" type="int" 
 						defaultValue="10" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+									
+		/>
+				<parameter name="objPath" displayName="Agent Knowledge filename" type="java.lang.String" 
+						defaultValue="test.ser" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									
 		/>
 				<parameter name="originX" displayName="Agent Origin ( X )" type="int" 
@@ -40,6 +40,12 @@
 						defaultValue="13" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+									
+		/>
+				<parameter name="mapPath" displayName="Map name" type="java.lang.String" 
+						defaultValue="Map.txt" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									
 		/>
 		</parameters>
