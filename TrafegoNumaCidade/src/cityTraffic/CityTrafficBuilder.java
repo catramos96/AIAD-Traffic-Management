@@ -50,7 +50,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	private static int prob = 0; 	//probability to learn the city
 	
 	Grid<Object> space;
-	private static Point spaceDimensions = new Point(21,21);
+	private static Point spaceDimensions = new Point(62,62);
 
 	public static final boolean USE_RESULTS_COLLECTOR = true;
 
@@ -103,7 +103,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			
 			agentContainer.acceptNewAgent("city", city).start();
 			space.getAdder().add(space, city);
-			space.moveTo(city, 10, 10);
+			space.moveTo(city, 30, 20);
 			
 			//update map with new cars
 			ScheduleParameters params = ScheduleParameters.createRepeating(1, 2000);
