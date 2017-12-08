@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 FATAL [Thread-7] 2017-12-08 16:56:34,691 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
 Current tick (123228.0)
 java.lang.NullPointerException
@@ -118,3 +119,5 @@ java.lang.NullPointerException
 	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
 	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
 	at java.lang.Thread.run(Unknown Source)
+=======
+>>>>>>> master

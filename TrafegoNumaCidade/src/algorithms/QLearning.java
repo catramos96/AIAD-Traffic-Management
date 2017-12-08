@@ -20,34 +20,6 @@ public class QLearning {
 	private final float IMPORTANCE1 = 0.6f;			//Importance of reaching the destination
 	private final float IMPORTANCE2 = 0.4f;			//Importance of choosing paths with less transit and less length
 	
-	/*
-	 * Auxiliary Classes
-	 */
-	
-	public class Quality{
-		public String intersection = null;				//State
-			
-		public String action_road = null;		//action
-		public boolean action_transit = false;
-		
-		public float value = 0;				//quality value
-		
-		public Quality(String intersection, String action_road, boolean action_transit, float value){
-			this.intersection = intersection;
-			this.action_road = action_road;
-			this.action_transit = action_transit;
-			this.value = value;
-		}
-		
-		public void setValue(float value){
-			this.value = value;
-		}	
-		
-		public String print(){
-			return new String("Q( State(" + intersection + ") , Action( " + action_road + " , " + action_transit + " ) = " +value);
-		}
-	}
-	
 	private HashMap<String, ArrayList<Quality>> qualityValues = new HashMap<String, ArrayList<Quality>>(); 
 	
 	//algorithms parameters
@@ -207,6 +179,17 @@ public class QLearning {
 		
 		return road;
 	}
+
+	
+	public HashMap<String, ArrayList<Quality>> getQualityValues() {
+		return qualityValues;
+	}
+
+	
+	public void setQualityValues(HashMap<String, ArrayList<Quality>> qualityValues) {
+		this.qualityValues = qualityValues;
+	}
+
 }
 
 

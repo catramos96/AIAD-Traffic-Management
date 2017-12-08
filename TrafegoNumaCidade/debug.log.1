@@ -1414,12 +1414,22 @@ java.lang.NullPointerException
 	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
 	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
 	at java.lang.Thread.run(Unknown Source)
+<<<<<<< HEAD
 FATAL [Thread-7] 2017-12-08 16:54:26,619 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
 Current tick (1427061.0)
 java.lang.NullPointerException
 	at behaviours.LearnMap.action(LearnMap.java:98)
 	at sajas.core.behaviours.Behaviour.actionWrapper(Behaviour.java:341)
 	at sajas.core.Agent.step(Agent.java:205)
+=======
+FATAL [Thread-7] 2017-12-08 17:58:07,643 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (1.0)
+java.lang.NullPointerException
+	at agents.CarAgent.calculateAndUpdateJourney(CarAgent.java:121)
+	at behaviours.CarMovement.<init>(CarMovement.java:29)
+	at agents.CarAgent.setup(CarAgent.java:88)
+	at sajas.core.Agent.step(Agent.java:192)
+>>>>>>> master
 	at sajas.sim.repasts.AgentAction.execute(AgentAction.java:69)
 	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
 	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)

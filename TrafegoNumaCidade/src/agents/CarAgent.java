@@ -12,7 +12,6 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import algorithms.AStar;
 import algorithms.QLearning;
 import behaviours.AskDirections;
@@ -31,11 +30,10 @@ public class CarAgent extends Agent {
 	private Intersection intersection = null;			//Latest intersection (real world)
 	
 	//Origin and Destination
-	private CityMap cityKnowledge;						//What the agent knows about the city -> calculate the jorney to the destination
-	private Point position;
-	private Point destination;
-	private String destinationName = null;
-	private ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
+	protected Point position;
+	protected Point destination;
+	protected String destinationName = null;
+	protected ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
 
 	private Grid<Object> space = null;
     
@@ -45,34 +43,29 @@ public class CarAgent extends Agent {
    
 	protected CarSerializable knowledge = new CarSerializable(null);
 
-    public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad,LearningMode mode) 
+    public CarAgent(Grid<Object> space, Point origin, Point destination, Road startRoad,CarSerializable knowledge) 
 	{
 		this.space = space;
 		this.destination = destination;
 		this.position = origin;
 		this.road = startRoad;
 		
-		this.learningMode = mode;
-		this.cityKnowledge = map;
-
-		this.knowledge.setCityKnowledge(map);
+		this.knowledge = knowledge;	//QualityValues, CityMap and mode
+		this.qlearning.setQualityValues(knowledge.getQualityValues());
 	}
     
-    public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, String endRoad, Road startRoad,LearningMode mode) 
+    public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, String endRoad, Road startRoad,CarSerializable knowledge) 
 	{
 		this.space = space;
 		this.destination = destination;
 		this.position = origin;
 		this.road = startRoad;
-
 		this.destinationName = endRoad;
-
-		this.learningMode = mode;		
-		this.cityKnowledge = map;
-
-		this.knowledge.setCityKnowledge(map);
+		
+		this.knowledge = knowledge;
+		this.qlearning.setQualityValues(knowledge.getQualityValues());
 	}
-    
+
     
     //JADE RELATED
     @Override
@@ -94,7 +87,7 @@ public class CarAgent extends Agent {
         addBehaviour(new CarMessagesReceiver(this));
         addBehaviour(new CarMovement(this, Resources.carVelocity));
         
-        if(learningMode.equals(LearningMode.LEARNING)){
+        if(knowledge.getLearningMode().equals(LearningMode.LEARNING)){
         	addBehaviour(new LearnMap(this));
         	addBehaviour(new AskDirections(this,5000));
         }
@@ -113,7 +106,6 @@ public class CarAgent extends Agent {
     /*
      * GETS & SETS
      */
-    
     public QLearning getQLearning(){
     	return qlearning;
     }
@@ -126,7 +118,7 @@ public class CarAgent extends Agent {
     		
     		ArrayList<String> j =new ArrayList<String>();
     		
-    		switch(learningMode){
+    		switch(knowledge.getLearningMode()){
 	    		case NONE:{
 	    			if(destinationName != null)
 	    				j = AStar.shortestPath(cityKnowledge, road, destinationName,true);
@@ -252,6 +244,6 @@ public class CarAgent extends Agent {
 	}
 	
 	public LearningMode getLearningMode(){
-		return learningMode;
+		return knowledge.getLearningMode();
 	}
 }
