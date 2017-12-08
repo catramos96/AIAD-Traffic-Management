@@ -26,45 +26,42 @@ public class CarAgent extends Agent {
 
 	public static enum LearningMode {LEARNING, APPLYING, NONE};
 	
-	private Road road = null;							//Current road he is in (real world)
-	private Intersection intersection = null;			//Latest intersection (real world)
-	
-	//Origin and Destination
-	protected Point position;
-	protected Point destination;
-	protected String destinationName = null;
-	protected ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
+	//current position
+	protected Road road = null;							//Current road he is in (real world)
+	protected Intersection intersection = null;			//Latest intersection (real world)
+	protected Point position = null;
 
-	private Grid<Object> space = null;
-    
-	private QLearning qlearning = new QLearning(this, 1f, 0.8f);
-    private LearningMode learningMode = null;
-    private HashMap<String,String> unexploredRoads = new HashMap<String,String>();		//<RoadUnexplored,Intersection>
-   
 	protected CarSerializable knowledge = new CarSerializable(null);
-
-    public CarAgent(Grid<Object> space, Point origin, Point destination, Road startRoad,CarSerializable knowledge) 
+	protected ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
+	protected QLearning qlearning = new QLearning(this, 1f, 0.8f);
+	
+	protected Grid<Object> space = null;
+    
+    public CarAgent(Grid<Object> space, Point origin, Road startRoad,CarSerializable knowledge) 
 	{
 		this.space = space;
-		this.destination = destination;
+		
 		this.position = origin;
 		this.road = startRoad;
 		
-		this.knowledge = knowledge;	//QualityValues, CityMap and mode
+		this.knowledge = knowledge;	//QualityValues, CityMap, Mode and Destination
+		
 		this.qlearning.setQualityValues(knowledge.getQualityValues());
 	}
-    
-    public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, String endRoad, Road startRoad,CarSerializable knowledge) 
+    /*
+    public CarAgent(Grid<Object> space, CityMap map, Point origin, String endRoad, Road startRoad,CarSerializable knowledge) 
 	{
 		this.space = space;
-		this.destination = destination;
+
 		this.position = origin;
 		this.road = startRoad;
-		this.destinationName = endRoad;
 		
 		this.knowledge = knowledge;
+		this.knowledge.setDestinationName(endRoad);
+		
 		this.qlearning.setQualityValues(knowledge.getQualityValues());
 	}
+	*/
 
     
     //JADE RELATED
@@ -120,17 +117,17 @@ public class CarAgent extends Agent {
     		
     		switch(knowledge.getLearningMode()){
 	    		case NONE:{
-	    			if(destinationName != null)
-	    				j = AStar.shortestPath(knowledge.getCityKnowledge(), road, destinationName,true);
+	    			if(knowledge.getDestinationName() != null)
+	    				j = AStar.shortestPath(knowledge.getCityKnowledge(), road, knowledge.getDestinationName(),true);
 	    			break;
 	    		}
 	    		case LEARNING:{
 	    			
 	    			if(journey.size() == 0){
 	    				//Chooses a path to an unvisited road
-		    			for(String unexploredRoad : unexploredRoads.keySet()){
+		    			for(String unexploredRoad : knowledge.getUnexploredRoads().keySet()){
 		    				
-		    				String intersection = unexploredRoads.get(unexploredRoad);
+		    				String intersection = knowledge.getUnexploredRoads().get(unexploredRoad);
 		    				
 		    				if(intersection != ""){
 		    					if(this.getClass().equals(MonitoredCarAgent.class))
@@ -182,7 +179,7 @@ public class CarAgent extends Agent {
     }
     
     public Point getDestination(){
-    	return destination;
+    	return knowledge.getDestination();
     }
     
     public void setJourney(ArrayList<String> journey){
@@ -205,7 +202,7 @@ public class CarAgent extends Agent {
     public String print(){
     	return new String("Car:\n" +
     			"Position: " + position.print() + "\n" +
-    			"Destination: " + destination.print());
+    			"Destination: " + knowledge.getDestination().print());
     }
 
 	public Grid<Object> getSpace() {
@@ -239,20 +236,20 @@ public class CarAgent extends Agent {
 	}
 	
 	public String getDestinationName(){
-		return destinationName;
+		return knowledge.getDestinationName();
 	}
 	
 	public void setDestinationName(String n){
-		destinationName = n;
+		knowledge.setDestinationName(n);
 	}
 	
 	public void setLearningMode(LearningMode mode){
-		learningMode = mode;
+		knowledge.setLearningMode(mode);
 		Debug.debugLearningMode(this);
 	}
 	
 	public HashMap<String,String> getUnexploredRoads(){
-		return unexploredRoads;
+		return knowledge.getUnexploredRoads();
 	}
 	
 	public LearningMode getLearningMode(){

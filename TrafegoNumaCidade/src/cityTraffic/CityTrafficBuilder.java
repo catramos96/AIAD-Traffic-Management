@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.sql.Timestamp;
+
 import agents.CarAgent.LearningMode;
 import agents.City;
 import agents.CarSerializable;
@@ -39,7 +41,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 
 	//params
 	private static Point myOrigin;
-	private static Point myDest;
 	private static CarSerializable myKnowledge;
 	private static String path;
 
@@ -132,8 +133,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			Road myStartRoad = city.getMap().isPartOfRoad(myOrigin);
 			if (myStartRoad != null) 
 			{
-				myKnowledge.setLearningMode(LearningMode.LEARNING);
-				MonitoredCarAgent car = new MonitoredCarAgent(space, myOrigin, myDest, myStartRoad,myKnowledge);
+				MonitoredCarAgent car = new MonitoredCarAgent(space, myOrigin, myStartRoad,myKnowledge);
 				agentContainer.acceptNewAgent("MonitoredCarAgent", car).start();
 				space.getAdder().add(space, car);
 				car.setPosition(myOrigin);
@@ -185,12 +185,15 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		double randProb = Math.random() * 100;
 		if (randProb <= prob) {
 			// the car must learn
-			car = new RandomCarAgent(space, origin, destination, startRoad, new CarSerializable(spaceDimensions));
+			CarSerializable know = new CarSerializable(spaceDimensions);
+			know.setDestination(destination);
+			car = new RandomCarAgent(space, origin, startRoad, know);
 		} else {
 			// the car has previous knowledge of the city
 			CarSerializable know = new CarSerializable(spaceDimensions);
 			know.setCityKnowledge(city.getMap());
-			car = new RandomCarAgent(space, origin, destination, startRoad,know);
+			know.setDestination(destination);
+			car = new RandomCarAgent(space, origin, startRoad,know);
 		}
 
 		agentContainer.acceptNewAgent("RandomCarAgent"+n, car).start();
@@ -204,44 +207,85 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	public Context build(Context<Object> context) {
 		Parameters params = RunEnvironment.getInstance().getParameters();
 		
-		//origin and dest monitored car
+		//1. origin monitored car
 		int x = (Integer) params.getValue("originX");
 		int y = (Integer) params.getValue("originY");
 		myOrigin = new Point(x, y);
+		//2. dest monitored car
 		x = (Integer) params.getValue("destX");
 		y = (Integer) params.getValue("destY");
-		myDest = new Point(x, y);
+		Point myDest = new Point(x, y);
 		
-		//agent filename
+		//3. agent learning mode
+		String mode = (String) params.getValue("type");
+
+		//4. agent filename
 		String filename = (String) params.getValue("objPath");
 		
-		//load knowledge
-		myKnowledge = new CarSerializable(spaceDimensions);
-		try {
-			String path = new File("").getAbsolutePath();
-			path += "\\objs\\"+filename;
-			File ser = new File(path);
-			FileInputStream fileIn = new FileInputStream(ser);
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			myKnowledge = (CarSerializable) in.readObject();
-			in.close();
-			fileIn.close();
-			System.out.println("Data loaded from car.ser\n");
-		} catch (FileNotFoundException f) {
-			System.out.println("Car file not found");
-		} catch (IOException i) {
-			i.printStackTrace();
-		} catch (ClassNotFoundException c) {
-			System.out.println("MonitoredCarAgent class not found");
+		if(filename.equals("new")) 
+		{
+			createNewAgent(myDest,mode);
 		}
-		myKnowledge.setFilename(filename);
+		//load knowledge
+		else {		
+			try {
+				String path = new File("").getAbsolutePath();
+				path += "\\objs\\"+filename;
+				File ser = new File(path);
+				FileInputStream fileIn = new FileInputStream(ser);
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				myKnowledge = (CarSerializable) in.readObject();
+				in.close();
+				fileIn.close();
+				System.out.println("Data loaded from car.ser\n");
+				
+				//update destination
+				myKnowledge.setDestination(myDest);
+				
+				//Escolhi fazer A*
+				if(mode.equals("A*")) {
+					myKnowledge.setLearningMode(LearningMode.NONE);
+				}
+				//escolhi QLearning
+				else 
+				{
+					myKnowledge.setLearningMode(LearningMode.LEARNING);
+					
+					//verifico se ja existe neste agente
+					if(myKnowledge.isHasQLearning()) 
+					{
+						//nao tenho qLearning para esta posicao -> executo A*
+						if(!myKnowledge.getqLearningDest().equals(myDest)) {
+							myKnowledge.setLearningMode(LearningMode.NONE);
+						}
+						
+					}
+					//nao existe -> vou aprender
+					else 
+					{
+						myKnowledge.setLearn();
+						filename = "qlearnig_"+x+"_"+y;
+					}
+				}
+				
+				myKnowledge.setFilename(filename);
+				
+			} catch (FileNotFoundException f) {
+				System.out.println("Car file not found");
+				createNewAgent(myDest,mode);
+			} catch (IOException i) {
+				i.printStackTrace();
+			} catch (ClassNotFoundException c) {
+				System.out.println("MonitoredCarAgent class not found");
+			}
+		}
 		
-		//map path
+		//5. hour
+		calculateNumCars((int) params.getValue("hour"));
+		
+		//6. map path
 		path = new File("").getAbsolutePath();
 		path += "\\maps\\"+(String) params.getValue("mapPath");
-		
-		//hour
-		calculateNumCars((int) params.getValue("hour"));
 		
 		//create path
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
@@ -249,6 +293,23 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				new GridBuilderParameters<Object>(new StrictBorders(), new SimpleGridAdder<Object>(), true,spaceDimensions.x, spaceDimensions.y));
 
 		return super.build(context);
+	}
+	
+	private void createNewAgent(Point myDest, String mode) {
+		myKnowledge = new CarSerializable(spaceDimensions);
+		myKnowledge.setDestination(myDest);
+		String temp = "";
+		if(mode.equals("A*")) {
+			myKnowledge.setLearningMode(LearningMode.NONE);
+			long timestamp =  (new Timestamp(System.currentTimeMillis())).getTime();
+			temp = "astar"+timestamp+".ser";
+		}
+		else {
+			myKnowledge.setLearningMode(LearningMode.LEARNING);
+			myKnowledge.setLearn();
+			temp = "qlearnig_"+myDest.x+"_"+myDest.y+".ser";
+		}
+		myKnowledge.setFilename(temp);
 	}
 
 	private void calculateNumCars(int hour) 
