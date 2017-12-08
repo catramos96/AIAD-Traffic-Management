@@ -42,16 +42,14 @@ public class CarAgent extends Agent {
 	
 	//private HashMap<Integer,QLearning> transitKnowledge = new HashMap<Integer,QLearning>();
     
-	private QLearning qlearning = new QLearning(this, 1, 0.8);
-	private Point spaceDimensions = null;
+	private QLearning qlearning = new QLearning(this, 1f, 0.8f);
 	
     private LearningMode learningMode = null;
     
     
-    public CarAgent(Grid<Object> space, Point spaceD, CityMap map, Point origin, Point destination, Road startRoad,LearningMode mode) 
+    public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad,LearningMode mode) 
 	{
 		this.space = space;
-		this.spaceDimensions = spaceD;
 		this.destination = destination;
 		this.position = origin;
 		this.road = startRoad;
@@ -66,6 +64,7 @@ public class CarAgent extends Agent {
 		this.destination = destination;
 		this.position = origin;
 		this.road = startRoad;
+
 		this.destinationName = endRoad;
 		
 		this.learningMode = mode;		
@@ -130,7 +129,9 @@ public class CarAgent extends Agent {
     		if(!learningMode.equals(learningMode.APPLYING))
     			j = AStar.shortestPath(cityKnowledge, road, destinationName);
     		else{
-    			j.add(qlearning.getMaxQualityRoad(road).toString());
+    			String road = qlearning.getNextRoad(intersection);
+    			if(road != null)
+    				j.add(road);
     		}
     		
     		if(j.size() > 0){
@@ -219,9 +220,5 @@ public class CarAgent extends Agent {
 	
 	public void setDestinationName(String n){
 		destinationName = n;
-	}
-	
-	public Point getSpaceDimensions(){
-		return spaceDimensions;
 	}
 }

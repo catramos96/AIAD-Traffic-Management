@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import agents.CarAgent;
+import cityStructure.CityMap;
+import cityStructure.Intersection;
 import cityStructure.Road;
 import resources.Point;
-import resources.Resources;
 import resources.SpaceResources;
 
 /**
@@ -15,99 +16,87 @@ import resources.SpaceResources;
  */
 public class QLearning {
 	
-	private final double IMPORTANCE1 = 0.6;			//Importance of reaching the destination
-	private final double IMPORTANCE2 = 0.4;			//Importance of choosing paths with less transit and less length
+	private final float IMPORTANCE1 = 0.6f;			//Importance of reaching the destination
+	private final float IMPORTANCE2 = 0.4f;			//Importance of choosing paths with less transit and less length
+	
 	/*
 	 * Auxiliary Classes
 	 */
 	
-	private class State{
-		public String road = null;
-		public boolean hasTransit = false;
+	public class Quality{
+		public String intersection = null;				//State
+			
+		public String action_road = null;		//action
+		public boolean action_transit = false;
 		
-		public State(String road, boolean hasTransit){
-			this.road = road;
-			this.hasTransit = hasTransit;
-		}
-	}
-	
-	private class Quality{
-		public State state = null;
-		public String action_road = null;
-		public double value = 0;
+		public float value = 0;				//quality value
 		
-		public Quality(State state,String action_road,double value){
-			this.state = state;
+		public Quality(String intersection, String action_road, boolean action_transit, float value){
+			this.intersection = intersection;
 			this.action_road = action_road;
+			this.action_transit = action_transit;
 			this.value = value;
 		}
 		
-		public void setValue(double value){
+		public void setValue(float value){
 			this.value = value;
 		}	
 		
 		public String print(){
-			return new String("Q( State(" + state.road + "," + state.hasTransit + ") , " + action_road +" ) = " +value);
+			return new String("Q( State(" + intersection + ") , Action( " + action_road + " , " + action_transit + " ) = " +value);
 		}
 	}
 	
-	private HashMap<String,HashMap<String,ArrayList<Quality>>> qualityValues = new HashMap<String, HashMap<String,ArrayList<Quality>>>(); 
+	private HashMap<String, ArrayList<Quality>> qualityValues = new HashMap<String, ArrayList<Quality>>(); 
 	
 	//algorithms parameters
-	private double learningRate = 1;
-	private double discount = 0.8;			//greedy measure: 0->very greedy
-	
-	private String lastRoad = null;
-	
+	private float learningRate = 1;
+	private float discount = (float) 0.8;			//greedy measure: 0->very greedy
+
 	private CarAgent car = null;
 	
-	public QLearning(CarAgent c,double learningRate, double discount){
+	public QLearning(CarAgent c,float learningRate, float discount){
 		this.car = c;
 		this.learningRate = learningRate;
 		this.discount = discount;
 	}
 	
-	public void insertNewRoad(Road road, ArrayList<Road> possibleRoads){
+	public void insertNewIntersection(Intersection intersection){
 		
-		for(Road r : possibleRoads){
-			Quality q1 = new Quality(new State(road.getName(),true), r.getName(), 0);
-			Quality q2 = new Quality(new State(road.getName(),false), r.getName(), 0);
-			
-			HashMap<String,ArrayList<Quality>> actions = new HashMap<String,ArrayList<Quality>>();
-			ArrayList<Quality> qs = new ArrayList<Quality>();
-			qs.add(q1);
-			qs.add(q2);
-			
-			//System.out.println("Insert QL: " + q1.print());
-			//System.out.println("Insert QL: " + q2.print());
+		ArrayList<Quality> actions = new ArrayList<Quality>();
 
+		for(Road r : intersection.getOutRoads()){
+			Quality q1 = new Quality(intersection.getName(), r.getName(), true, 0);		//with transit
+			Quality q2 = new Quality(intersection.getName(), r.getName(),false, 0);		//without transit
 			
-			actions.put(r.getName(), qs);
+			actions.add(q1);
+			actions.add(q2);
 			
-			qualityValues.put(road.getName(),actions);
+			System.out.println("ADDED: " + q1.print());
 		}
+		
+		qualityValues.put(intersection.getName(),actions);
+
 	}
 	
-	public void updateQualityValues(String fromRoad,String toRoad, boolean transit){
+	public void updateQualityValues(String intersection,String toRoad, boolean transit){
 		
-		if(!(qualityValues.containsKey(fromRoad)))
-			return; 
-		else if(!qualityValues.get(fromRoad).containsKey(toRoad))
+		if(!(qualityValues.containsKey(intersection)))
 			return;
 					
-		for(Quality q : qualityValues.get(fromRoad).get(toRoad)){
+		for(Quality q : qualityValues.get(intersection)){
 
-			if(q.state.hasTransit == transit){
+			if(q.action_transit == transit && q.action_road.equals(toRoad)){
 								
 				Quality maxQnextState = getMaxQuality(toRoad);
 				int quality_value = 0;
 				
 				if(maxQnextState != null)
-					quality_value = (int) (q.value + learningRate * (getReward(fromRoad, toRoad, transit) + discount * maxQnextState.value - q.value));
+					quality_value =  (int) (100 * (q.value + learningRate * (getReward(intersection, toRoad, transit) + discount * maxQnextState.value - q.value)));
 				else
-					quality_value = (int) (q.value + learningRate * (getReward(fromRoad, toRoad, transit) + discount * 0 - q.value));
+					quality_value =  (int) (100 * (q.value + learningRate * (getReward(intersection, toRoad, transit) + discount * 0 - q.value)));
 
-				q.setValue(quality_value);
+				q.setValue(((float)quality_value)/100);
 
 				System.out.println(car.getLocalName() + " QL: " +  q.print());
 
@@ -116,74 +105,35 @@ public class QLearning {
 		}
 	}
 	
-	public Road getMaxQualityRoad(Road currentRoad){
-		Road nextRoad = null;
-		double maxValue = 0;
+	private Quality getMaxQuality(String intersection){
+		float max = 0;
+		Quality maxQ =null;
 		
-		for(Road r2 : currentRoad.getEndIntersection().getOutRoads()){
-			
-			if(qualityValues.containsKey(r2.getName())){
-				
-				double value = getMaxQualityActionValue(new State(r2.getName(),r2.isBlocked()));
-				
-				if(maxValue < value){
-					maxValue = value;
-					nextRoad = r2;
-				}
-				
-			}
-		}
-		
-		return nextRoad;
-	}
-	
-	private Quality getMaxQuality(String fromRoad){
-		double max = 0;
-		Quality q =null;
-		
-		if(!qualityValues.containsKey(fromRoad))
+		if(!qualityValues.containsKey(intersection))
 			return null;
 		
-		for(String toRoad : qualityValues.get(fromRoad).keySet()){
-			for(Quality tmpQ : qualityValues.get(fromRoad).get(toRoad)){
-				if(max < tmpQ.value){
-					max = tmpQ.value;
-					q = tmpQ;
+		for(Quality q : qualityValues.get(intersection)){
+			
+				if(max < q.value){
+					max = q.value;
+					maxQ = q;
 				}
-			}
-		}
-		
-		return q;
-	}
-	
-	private double getMaxQualityActionValue(State state){
-		double max = -99999;
-		
-		if(!qualityValues.containsKey(state.road))
-			return max;
-		
-		for(String toRoad : qualityValues.get(state.road).keySet()){
-			
-			for(Quality tmpQ : qualityValues.get(state.road).get(toRoad)){
 				
-				if(max < tmpQ.value && tmpQ.state.hasTransit == state.hasTransit)
-					max = tmpQ.value;
-			}
-			
 		}
 		
-		return max;
+		return maxQ;
 	}
 	
-	private double getReward(String fromRoad, String toRoad, boolean withTransit){
+	private float getReward(String intersection, String toRoad, boolean withTransit){
 		
-		double reward = 0;
+		float reward = 0;
 		
-		if(car.getCityKnowledge().getRoads().containsKey(fromRoad) &&
+		if(car.getCityKnowledge().getIntersections().containsKey(intersection) &&
 				car.getCityKnowledge().getRoads().containsKey(toRoad)){
 			
-			Road r1 = car.getCityKnowledge().getRoads().get(fromRoad);
+			Road nextRoad =car.getCityKnowledge().getRoads().get(toRoad);
 			Point destination = null;
+			Intersection nextRoadInter = nextRoad.getEndIntersection();
 			
 			
 			if(car.getDestinationName() != null){
@@ -201,32 +151,52 @@ public class QLearning {
 			if(destination == null)
 				destination = car.getDestination();
 			
-			int transitPenalty = 0;
-			int length = r1.getLength();
-			
-			if(withTransit){
-				//Number of cells that the car could pass if he wasn't stopped at the transit
-				transitPenalty = (r1.getEndIntersection().getInRoads().size()-1) * 
-						(Resources.lightCheck*Resources.GreenLightTimeUnits + Resources.lightCheck + Resources.YellowLightTimeUnits) /
-						Resources.carVelocity;
-				
-				if(transitPenalty == 0)
-					transitPenalty = r1.getLength();
-			}
+			float transitPenalty = 0;
+			float length = nextRoad.getLength();
 			
 			//If he doesn't know the length of the road
 			if(length == SpaceResources.INFINITE)
-				length = Math.max(car.getSpaceDimensions().x, car.getSpaceDimensions().y);		//assume worst case
+				length = Math.max(car.getCityKnowledge().getDimensions().x, car.getCityKnowledge().getDimensions().y);		//assume worst case
 			
-			reward = 1.5 * (car.getSpaceDimensions().x + car.getSpaceDimensions().y) - 
-					Point.getDistance(r1.getEndIntersection().getOneEntry(), destination) * 2 * IMPORTANCE1 - 
-					(length + transitPenalty) * 2 * IMPORTANCE2;
+			
+			if(withTransit){
+				//Number of cells that the car could pass if he wasn't stopped at the transit
+				transitPenalty = (float)(CityMap.getTransitPenalization(car.getCityKnowledge(), toRoad));
+			}			
+			
+			reward = (float) (1.5 * (car.getCityKnowledge().getDimensions().x + car.getCityKnowledge().getDimensions().y) - 
+					Point.getDistance(nextRoadInter.getOneEntry(), destination) * 2 * IMPORTANCE1 - 
+					(length + transitPenalty) * 2 * IMPORTANCE2);
 			
 		}
 		
 		return reward;
 	}
 
+	public String getNextRoad(Intersection i){
+		String road = null;
+		float value = - SpaceResources.INFINITE;
+		
+		if(qualityValues.containsKey(i.getName())){
+			
+			//Search quality values for state = i
+			for(Quality q : qualityValues.get(i.getName())){
+				
+				//Check state of the transit in the cityMapKnowledge and analyse the 
+				//quality values for those actions
+				for(Road r : i.getOutRoads()){
+					if(q.action_transit == r.isBlocked() && q.action_road.equals(r.getName())
+							&& value < q.value){
+						value = q.value;
+						road = r.getName();
+					}
+				}
+			}
+
+		}
+		
+		return road;
+	}
 }
 
 

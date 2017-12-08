@@ -80,7 +80,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			//TMP
 			String map_txt = "C:\\Users\\Catarina\\Documents\\Académico\\4º Ano\\AIAD\\AIAD-Traffic-Management\\Map.txt";
 			
-			City city = new City(space,agentContainer,map_txt);
+			City city = new City(space,spaceDimensions,agentContainer,map_txt);
 			agentContainer.acceptNewAgent("city", city).start();
 			space.getAdder().add(space, city);
 			space.moveTo(city, 10, 10);
@@ -137,7 +137,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 					car = new CarAgent(space,new CityMap(),origin,destination,startRoad,true);
 				//Knows the city
 				else*/
-					car = new CarAgent(space,spaceDimensions,new CityMap(), origin,destination,startRoad,CarAgent.LearningMode.LEARNING);		
+					car = new CarAgent(space,new CityMap(spaceDimensions), origin,destination,startRoad,CarAgent.LearningMode.LEARNING);		
 
 					
 				agentContainer.acceptNewAgent("CarAgent" + i, car).start();

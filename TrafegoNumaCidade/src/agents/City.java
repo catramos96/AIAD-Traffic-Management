@@ -25,8 +25,8 @@ public class City extends Agent{
 	/**
 	 * Constructor
 	 */
-	public City(Grid<Object> space, ContainerController container, String map_txt){
-		map = new CityMap();
+	public City(Grid<Object> space, Point dimensions,ContainerController container, String map_txt){
+		map = new CityMap(dimensions);
 		map.load(map_txt);
 		
 		this.space = space;

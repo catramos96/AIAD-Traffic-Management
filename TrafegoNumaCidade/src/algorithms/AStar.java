@@ -80,7 +80,7 @@ public class AStar {
 						int transitPenalty = 0;
 						
 						if(next.isBlocked())
-							transitPenalty = Resources.transitPenaltyRatio * next.getLength();
+							transitPenalty = CityMap.getTransitPenalization(map, next.getName());
 				
 						int cost_next = costs.get(current) + current.getEndIntersection().getLength() + next.getLength() + transitPenalty;
 						
