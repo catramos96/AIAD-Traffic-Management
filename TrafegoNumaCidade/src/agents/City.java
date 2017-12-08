@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import cityStructure.Intersection;
 import cityStructure.CityMap;
 import cityStructure.Road;
-import cityTraffic.CityTrafficBuilder;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
 import resources.Resources.Direction;
@@ -75,6 +74,22 @@ public class City extends Agent{
 	
 	public CityMap getMap(){
 		return map;
+	}
+
+	public Grid<Object> getSpace() {
+		return space;
+	}
+
+	public void setSpace(Grid<Object> space) {
+		this.space = space;
+	}
+
+	public ContainerController getContainer() {
+		return container;
+	}
+
+	public void setContainer(ContainerController container) {
+		this.container = container;
 	}
 	
 	

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import cityStructure.CityMap;
 import cityStructure.Road;
 import resources.Point;
-import resources.Resources;
 
 /**
  * Class that implements the A* algorithm when searching for the best shortest

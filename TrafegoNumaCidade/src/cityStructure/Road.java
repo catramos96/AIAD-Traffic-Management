@@ -1,11 +1,15 @@
 package cityStructure;
+import java.io.Serializable;
+
 import cityStructure.Intersection.EntryType;
 import resources.Point;
 import resources.Resources;
 import resources.Resources.Direction;
 import resources.SpaceResources;
 
-public class Road{
+public class Road implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private Point startPoint;	//Out road of an intersection
 	private Point endPoint;		//In road of an intersection
 	

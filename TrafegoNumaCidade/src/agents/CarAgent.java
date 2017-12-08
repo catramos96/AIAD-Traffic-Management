@@ -9,10 +9,7 @@ import sajas.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import algorithms.AStar;
 import algorithms.QLearning;
 import behaviours.AskDirections;
@@ -22,7 +19,6 @@ import behaviours.LearnMap;
 import cityStructure.CityMap;
 import cityStructure.Intersection;
 import cityStructure.Road;
-import cityTraffic.onto.ServiceOntology;
 
 public class CarAgent extends Agent {
 
@@ -45,8 +41,9 @@ public class CarAgent extends Agent {
 	private QLearning qlearning = new QLearning(this, 1f, 0.8f);
 	
     private LearningMode learningMode = null;
-    
-    
+   
+	protected Knowledge knowledge = new Knowledge(null);
+
     public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad,LearningMode mode) 
 	{
 		this.space = space;
@@ -56,6 +53,8 @@ public class CarAgent extends Agent {
 		
 		this.learningMode = mode;
 		this.cityKnowledge = map;
+
+		this.knowledge.setCityKnowledge(map);
 	}
     
     public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, String endRoad, Road startRoad,LearningMode mode) 
@@ -66,9 +65,11 @@ public class CarAgent extends Agent {
 		this.road = startRoad;
 
 		this.destinationName = endRoad;
-		
+
 		this.learningMode = mode;		
 		this.cityKnowledge = map;
+
+		this.knowledge.setCityKnowledge(map);
 	}
     
     
@@ -133,6 +134,7 @@ public class CarAgent extends Agent {
     			if(road != null)
     				j.add(road);
     		}
+
     		
     		if(j.size() > 0){
 	    		setJorney(j);
@@ -149,7 +151,7 @@ public class CarAgent extends Agent {
      * @return
      */
     public ArrayList<String> getJourneyCalculations(Road road, String destinationName){
-    	return AStar.shortestPath(cityKnowledge, road, destinationName);
+    	return AStar.shortestPath(knowledge.getCityKnowledge(), road, destinationName);
     }
     
     public Road getRoad(){
@@ -211,7 +213,7 @@ public class CarAgent extends Agent {
 	}
 	
 	public CityMap getCityKnowledge(){
-		return cityKnowledge;
+		return knowledge.getCityKnowledge();
 	}
 	
 	public String getDestinationName(){

@@ -2,8 +2,6 @@ package cityTraffic.onto;
 
 import jade.content.Predicate;
 
-import java.util.ArrayList;
-
 public class Results implements Predicate {
 
 	private static final long serialVersionUID = 1L;

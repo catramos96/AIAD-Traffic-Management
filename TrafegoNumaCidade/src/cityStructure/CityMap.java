@@ -6,28 +6,22 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import agents.CarAgent;
-import agents.Semaphore;
-import repast.simphony.engine.schedule.Schedule;
-import repast.simphony.space.grid.Grid;
 import resources.MessagesResources;
 import resources.Point;
 import resources.Resources;
 import resources.SpaceResources;
-import resources.Resources.Direction;
 import sajas.core.Agent;
-import sajas.wrapper.ContainerController;
 
 /**
  * Class that represents the city structure and the connections
  * between roads and intersections.
  */
-public class CityMap extends Agent 
+public class CityMap extends Agent implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 	private HashMap<String,Intersection> intersections = new HashMap<String,Intersection>();
 	private HashMap<String,Road> roads = new HashMap<String,Road>();
 	
@@ -58,8 +52,6 @@ public class CityMap extends Agent
 		return pen;
 	}
 	
-	
-	
 	/*
 	 * GETS & SETS
 	 */
@@ -86,6 +78,14 @@ public class CityMap extends Agent
 		return null;
 	}
 	
+	public String print() {
+		String ret = "Roads :\n";
+		for(Road r : roads.values()){
+			ret += r.getName()+ " , ";
+		}
+		return ret;
+	}
+	
 	/*
 	 * SAVE & LOAD
 	 */
@@ -102,6 +102,7 @@ public class CityMap extends Agent
 			else{
 				
 				FileReader fr = new FileReader(path);
+				@SuppressWarnings("resource")
 				BufferedReader reader = new BufferedReader(fr);
 				
 				String line = "";
@@ -119,7 +120,7 @@ public class CityMap extends Agent
 						if(inIntersections){
 							String[] parts = line.split(MessagesResources.SEPARATOR);
 							
-							String type = parts[0];
+							//String type = parts[0];
 							String name = parts[1];
 							
 							if(parts[0].equals("SIMPLE")){

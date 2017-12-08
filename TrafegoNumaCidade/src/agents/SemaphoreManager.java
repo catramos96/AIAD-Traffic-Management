@@ -2,11 +2,9 @@ package agents;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-
 import behaviours.SwitchLights;
 import resources.Resources.Light;
 import jade.wrapper.StaleProxyException;
-import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
 import resources.Resources;
