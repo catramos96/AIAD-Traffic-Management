@@ -5,14 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import agents.CarAgent.LearningMode;
-import algorithms.Quality;
 import agents.City;
-import agents.Knowledge;
+import agents.CarSerializable;
 import agents.MonitoredCarAgent;
 import agents.Radio;
 import agents.RandomCarAgent;
@@ -45,13 +40,12 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	//params
 	private static Point myOrigin;
 	private static Point myDest;
-	private static Knowledge myKnowledge;
+	private static CarSerializable myKnowledge;
 	private static String path;
 
 	private static int nCars;
-	private static int n = -1; 	//number of the car being produced
+	private static int n = -1; 		//number of the car being produced
 	private static int prob = 0; 	//probability to learn the city
-	private static Point spaceDimensions = new Point(21,21);
 	
 	Grid<Object> space;
 
@@ -62,6 +56,8 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	private ContainerController agentContainer;
 
 	private Schedule schedule = new Schedule();
+	
+	private static Point spaceDimensions = new Point(21,21);
 
 	public static Agent getAgent(Context<?> context, AID aid) {
 		for (Object obj : context.getObjects(Agent.class)) {
@@ -124,7 +120,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 					agentContainer.acceptNewAgent("road monitor-" + r.getName(), monitor).start();
 					space.getAdder().add(space, monitor);
 					space.moveTo(monitor, r.getEndPoint().toArray());
-					//schedule.schedule(monitor);
 				}
 			}
 
@@ -139,7 +134,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			{
 				myKnowledge.setLearningMode(LearningMode.LEARNING);
 				MonitoredCarAgent car = new MonitoredCarAgent(space, myOrigin, myDest, myStartRoad,myKnowledge);
-				
 				agentContainer.acceptNewAgent("MonitoredCarAgent", car).start();
 				space.getAdder().add(space, car);
 				car.setPosition(myOrigin);
@@ -192,10 +186,10 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		double randProb = Math.random() * 100;
 		if (randProb <= prob) {
 			// the car must learn
-			car = new RandomCarAgent(space, origin, destination, startRoad, new Knowledge(spaceDimensions));
+			car = new RandomCarAgent(space, origin, destination, startRoad, new CarSerializable(spaceDimensions));
 		} else {
 			// the car has previous knowledge of the city
-			Knowledge know = new Knowledge(spaceDimensions);
+			CarSerializable know = new CarSerializable(spaceDimensions);
 			know.setCityKnowledge(city.getMap());
 			car = new RandomCarAgent(space, origin, destination, startRoad,know);
 		}
@@ -223,14 +217,14 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		String filename = (String) params.getValue("objPath");
 		
 		//load knowledge
-		myKnowledge = new Knowledge(spaceDimensions);
+		myKnowledge = new CarSerializable(spaceDimensions);
 		try {
 			String path = new File("").getAbsolutePath();
 			path += "\\objs\\"+filename;
 			File ser = new File(path);
 			FileInputStream fileIn = new FileInputStream(ser);
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			myKnowledge = (Knowledge) in.readObject();
+			myKnowledge = (CarSerializable) in.readObject();
 			in.close();
 			fileIn.close();
 			System.out.println("Data loaded from car.ser\n");
@@ -242,16 +236,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			System.out.println("MonitoredCarAgent class not found");
 		}
 		myKnowledge.setFilename(filename);
-		
-		HashMap<String, ArrayList<Quality>> map = myKnowledge.getQualityValues();
-		for (Map.Entry<String, ArrayList<Quality>> entry : map.entrySet()) {
-		    String key = entry.getKey();
-		    ArrayList<Quality> value = entry.getValue();
-		    System.out.println("Key : "+key);
-		    for (Quality q : value) {
-				System.out.println(q.value + " , ");
-			}
-		}
 		
 		//map path
 		path = new File("").getAbsolutePath();
@@ -287,8 +271,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		}
 		
 		System.out.println("Carros Gerados : "+nCars);
-		//TEMP
-		nCars = 2;
 	}
 	
 }

@@ -8,7 +8,7 @@ public class RandomCarAgent extends CarAgent {
 
 	//cor vermelho
 	
-	public RandomCarAgent(Grid<Object> space, Point origin, Point destination, Road startRoad,Knowledge knowledge) {
+	public RandomCarAgent(Grid<Object> space, Point origin, Point destination, Road startRoad,CarSerializable knowledge) {
 		super(space, origin, destination, startRoad, knowledge);	
 	}
 	
