@@ -57,7 +57,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 
 	private Schedule schedule = new Schedule();
 	
-	private static Point spaceDimensions = new Point(21,21);
+	private static Point spaceDimensions = new Point(62,62);
 
 	public static Agent getAgent(Context<?> context, AID aid) {
 		for (Object obj : context.getObjects(Agent.class)) {
