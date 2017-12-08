@@ -125,9 +125,9 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			}
 
 			// create cars in random positions
-			/*for (int i = 0; i < nCars; i++) {
+			for (int i = 0; i < nCars; i++) {
 				createRandomCar(city);
-			}*/
+			}
 
 			// create monitored car
 			Road myStartRoad = city.getMap().isPartOfRoad(myOrigin);
@@ -149,7 +149,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	
 	public void createRandomCar(City city) throws StaleProxyException 
 	{
-		System.out.println("<<<<<<<<<<<<<<");
 		n++;	//inc car number
 		
 		int rnd_road;

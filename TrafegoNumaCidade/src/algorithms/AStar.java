@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cityStructure.CityMap;
+import cityStructure.Intersection;
 import cityStructure.Road;
 import resources.Point;
 
@@ -17,7 +18,7 @@ public class AStar {
 	
 	public static int INFINITE = 999999;
 	
-	public static ArrayList<String> shortestPath(CityMap map, Road startRoad, String destinationName){
+	public static ArrayList<String> shortestPath(CityMap map, Road startRoad, String destinationName, boolean destinationIsRoad){
 		
 		ArrayList<String> path = new ArrayList<String>();
 		ArrayList<Road> evaluatedSet = new ArrayList<Road>();		
@@ -33,19 +34,32 @@ public class AStar {
 		}
 		
 		Road endRoad = null;
+		Intersection endIntersection = null;
 		
-		if(map.getRoads().containsKey(destinationName))
+		if(map.getRoads().containsKey(destinationName) && destinationIsRoad)					//If it's a road
 			endRoad = map.getRoads().get(destinationName);
+		else if(map.getIntersections().containsKey(destinationName) && !destinationIsRoad)			//If it's a intersection
+			endIntersection = map.getIntersections().get(destinationName);
+		else 
+			return path;
 		
-		if(endRoad == null || endRoad.getStartIntersection() == null || startRoad.getName().equals(destinationName))
+		if(startRoad.getName().equals(destinationName) && destinationIsRoad)
 			return path;
 		
 		toEvaluateSet.add(startRoad);
 		costs.put(startRoad, 0);
 		
+		Point destination = null;
+		
+		if(destinationIsRoad && endRoad.getStartIntersection() !=null)		//if destination is a road
+			destination = endRoad.getStartIntersection().getOneEntry();
+		else if(!destinationIsRoad)											//if destination is an intersection
+			destination = endIntersection.getOneEntry();
+		else
+			return path;
+		
 		if(startRoad.getEndIntersection() != null)
-			final_costs.put(startRoad,Point.getDistance(startRoad.getEndIntersection().getOneEntry(), 
-				endRoad.getStartIntersection().getOneEntry()));
+			final_costs.put(startRoad,Point.getDistance(startRoad.getEndIntersection().getOneEntry(), destination));
 		else
 			return path;
 		
@@ -53,8 +67,14 @@ public class AStar {
 
 			Road current = getMinimumCost(toEvaluateSet,final_costs);
 
-			if(current.equals(endRoad))
-				return buildPath(cameFrom, current);
+			if(endRoad != null){											//if destination is a road
+				if(current.equals(endRoad))
+					return buildPath(cameFrom, current);
+			}
+			else if(current.getEndIntersection() != null){					//if destination is an intersection
+				if(current.getEndIntersection().equals(endIntersection))
+					return buildPath(cameFrom,current);
+			}
 			
 			toEvaluateSet.remove(current);
 			evaluatedSet.add(current);
@@ -88,8 +108,7 @@ public class AStar {
 							costs.put(next, cost_next);
 							
 							//custos finais = custo até à rua actual + possível custo até ao final
-							final_costs.put(next, cost_next + Point.getDistance(next.getEndIntersection().getOneEntry(), 
-									endRoad.getStartIntersection().getOneEntry()));
+							final_costs.put(next, cost_next + Point.getDistance(next.getEndIntersection().getOneEntry(), destination));
 						}
 					}
 				}
@@ -97,8 +116,6 @@ public class AStar {
 			
 			
 		}
-		
-		System.out.println("Failed to get the shortest path between" + startRoad.getName() + " " + destinationName);
 		return path;
 	}
 	

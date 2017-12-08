@@ -4,6 +4,7 @@ import agents.Radio;
 import jade.lang.acl.ACLMessage;
 import repast.simphony.context.Context;
 import repast.simphony.util.ContextUtils;
+import resources.Debug;
 import resources.MessagesResources;
 import resources.MessagesResources.MessageType;
 import sajas.core.behaviours.CyclicBehaviour;
@@ -22,6 +23,9 @@ public class RadioService extends CyclicBehaviour{
 		ACLMessage message = radio.receive();
 		
 		if(message != null){
+			
+			Debug.debugMessageReceived(radio, message.getContent());
+			
 			MessageType type = MessagesResources.getMessageType(message.getContent());
 
 			if(type.equals(MessagesResources.MessageType.TRANSIT) || 
@@ -44,7 +48,9 @@ public class RadioService extends CyclicBehaviour{
 			    }
 			    
 				message.removeReceiver(radio.getAID());
+				
 				radio.send(message);
+				Debug.debugMessageSent(radio, message.getContent());
 			}
 		}
 		

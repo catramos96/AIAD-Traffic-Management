@@ -38,13 +38,13 @@ public class CityMap extends Agent implements Serializable
 			Road r1 = map.getRoads().get(road);
 
 			if(r1.getEndIntersection() != null){
-				
 				pen = (r1.getEndIntersection().getInRoads().size()-1) * 
 				(Resources.lightCheck*Resources.GreenLightTimeUnits + Resources.lightCheck + Resources.YellowLightTimeUnits) /
 				Resources.carVelocity;
 			}
-			else if(r1.getLength() != SpaceResources.INFINITE)
-				pen = r1.getLength();
+			
+			if(pen == 0 && r1.getLength() != SpaceResources.INFINITE)
+				pen = r1.getLength() * Resources.transitPenaltyRatio;
 			else
 				pen = (Math.max(map.getDimensions().x, map.getDimensions().y));
 		}

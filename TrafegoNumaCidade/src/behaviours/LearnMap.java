@@ -22,11 +22,7 @@ public class LearnMap extends CyclicBehaviour{
 		this.latestIntersection = car.getIntersection();
 		this.latestRoad = car.getRoad();
 		
-		for(Road r : latestRoad.getStartIntersection().getInRoads())
-			car.getUnexploredRoads().put(r.getName(), r);
-		
-		for(Road r : latestRoad.getStartIntersection().getOutRoads())
-			car.getUnexploredRoads().put(r.getName(), r);
+		car.getUnexploredRoads().put(latestRoad.getName(), latestRoad.getStartIntersection().getName());
 	}
 
 	@Override
@@ -58,7 +54,9 @@ public class LearnMap extends CyclicBehaviour{
 					//New road discovered
 					if(!knowledge.getRoads().containsKey(i.getName())){
 						knowledge.getRoads().put(i.getName(), i);
-						car.getUnexploredRoads().put(i.getName(),i);
+						
+						//Save unexplored road, intersection of start is unknown 
+						car.getUnexploredRoads().put(i.getName(),"");
 					}
 					else{
 						//Update the missing information
@@ -77,7 +75,9 @@ public class LearnMap extends CyclicBehaviour{
 					//New road discovered
 					if(!knowledge.getRoads().containsKey(o.getName())){
 						knowledge.getRoads().put(o.getName(), o);
-						car.getUnexploredRoads().put(o.getName(),o);
+						
+						//Save unexplored road, intersection of start is known
+						car.getUnexploredRoads().put(o.getName(),intersection.getName());
 					}
 					else{
 						//Update the missing information
@@ -85,6 +85,10 @@ public class LearnMap extends CyclicBehaviour{
 						knownRoad.setStartIntersection(intersection);
 						knownRoad.setStartPoint(o.getEndPoint());
 						knownRoad.updateLength();
+						
+						//If road is still unexplored
+						if(car.getUnexploredRoads().containsKey(o))
+							car.getUnexploredRoads().put(o.getName(), intersection.getName());
 						
 						if(car.getJourney().size() == 0)
 							car.calculateAndUpdateJourney();
@@ -110,7 +114,6 @@ public class LearnMap extends CyclicBehaviour{
 		
 		//Knows all the city
 		if(car.getUnexploredRoads().size() == 0){
-			System.out.println(car.getLocalName() + " is applying his knowledge from qLearning values");
 			car.setLearningMode(LearningMode.APPLYING);
 			car.removeBehaviour(this);
 		}

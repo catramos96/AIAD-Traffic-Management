@@ -7,6 +7,7 @@ import agents.CarAgent;
 import cityStructure.CityMap;
 import cityStructure.Intersection;
 import cityStructure.Road;
+import resources.Debug;
 import resources.Point;
 import resources.SpaceResources;
 
@@ -72,8 +73,6 @@ public class QLearning {
 			actions.add(q1);
 			actions.add(q2);
 			
-			System.out.println("ADDED: " + q1.print());
-			
 			updateQualityValues(intersection.getName(),r.getName());
 		}
 		
@@ -85,6 +84,9 @@ public class QLearning {
 		
 		if(!(qualityValues.containsKey(intersection)))
 			return;
+		
+		boolean transitHandled = false;
+		boolean noTransitHandled = false;
 					
 		for(Quality q : qualityValues.get(intersection)){
 
@@ -100,9 +102,15 @@ public class QLearning {
 
 				q.setValue(((float)quality_value)/100);
 
-				System.out.println(car.getLocalName() + " QL: " +  q.print());
+				Debug.debugQLearning(car, q);
+				
+				if(q.action_transit)
+					transitHandled = true;
+				else
+					noTransitHandled = true;
 
-				return;
+				if(transitHandled && noTransitHandled)
+					return;
 			}
 		}
 	}

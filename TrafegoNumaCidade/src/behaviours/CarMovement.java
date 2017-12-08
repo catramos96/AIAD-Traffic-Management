@@ -101,6 +101,7 @@ public class CarMovement extends TickerBehaviour{
 									break;
 								}
 							}
+
 							
 							if(nextRoad == null){
 								int road_index = (int) (Math.random() * car.getIntersection().getOutRoads().size());
@@ -110,8 +111,12 @@ public class CarMovement extends TickerBehaviour{
 							intersectionRoute = car.getIntersection().getRouteToRoad(car.getRoad().getName(), nextRoad.getName());
 						}
 						
+						if(nextRoad == null)
+							System.out.println("NULL" + valid);
+						
 						//update the current road
 						car.setRoad(nextRoad);
+						
 						
 						//if previous jorney wasn't valid
 						if(!valid)

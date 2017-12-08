@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 import agents.CarAgent;
 import agents.CarAgent.LearningMode;
+import agents.MonitoredCarAgent;
 import cityTraffic.onto.ServiceOntology;
 import jade.content.lang.sl.SLCodec;
 import jade.content.onto.Ontology;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
+import resources.Debug;
 import resources.MessagesResources;
 import resources.Point;
 import resources.SpaceResources;
@@ -64,6 +66,8 @@ public class AskDirections extends TickerBehaviour{
 	        	message.setContent(MessagesResources.buildMessageWhichRoad(car.getDestination()));
 	        else if(car.getJourney().size() == 0)
 		       	message.setContent(MessagesResources.buildMessageGetPath(car.getRoad().getName(),car.getDestinationName()));
+	        
+	        boolean gotReceiver = false;
 
 			//Get cells inside the car comunication radius
 			for(int i = 0; i < MessagesResources.CommunicationRadius * 2 + 1; i++){
@@ -83,14 +87,18 @@ public class AskDirections extends TickerBehaviour{
 							if(!carsAsked.contains(c.getAID())){
 								message.addReceiver(c.getAID());
 								carsAsked.add((AID) c.getAID());
+								gotReceiver = true;
 							}
 						}
 					}
 				}
 			}
 
+			if(gotReceiver){
+				car.send(message);
+				Debug.debugMessageSent(car, message.getContent());
+			}
 			
-			car.send(message);
 		}
 	}
 

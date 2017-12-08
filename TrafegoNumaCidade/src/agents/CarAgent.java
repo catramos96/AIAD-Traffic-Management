@@ -2,6 +2,7 @@ package agents;
 
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
+import resources.Debug;
 import resources.Point;
 import resources.Resources;
 import sajas.core.Agent;
@@ -40,7 +41,7 @@ public class CarAgent extends Agent {
     
 	private QLearning qlearning = new QLearning(this, 1f, 0.8f);
     private LearningMode learningMode = null;
-    private HashMap<String,Road> unexploredRoads = new HashMap<String,Road>();
+    private HashMap<String,String> unexploredRoads = new HashMap<String,String>();		//<RoadUnexplored,Intersection>
    
 	protected CarSerializable knowledge = new CarSerializable(null);
 
@@ -128,18 +129,14 @@ public class CarAgent extends Agent {
     		switch(learningMode){
 	    		case NONE:{
 	    			if(destinationName != null)
-	    				j = AStar.shortestPath(cityKnowledge, road, destinationName);
+	    				j = AStar.shortestPath(cityKnowledge, road, destinationName,true);
 	    			break;
 	    		}
 	    		case LEARNING:{
 	    			//Chooses a path to an unvisited road
-    				System.out.println("PATH TO UNVISITED");
-
 	    			for(String unexploredRoad : unexploredRoads.keySet()){
-	    				System.out.println("UNVISITED: " + unexploredRoad);
-	    				j = AStar.shortestPath(cityKnowledge, road, unexploredRoad);
+	    				j = AStar.shortestPath(cityKnowledge, road, unexploredRoads.get(unexploredRoad),false);
 	    				if(j.size() > 0){
-	    					System.out.println("Path to unvisited road");
 	    					break;
 	    				}
 	    			}
@@ -168,7 +165,7 @@ public class CarAgent extends Agent {
      * @return
      */
     public ArrayList<String> getJourneyCalculations(Road road, String destinationName){
-    	return AStar.shortestPath(knowledge.getCityKnowledge(), road, destinationName);
+    	return AStar.shortestPath(knowledge.getCityKnowledge(), road, destinationName,true);
     }
     
     public Road getRoad(){
@@ -185,7 +182,11 @@ public class CarAgent extends Agent {
     }
     
     public void setJourney(ArrayList<String> journey){
-    	this.journey = journey;
+    	
+    	if(journey.size() > 0){
+	    	this.journey = journey;
+	    	Debug.debugJourney(this);
+    	}
     }
     
     public void setRoad(Road r){
@@ -243,9 +244,10 @@ public class CarAgent extends Agent {
 	
 	public void setLearningMode(LearningMode mode){
 		learningMode = mode;
+		Debug.debugLearningMode(this);
 	}
 	
-	public HashMap<String,Road> getUnexploredRoads(){
+	public HashMap<String,String> getUnexploredRoads(){
 		return unexploredRoads;
 	}
 	

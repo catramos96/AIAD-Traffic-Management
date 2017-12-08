@@ -5,6 +5,7 @@ import agents.CarAgent;
 import cityStructure.Road;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
+import resources.Debug;
 import resources.MessagesResources;
 import resources.Point;
 import resources.MessagesResources.MessageType;
@@ -24,8 +25,10 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 		ACLMessage message = car.receive();
 		
 		if(message != null){
+			
+			Debug.debugMessageReceived(car, message.getContent());
+			
 			MessageType type = MessagesResources.getMessageType(message.getContent());
-			//System.out.println("Car " + car.getLocalName() + " received: " + message.getContent());
 
 			if(type.equals(MessagesResources.MessageType.GET_PATH)){
 				
@@ -46,7 +49,9 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 						message = new ACLMessage(ACLMessage.INFORM);
 						message.setContent(MessagesResources.buildMessagePath(destinationName,route));
 						message.addReceiver(receiver);
+						
 						car.send(message);
+						Debug.debugMessageSent(car, message.getContent());
 					}
 				}
 			}
@@ -72,6 +77,7 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 							if(!car.getCityKnowledge().getRoads().containsKey(parts[i]) ||
 									car.getUnexploredRoads().containsKey(parts[i])){
 								allRoadsVisited = false;
+								System.out.println("NEW ROADS");
 							}
 							
 							if(foundRoad)
@@ -83,6 +89,7 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 						
 						//Only sets the new journey if it's a new journey with unvisited roads
 						if(foundRoad && !allRoadsVisited){
+							System.out.println("Car transmitted message with new paths");
 							car.setJourney(route);
 						}
 					}
@@ -100,7 +107,9 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 					message = new ACLMessage(ACLMessage.INFORM);
 					message.setContent(MessagesResources.buildMessagePartOfRoad(destination, road.getName()));
 					message.addReceiver(receiver);
+					
 					car.send(message);
+					Debug.debugMessageSent(car, message.getContent());
 				}
 			}
 			else if(type.equals(MessagesResources.MessageType.PART_OF_ROAD)){
@@ -114,9 +123,6 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 					
 					//Try to find the path
 					car.calculateAndUpdateJourney();
-					
-					//if(car.getJorney().size() > 0)
-						//System.out.println("Found path by it self");
 				}
 			}
 			else if(type.equals(MessagesResources.MessageType.BLOCKED)){

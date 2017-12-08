@@ -5,6 +5,7 @@ import cityStructure.Road;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import repast.simphony.space.grid.Grid;
+import resources.Debug;
 import resources.MessagesResources;
 import resources.Point;
 import resources.Resources;
@@ -52,7 +53,10 @@ public class TransitMonitorization extends TickerBehaviour {
 			
 			if(!warnedRadio){
 		        message.setContent(MessagesResources.buildMessage(MessagesResources.MessageType.TRANSIT,r.getName())); 
+		        
 		        monitor.send(message); 
+		        Debug.debugMessageSent(monitor, message.getContent());
+		        
 		        warnedRadio = true;
 			}
 		}
@@ -60,7 +64,9 @@ public class TransitMonitorization extends TickerBehaviour {
 			
 			if(warnedRadio == true){
 		        message.setContent(MessagesResources.buildMessage(MessagesResources.MessageType.NO_TRANSIT,r.getName())); 
+		        
 		        monitor.send(message); 
+		        Debug.debugMessageSent(monitor, message.getContent());
 			}
 			warnedRadio = false;
 		}
