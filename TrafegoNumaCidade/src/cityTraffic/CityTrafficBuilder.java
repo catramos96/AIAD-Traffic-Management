@@ -136,6 +136,8 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			{
 				MonitoredCarAgent car = new MonitoredCarAgent(space, myKnowledge.getCityKnowledge(), myOrigin, myDest, myStartRoad,CarAgent.LearningMode.LEARNING);
 				agentContainer.acceptNewAgent("MonitoredCarAgent", car).start();
+				space.getAdder().add(space, car);
+				car.setPosition(myOrigin);
 			}
 
 		} catch (StaleProxyException e) {
@@ -214,7 +216,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		String filename = (String) params.getValue("objPath");
 		
 		//load knowledge
-		myKnowledge = new Knowledge();
+		myKnowledge = new Knowledge(spaceDimensions);
 		try {
 			String path = new File("").getAbsolutePath();
 			path += "\\objs\\"+filename;
@@ -268,6 +270,8 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		}
 		
 		System.out.println("Carros Gerados : "+nCars);
+		//TEMP
+		nCars = 2;
 	}
 	
 }

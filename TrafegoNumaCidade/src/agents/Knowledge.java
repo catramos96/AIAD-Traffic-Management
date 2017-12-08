@@ -2,6 +2,7 @@ package agents;
 
 import java.io.Serializable;
 import cityStructure.CityMap;
+import resources.Point;
 
 public class Knowledge implements Serializable {
 
@@ -10,7 +11,9 @@ public class Knowledge implements Serializable {
 	private CityMap cityMap = null;
 	private String filename = "car.ser";
 	
-	public Knowledge() { }
+	public Knowledge(Point p) { 
+		cityMap = new CityMap(p);
+	}
 
 	public CityMap getCityKnowledge() {
 		return cityMap;

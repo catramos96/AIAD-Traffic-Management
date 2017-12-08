@@ -9,10 +9,7 @@ import sajas.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import algorithms.AStar;
 import algorithms.QLearning;
 import behaviours.AskDirections;
@@ -25,7 +22,6 @@ import cityStructure.Road;
 
 public class CarAgent extends Agent {
 
-<<<<<<< HEAD
 	public static enum LearningMode {LEARNING, APPLYING, NONE};
 	
 	private Road road = null;							//Current road he is in (real world)
@@ -45,22 +41,9 @@ public class CarAgent extends Agent {
 	private QLearning qlearning = new QLearning(this, 1f, 0.8f);
 	
     private LearningMode learningMode = null;
-    
-=======
-	protected Road road = null;							//Current road he is in (real world)
-	protected Intersection intersection = null;			//Latest intersection (real world)
-	
-	//Origin and Destination
-	protected Point position;
-	protected Point destination;
-	protected String destinationName = null;
-	protected ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
-	protected Grid<Object> space = null;
-	protected boolean enableCityLearning = false;
-	
-	protected Knowledge knowledge = new Knowledge();
->>>>>>> caragents
-    
+   
+	protected Knowledge knowledge = new Knowledge(null);
+
     public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad,LearningMode mode) 
 	{
 		this.space = space;
@@ -68,13 +51,10 @@ public class CarAgent extends Agent {
 		this.position = origin;
 		this.road = startRoad;
 		
-<<<<<<< HEAD
 		this.learningMode = mode;
 		this.cityKnowledge = map;
-=======
-		this.enableCityLearning = enableCityLearning;
+
 		this.knowledge.setCityKnowledge(map);
->>>>>>> caragents
 	}
     
     public CarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, String endRoad, Road startRoad,LearningMode mode) 
@@ -85,14 +65,11 @@ public class CarAgent extends Agent {
 		this.road = startRoad;
 
 		this.destinationName = endRoad;
-		
-<<<<<<< HEAD
+
 		this.learningMode = mode;		
 		this.cityKnowledge = map;
-=======
-		this.enableCityLearning = enableCityLearning;
+
 		this.knowledge.setCityKnowledge(map);
->>>>>>> caragents
 	}
     
     
@@ -148,7 +125,6 @@ public class CarAgent extends Agent {
     	
     	if(destinationName != null){
     		
-<<<<<<< HEAD
     		ArrayList<String> j =new ArrayList<String>();
     		
     		if(!learningMode.equals(learningMode.APPLYING))
@@ -158,9 +134,7 @@ public class CarAgent extends Agent {
     			if(road != null)
     				j.add(road);
     		}
-=======
-    		ArrayList<String> j = AStar.shortestPath(knowledge.getCityKnowledge(), road, destinationName);
->>>>>>> caragents
+
     		
     		if(j.size() > 0){
 	    		setJorney(j);
