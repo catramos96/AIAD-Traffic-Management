@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-
-import cityStructure.CityMap;
 import cityStructure.Road;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
@@ -14,14 +12,15 @@ public class MonitoredCarAgent extends CarAgent {
 
 	//cor azul
 	
-	public MonitoredCarAgent(Grid<Object> space, CityMap map, Point origin, Point destination, Road startRoad, CarAgent.LearningMode mode) {
-		super(space, map, origin, destination, startRoad, mode);	
+	public MonitoredCarAgent(Grid<Object> space, Point origin, Point destination, Road startRoad, CarSerializable knowledge) {
+		super(space, origin, destination, startRoad, knowledge);	
 	}
 	
 	@Override
 	public void takeDown() {
     	super.takeDown();
     	//serialize agent knowledge    	
+    	knowledge.setQualityValues(this.getQLearning().getQualityValues());
     	try {
     		String path = new File("").getAbsolutePath();
 			path += "\\objs\\"+this.knowledge.getFilename();

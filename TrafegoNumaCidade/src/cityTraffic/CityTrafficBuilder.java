@@ -5,15 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-
-import agents.CarAgent;
+import agents.CarAgent.LearningMode;
 import agents.City;
 import agents.CarSerializable;
 import agents.MonitoredCarAgent;
 import agents.Radio;
 import agents.RandomCarAgent;
 import agents.RoadMonitor;
-import cityStructure.CityMap;
 import cityStructure.Road;
 import jade.core.AID;
 import jade.core.Profile;
@@ -50,7 +48,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	private static int prob = 0; 	//probability to learn the city
 	
 	Grid<Object> space;
-	private static Point spaceDimensions = new Point(62,62);
 
 	public static final boolean USE_RESULTS_COLLECTOR = true;
 
@@ -59,6 +56,8 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	private ContainerController agentContainer;
 
 	private Schedule schedule = new Schedule();
+	
+	private static Point spaceDimensions = new Point(21,21);
 
 	public static Agent getAgent(Context<?> context, AID aid) {
 		for (Object obj : context.getObjects(Agent.class)) {
@@ -125,18 +124,16 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			}
 
 			// create cars in random positions
-			/*for (int i = 0; i < nCars; i++) {
+			for (int i = 0; i < nCars; i++) {
 				createRandomCar(city);
-			}*/
+			}
 
 			// create monitored car
 			Road myStartRoad = city.getMap().isPartOfRoad(myOrigin);
 			if (myStartRoad != null) 
 			{
-				//MonitoredCarAgent car = new MonitoredCarAgent(space, myKnowledge.getCityKnowledge(), myOrigin, myDest, myStartRoad,CarAgent.LearningMode.LEARNING);
-				
-				MonitoredCarAgent car = new MonitoredCarAgent(space, new CityMap(spaceDimensions), myOrigin, myDest, myStartRoad,CarAgent.LearningMode.LEARNING);
-
+				myKnowledge.setLearningMode(LearningMode.LEARNING);
+				MonitoredCarAgent car = new MonitoredCarAgent(space, myOrigin, myDest, myStartRoad,myKnowledge);
 				agentContainer.acceptNewAgent("MonitoredCarAgent", car).start();
 				space.getAdder().add(space, car);
 				car.setPosition(myOrigin);
@@ -189,10 +186,12 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		double randProb = Math.random() * 100;
 		if (randProb <= prob) {
 			// the car must learn
-			car = new RandomCarAgent(space, new CityMap(spaceDimensions), origin, destination, startRoad, CarAgent.LearningMode.LEARNING);
+			car = new RandomCarAgent(space, origin, destination, startRoad, new CarSerializable(spaceDimensions));
 		} else {
 			// the car has previous knowledge of the city
-			car = new RandomCarAgent(space, city.getMap(), origin, destination, startRoad, CarAgent.LearningMode.LEARNING);
+			CarSerializable know = new CarSerializable(spaceDimensions);
+			know.setCityKnowledge(city.getMap());
+			car = new RandomCarAgent(space, origin, destination, startRoad,know);
 		}
 
 		agentContainer.acceptNewAgent("RandomCarAgent"+n, car).start();
@@ -272,8 +271,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		}
 		
 		System.out.println("Carros Gerados : "+nCars);
-		//TEMP
-		nCars = 2;
 	}
 	
 }
