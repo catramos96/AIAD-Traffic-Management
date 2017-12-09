@@ -42,14 +42,20 @@
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="mapPath" displayName="6.    Map Name" type="java.lang.String" 
-						defaultValue="Map.txt" 
+				<parameter name="mapPath" displayName="6.    Map Size ( Big or Small )" type="java.lang.String" 
+						defaultValue="Big" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									
 		/>
 				<parameter name="type" displayName="3.    Agent Learning Mode (A* or QLearning) " type="java.lang.String" 
 						defaultValue="A*" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
+									
+		/>
+				<parameter name="debugMode" displayName="7.    Debug Mode" type="java.lang.String" 
+						defaultValue="Car" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									
