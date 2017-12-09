@@ -2,7 +2,8 @@ package agents;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import behaviours.SwitchLights;
+
+import behaviors.SwitchLights;
 import resources.Resources.Light;
 import jade.wrapper.StaleProxyException;
 import repast.simphony.space.grid.Grid;

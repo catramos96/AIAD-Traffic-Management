@@ -1,4 +1,4 @@
-package behaviours;
+package behaviors;
 
 import agents.RoadMonitor;
 import cityStructure.Road;
@@ -16,6 +16,12 @@ import resources.SpaceResources;
 import sajas.core.AID;
 import sajas.core.behaviours.TickerBehaviour;
 
+/**
+ * Behavior implemented by a road monitor to track
+ * a road transit. If there is a change in the transit flow
+ * a message will be sent to the radio to inform this change.
+ *
+ */
 public class TransitMonitorization extends TickerBehaviour {
 
 
@@ -25,12 +31,19 @@ public class TransitMonitorization extends TickerBehaviour {
 	private boolean warnedRadio = false;
 	private ACLMessage message = null;
 	
+	/**
+	 * Constructor.
+	 * @param monitor
+	 * @param period
+	 * @param space
+	 */
 	public TransitMonitorization(RoadMonitor monitor, long period, Grid<Object> space) {
 		super(monitor, period);
 		
 		this.monitor = monitor;
 		this.space = space;	
 		
+		//Message properties
 		SLCodec codec = new SLCodec();
         Ontology ontology = ServiceOntology.getInstance();
         monitor.getContentManager().registerLanguage(codec);
@@ -41,6 +54,7 @@ public class TransitMonitorization extends TickerBehaviour {
         message.setOntology(ontology.getName()); 
         message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); 
         
+        //receiver is always the radio
 		AID receiver = (AID) monitor.getRadio().getAID();
         message.addReceiver(receiver); 
 	}
@@ -57,8 +71,10 @@ public class TransitMonitorization extends TickerBehaviour {
 			p = Resources.incrementDirection(r.getDirection(), p);
 		}
 		
+		//transit
 		if(n > SpaceResources.getMaxCarStopped(r.getLength())){
 			
+			//If radio wasn't warned yet
 			if(!warnedRadio){
 		        message.setContent(MessagesResources.buildMessage(MessagesResources.MessageType.TRANSIT,r.getName())); 
 		        
@@ -68,8 +84,10 @@ public class TransitMonitorization extends TickerBehaviour {
 		        warnedRadio = true;
 			}
 		}
+		//no transit
 		else{
 			
+			//If radio wasn't warned yet
 			if(warnedRadio == true){
 		        message.setContent(MessagesResources.buildMessage(MessagesResources.MessageType.NO_TRANSIT,r.getName())); 
 		        

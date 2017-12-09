@@ -198,7 +198,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			car = new CarRandom(space, origin, startRoad, destination, know);
 		}
 
-		agentContainer.acceptNewAgent("RandomCarAgent"+n, car).start();
+		agentContainer.acceptNewAgent("CarRandom"+n, car).start();
 		space.getAdder().add(space, car);
 		car.setPosition(origin);
 		System.out.println(car.print() + "Prob : " + randProb+"\nNumber : "+n);

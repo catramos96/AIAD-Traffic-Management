@@ -1,4 +1,4 @@
-package behaviours;
+package behaviors;
 
 import java.util.LinkedList;
 
@@ -12,6 +12,13 @@ import resources.Resources;
 import resources.SpaceResources;
 import sajas.core.behaviours.TickerBehaviour;
 
+
+/**
+ * Behavior implemented by a semaphore manager to
+ * witch the semaphores between the several entry points
+ * (Illusion of light switching).
+ *
+ */
 public class SwitchLights extends TickerBehaviour{
 
 	private static final long serialVersionUID = 1L;
@@ -23,6 +30,14 @@ public class SwitchLights extends TickerBehaviour{
 	private SemaphoreYellow yellowSem = null;
 	private SemaphoreGreen greenSem = null;
 	
+	/**
+	 * Constructor
+	 * @param manager
+	 * @param period
+	 * @param redS
+	 * @param yellowS
+	 * @param greenS
+	 */
 	public SwitchLights(SemaphoreManager manager, long period,LinkedList<SemaphoreRed> redS, SemaphoreYellow yellowS, SemaphoreGreen greenS) {
 		super(manager, period);
 		this.manager = manager;
@@ -35,11 +50,12 @@ public class SwitchLights extends TickerBehaviour{
 	protected void onTick() {
 		time += Resources.lightCheck;
 		
+		//Time to change the light
 		if(time >= manager.getLightTime() * Resources.lightCheck){
 			
 			time = 0;
 			
-			//Next Light
+			//Set to Yellow
 			if(manager.isGreenActive()){
 				manager.setGreenActive(false);
 
@@ -51,6 +67,7 @@ public class SwitchLights extends TickerBehaviour{
 				//remove green light from space
 				greenSem.setPosition(SpaceResources.REST_CELL);
 			}
+			//Set to green
 			else{
 				manager.setGreenActive(true);
 				

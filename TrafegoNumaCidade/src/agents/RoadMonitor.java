@@ -1,6 +1,6 @@
 package agents;
 
-import behaviours.TransitMonitorization;
+import behaviors.TransitMonitorization;
 import cityStructure.Road;
 import cityTraffic.onto.ServiceOntology;
 import jade.content.lang.sl.SLCodec;

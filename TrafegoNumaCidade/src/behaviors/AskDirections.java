@@ -1,4 +1,4 @@
-package behaviours;
+package behaviors;
 
 import java.util.ArrayList;
 
@@ -17,9 +17,19 @@ import resources.SpaceResources;
 import sajas.core.AID;
 import sajas.core.behaviours.TickerBehaviour;
 
+/**
+ * Behavior implemented by a car agent to ask for directions to the
+ * destination road or to know which road belongs to its point destination.
+ * The messages asking for directions can only be sent one time for each
+ * agent inside a certain radius when the car is in a determined road.
+ * Once the car changes roads, it can send new messages to previous
+ * agents as long as they are inside the radius of the car.
+ * 
+ */
 public class AskDirections extends TickerBehaviour{
 
 	private static final long serialVersionUID = 1L;
+	
 	private Car car = null;
 	private ArrayList<AID> carsAsked = new ArrayList<AID>();
 	private String lastRoadName = "";
@@ -28,6 +38,11 @@ public class AskDirections extends TickerBehaviour{
     private SLCodec codec;
     private Ontology serviceOntology;
 	 
+    /**
+     * Constructor.
+     * @param car
+     * @param time
+     */
 	public AskDirections(Car car, long time) {
 		super(car,time);
 		this.car = car;
@@ -61,7 +76,7 @@ public class AskDirections extends TickerBehaviour{
 	        message.setOntology(serviceOntology.getName()); 
 	        message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); 
 	        
-	       
+	       //Choose the type of the message to send
 	        if(car.getDestinationName() == null)
 	        	message.setContent(MessagesResources.buildMessageWhichRoad(car.getDestination()));
 	        else if(car.getJourney().size() == 0)
@@ -69,7 +84,7 @@ public class AskDirections extends TickerBehaviour{
 	        
 	        boolean gotReceiver = false;
 
-			//Get cells inside the car comunication radius
+			//Get cells inside the car communication radius
 			for(int i = 0; i < MessagesResources.CommunicationRadius * 2 + 1; i++){
 				for(int j = 0; j < MessagesResources.CommunicationRadius * 2 + 1;j++){
 					
@@ -94,6 +109,7 @@ public class AskDirections extends TickerBehaviour{
 				}
 			}
 
+			//If got at least one receiver
 			if(gotReceiver){
 				car.send(message);
 				Debug.debugMessageSent(car, message.getContent());

@@ -15,10 +15,10 @@ import java.util.HashMap;
 
 import algorithms.AStar;
 import algorithms.QLearning;
-import behaviours.AskDirections;
-import behaviours.CarMessagesReceiver;
-import behaviours.CarMovement;
-import behaviours.LearnMap;
+import behaviors.AskDirections;
+import behaviors.CarMessagesReceiver;
+import behaviors.CarMovement;
+import behaviors.LearnMap;
 import cityStructure.CityMap;
 import cityStructure.Intersection;
 import cityStructure.Road;
