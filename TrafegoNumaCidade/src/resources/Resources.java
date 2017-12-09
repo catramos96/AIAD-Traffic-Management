@@ -15,6 +15,7 @@ public class Resources {
 	
 	public static final int transitPenaltyRatio = 3;
 	
+	
 	/*
 	 * Semaphore
 	 */
