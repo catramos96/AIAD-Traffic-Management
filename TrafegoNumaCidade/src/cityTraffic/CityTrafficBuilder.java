@@ -110,7 +110,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			//update map with new cars
 			ScheduleParameters params = ScheduleParameters.createRepeating(1, 2000);
 			schedule.schedule(params,this,"createRandomCar",city);
-
+			
 			//radio agent
 			Radio radio = new Radio();
 			agentContainer.acceptNewAgent("radio", radio).start();

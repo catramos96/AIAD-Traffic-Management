@@ -30,7 +30,6 @@ public class CarMovement extends TickerBehaviour{
 			car.calculateAndUpdateJourney();
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	protected void onTick() {
 		

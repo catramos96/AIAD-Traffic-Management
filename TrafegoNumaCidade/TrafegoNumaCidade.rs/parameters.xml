@@ -19,19 +19,19 @@
 									
 		/>
 				<parameter name="originX" displayName="1.    Agent Origin ( X )" type="int" 
-						defaultValue="1" 
+						defaultValue="60" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="destX" displayName="2.    Agent Destination ( X )" type="int" 
-						defaultValue="4" 
+						defaultValue="5" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="originY" displayName="1.    Agent Origin ( Y )" type="int" 
-						defaultValue="19" 
+						defaultValue="33" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									

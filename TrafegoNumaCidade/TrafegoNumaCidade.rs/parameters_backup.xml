@@ -19,19 +19,19 @@
 									
 		/>
 				<parameter name="originX" displayName="1.    Agent Origin ( X )" type="int" 
-						defaultValue="1" 
+						defaultValue="60" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="destX" displayName="2.    Agent Destination ( X )" type="int" 
-						defaultValue="4" 
+						defaultValue="5" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="originY" displayName="1.    Agent Origin ( Y )" type="int" 
-						defaultValue="19" 
+						defaultValue="35" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
@@ -43,7 +43,7 @@
 									
 		/>
 				<parameter name="mapPath" displayName="6.    Map Size ( Big or Small )" type="java.lang.String" 
-						defaultValue="Small" 
+						defaultValue="Big" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									

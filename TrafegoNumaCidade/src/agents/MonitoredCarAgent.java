@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+
+import org.apache.poi.util.SystemOutLogger;
+
 import cityStructure.Road;
+import repast.simphony.engine.schedule.Schedule;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
 
@@ -41,6 +45,13 @@ public class MonitoredCarAgent extends Car {
             out.close();
             fileOut.close();
             System.out.printf("Serialized data in car.ser\n");
+            
+            //set time
+            long now = System.currentTimeMillis();
+            long delta = now-secs;
+            secs = delta/1000;
+            System.out.println(printStatistics());
+            
          }catch (IOException i) {
             i.printStackTrace();
          }

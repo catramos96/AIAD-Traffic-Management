@@ -1,5 +1,6 @@
 package agents;
 
+import repast.simphony.engine.schedule.Schedule;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import resources.Debug;
@@ -12,7 +13,6 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import algorithms.AStar;
 import algorithms.QLearning;
 import behaviours.AskDirections;
@@ -56,6 +56,13 @@ public class Car extends Agent {
 	
 	//space where the agent moves
 	protected Grid<Object> space = null;
+	
+	//statistics
+	protected Schedule schedule;
+	protected long secs = 0;
+	protected int countGetPathSend = 0;
+	protected int countWhichRoadSend = 0;
+	protected int countNewJourney = 0;
     
 	/**
 	 * Constructor of the class Car.
@@ -86,6 +93,8 @@ public class Car extends Agent {
 				}
 			}
 		}
+		
+		secs = System.currentTimeMillis();
 	}
 
     @Override
@@ -299,6 +308,7 @@ public class Car extends Agent {
     public void setJourney(ArrayList<String> journey){
     	
     	if(journey.size() > 0){
+    		countNewJourney++;
 	    	this.journey = journey;
 	    	Debug.debugJourney(this);
     	}
@@ -435,7 +445,35 @@ public class Car extends Agent {
 	 * @return
 	 */
 	public String print() {
-		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	/**
+	 * 
+	 */
+	public void incCountGetPathSend() {
+		countGetPathSend++;
+	}
+	
+	/**
+	 * 
+	 */
+	public void incCountWhichRoadSend() {
+		countWhichRoadSend++;
+	}
+	
+	/**
+	 * 
+	 */
+	public String printStatistics() {
+		String ret = "\n -- Monitored Car Statistics --\n";
+		ret += "  GetPaths = "+countGetPathSend;
+		ret += "\n  WhichRoads = "+countWhichRoadSend;
+		ret += "\n  Secs = "+secs;
+		ret += "\n  New Jorney = "+countNewJourney;
+		ret += "\n -- -- \n";
+		return ret;
+	}
+	
+	
 }

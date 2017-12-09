@@ -43,6 +43,9 @@ public class AskDirections extends TickerBehaviour{
 	@Override
 	protected void onTick() {
 		
+		//statistics only
+		boolean getPathSent = false;
+		
 		//Car already learned enough
 		if(car.getLearningMode().equals(LearningMode.APPLYING))
 			car.removeBehaviour(this);
@@ -62,11 +65,13 @@ public class AskDirections extends TickerBehaviour{
 	        message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); 
 	        
 	       
-	        if(car.getDestinationName() == null)
+	        if(car.getDestinationName() == null) 
 	        	message.setContent(MessagesResources.buildMessageWhichRoad(car.getDestination()));
-	        else if(car.getJourney().size() == 0)
-		       	message.setContent(MessagesResources.buildMessageGetPath(car.getRoad().getName(),car.getDestinationName()));
-	        
+	        else if(car.getJourney().size() == 0) {
+	        	message.setContent(MessagesResources.buildMessageGetPath(car.getRoad().getName(),car.getDestinationName()));
+		        getPathSent = true;
+	        }
+		       	
 	        boolean gotReceiver = false;
 
 			//Get cells inside the car comunication radius
@@ -96,6 +101,9 @@ public class AskDirections extends TickerBehaviour{
 
 			if(gotReceiver){
 				car.send(message);
+				//statistics only
+				if(getPathSent)	car.incCountGetPathSend();
+				else 	car.incCountWhichRoadSend();
 				Debug.debugMessageSent(car, message.getContent());
 			}
 			
