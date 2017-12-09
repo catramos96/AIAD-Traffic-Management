@@ -2,6 +2,9 @@ package behaviours;
 
 import agents.RoadMonitor;
 import cityStructure.Road;
+import cityTraffic.onto.ServiceOntology;
+import jade.content.lang.sl.SLCodec;
+import jade.content.onto.Ontology;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import repast.simphony.space.grid.Grid;
@@ -28,9 +31,14 @@ public class TransitMonitorization extends TickerBehaviour {
 		this.monitor = monitor;
 		this.space = space;	
 		
+		SLCodec codec = new SLCodec();
+        Ontology ontology = ServiceOntology.getInstance();
+        monitor.getContentManager().registerLanguage(codec);
+        monitor.getContentManager().registerOntology(ontology);
+		
 		message = new ACLMessage(ACLMessage.INFORM);
-		message.setLanguage(monitor.getCodec().getName()); 
-        message.setOntology(monitor.getOntology().getName()); 
+		message.setLanguage(codec.getName()); 
+        message.setOntology(ontology.getName()); 
         message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); 
         
 		AID receiver = (AID) monitor.getRadio().getAID();

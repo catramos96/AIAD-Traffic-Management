@@ -12,26 +12,31 @@ import sajas.core.Agent;
 import sajas.wrapper.ContainerController;
 
 /**
- * Repast Agent to display the map.
- *
+ * Agent that represents the city structure and displays in the space the image correspondent 
+ * to the map.
+ * It's responsible of creating the semaphore managers regarding the intersections in the 
+ * city structure.
  */
 public class City extends Agent{
 
-	private CityMap map;
-	private Grid<Object> space;
-	private ContainerController container;
+	private CityMap map;					//city structure
+	private Grid<Object> space;				//space where the agent is placed
 	
 	/**
-	 * Constructor
+	 * Constructor.
+	 * @param space - Space where the agent will be placed.
+	 * @param dimensions - Point with the weight and height of the map.
+	 * @param container - container of agents
+	 * @param map_txt - filename to load the city structure.
 	 */
 	public City(Grid<Object> space, Point dimensions,ContainerController container, String map_txt){
 		map = new CityMap(dimensions);
 		map.load(map_txt);
 		
 		this.space = space;
-		this.container = container;
 		
-		/*Create semaphores in the intersections*/
+		//Creates a semaphore manager for each intersection if the
+		//there is more than one in road.
 	    for(Intersection i : map.getIntersections().values()){
 	    	if(i.getInRoads().size() > 1){
 				ArrayList<Point> controlPoints = new ArrayList<Point>();
@@ -44,6 +49,12 @@ public class City extends Agent{
 	    }
 	};
 	
+	/**
+	 * Method that gives a random points belonging to the
+	 * given road.
+	 * @param r - Road
+	 * @return
+	 */
 	public Point getRandomRoadPosition(Road r){
 		Direction d = r.getDirection();
 		
@@ -72,24 +83,32 @@ public class City extends Agent{
 		}
 	}
 	
+	/*
+	 * GETS & SETS
+	 */
+	
+	/**
+	 * Gets the city structure.
+	 * @return
+	 */
 	public CityMap getMap(){
 		return map;
 	}
 
+	/**
+	 * Gets the space where the agents are placed.
+	 * @return
+	 */
 	public Grid<Object> getSpace() {
 		return space;
 	}
 
+	/**
+	 * Sets the space where the agents are placed.
+	 * @param space
+	 */
 	public void setSpace(Grid<Object> space) {
 		this.space = space;
-	}
-
-	public ContainerController getContainer() {
-		return container;
-	}
-
-	public void setContainer(ContainerController container) {
-		this.container = container;
 	}
 	
 	

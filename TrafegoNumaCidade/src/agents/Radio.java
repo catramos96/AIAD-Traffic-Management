@@ -7,10 +7,17 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import sajas.core.Agent;
 import sajas.domain.DFService;
 
+/**
+ * Agent that is responsible to communicate the transit
+ * flow to the cars in the same container.
+ *
+ */
 public class Radio extends Agent{
 	
-	public Radio(){
-	}
+	/**
+	 * Constructor
+	 */
+	public Radio(){}
 	
 	@Override
 	public void setup(){        
@@ -25,7 +32,7 @@ public class Radio extends Agent{
         	ex.printStackTrace();
         }
 	        
+        //Message Handler
 		this.addBehaviour(new RadioService(this));
-
 	}
 }

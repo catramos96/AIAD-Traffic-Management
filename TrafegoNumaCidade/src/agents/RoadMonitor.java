@@ -12,14 +12,24 @@ import repast.simphony.space.grid.Grid;
 import sajas.core.Agent;
 import sajas.domain.DFService;
 
+/**
+ * Agent that is responsible to track the transit in
+ * the road that it's associated with and communicate any
+ * change in the transit flow to the radio.
+ *
+ */
 public class RoadMonitor extends Agent{
 
-	private Road road = null;
-	private Radio radio = null;
-	private Grid<Object> space = null;
-	private SLCodec codec;
-	private Ontology ontology;
+	private Road road = null;			//Road responsible to track the transit
+	private Radio radio = null;			//Radio to communicate with
+	private Grid<Object> space = null;	//Space where the car agents are
 	
+	/**
+	 * Constructor.
+	 * @param road
+	 * @param space
+	 * @param radio
+	 */
 	public RoadMonitor(Road road, Grid<Object> space, Radio radio){
 		this.road = road;
 		this.space = space;
@@ -29,12 +39,7 @@ public class RoadMonitor extends Agent{
 	
 	//JADE RELATED
 	@Override
-	public void setup(){
-
-		codec = new SLCodec();
-        ontology = ServiceOntology.getInstance();
-        getContentManager().registerLanguage(codec);
-        getContentManager().registerOntology(ontology);
+	public void setup(){		
         
 		DFAgentDescription template = new DFAgentDescription();
         ServiceDescription sd = new ServiceDescription();
@@ -48,6 +53,7 @@ public class RoadMonitor extends Agent{
         	ex.printStackTrace();
         }
 	        
+        //Transit flow handler
 		this.addBehaviour(new TransitMonitorization(this,1500,space));
 	}
 	
@@ -55,18 +61,18 @@ public class RoadMonitor extends Agent{
 	 * Gets & Sets
 	 */
 	
+	/**
+	 * Gets the road that it is responsible with.
+	 * @return
+	 */
 	public Road getRoad(){
 		return road;
 	}
 	
-	public SLCodec getCodec(){
-		return codec;
-	}
-	
-	public Ontology getOntology(){
-		return ontology;
-	}
-	
+	/**
+	 * Gets the radio.
+	 * @return
+	 */
 	public Radio getRadio(){
 		return radio;
 	}
