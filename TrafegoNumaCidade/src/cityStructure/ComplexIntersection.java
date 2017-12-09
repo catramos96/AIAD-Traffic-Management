@@ -16,6 +16,11 @@ public class ComplexIntersection extends Intersection {
 		loadCircuit(area);
 	}
 	
+	public ComplexIntersection(ArrayList<Point> area, String name,ArrayList<Point> circuit) {
+		super(area, name);
+		this.circuit = circuit;
+	}
+	
 	private ComplexIntersection(HashMap<Point,HashMap<CellEntry,Road>> entries, ArrayList<Road> inRoads, ArrayList<Road> outRoads, String name, int length, ArrayList<Point> circuit){
 		super(entries,inRoads,outRoads,name,length);
 		this.circuit = circuit;

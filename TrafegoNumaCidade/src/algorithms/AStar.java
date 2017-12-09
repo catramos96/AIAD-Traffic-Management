@@ -73,7 +73,7 @@ public class AStar {
 			
 			Road current = getMinimumCost(toEvaluateSet,final_costs);
 			
-			System.out.println("CURRENT " + current.getName());
+			System.out.println("CURRENT " + current.print());
 
 			if(destinationIsRoad){											//if destination is a road
 				if(current.getName().equals(destinationName))
@@ -93,7 +93,7 @@ public class AStar {
 				//Look for possible nextRoads
 				for(Road next : current.getEndIntersection().getOutRoads()){
 					
-					System.out.println("CHILDREN " + next.getName());
+					System.out.println("CHILDREN " + next.print());
 
 					
 					if(next.getEndIntersection() == null)

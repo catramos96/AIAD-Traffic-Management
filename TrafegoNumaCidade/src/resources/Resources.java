@@ -3,7 +3,7 @@ package resources;
 public class Resources {
 	
 	public static final int lightCheck = 1000;
-	public static final int carVelocity = 400;
+	public static final int carVelocity = 300;
 	
 	public static final int transitPenaltyRatio = 3;
 	
