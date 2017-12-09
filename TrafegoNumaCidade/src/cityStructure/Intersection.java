@@ -66,16 +66,6 @@ public abstract class Intersection implements Serializable {
 		length = entries.keySet().size();
 	}
 	
-	protected Intersection(HashMap<Point,HashMap<CellEntry,Road>> entries, ArrayList<Road> inRoads, ArrayList<Road> outRoads, String name, int length){
-		this.entries = entries;
-		this.inRoads = inRoads;
-		this.outRoads = outRoads;
-		this.name = name;
-		this.length = length;
-	}
-	
-	public abstract Intersection getPerception();
-	
 	public abstract ArrayList<Point> getRouteToRoad(String roadEntry,String roadOut);
 
 	public String print(){

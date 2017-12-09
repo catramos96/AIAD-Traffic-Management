@@ -21,29 +21,6 @@ public class ComplexIntersection extends Intersection {
 		this.circuit = circuit;
 	}
 	
-	private ComplexIntersection(HashMap<Point,HashMap<CellEntry,Road>> entries, ArrayList<Road> inRoads, ArrayList<Road> outRoads, String name, int length, ArrayList<Point> circuit){
-		super(entries,inRoads,outRoads,name,length);
-		this.circuit = circuit;
-	}
-	
-	public ComplexIntersection getPerception(){
-		HashMap<Point,HashMap<CellEntry,Road>> e = null;
-		ArrayList<Road> iR = new ArrayList<Road>();
-		ArrayList<Road> oR = new ArrayList<Road>();
-		
-		e = this.getPerceptionsEntries(iR, oR);
-		
-		ComplexIntersection inter = new ComplexIntersection(e,iR,oR,name,length,circuit);
-		
-		for(Road i : inter.getInRoads())
-			i.setEndIntersection(inter);
-		
-		for(Road o : inter.getOutRoads())
-			o.setStartIntersection(inter);
-		
-		return inter;
-	}
-	
 	@Override
 	public ArrayList<Point> getRouteToRoad(String roadEntryName, String roadOutName) {
 		

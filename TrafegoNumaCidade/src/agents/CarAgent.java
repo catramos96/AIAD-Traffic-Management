@@ -138,7 +138,7 @@ public class CarAgent extends Agent {
     				}
     			}
     			//Look for the paths to unvisited roads the end of the current road is unknown
-    			/*if(journey.size() == 0 && j.size() == 0 && 
+    			if(journey.size() == 0 && j.size() == 0 && 
     					knowledge.getCityKnowledge().getIntersections().containsKey(road.getEndIntersection().getName())){
     				
     				boolean hasUnvisited = false;
@@ -163,20 +163,17 @@ public class CarAgent extends Agent {
 		    					if(this.getClass().equals(MonitoredCarAgent.class))
 		    						System.out.println("TRY finding path to " + unexploredRoad + " by " + intersection);
 		    					
-		    					j = AStar.shortestPath(knowledge.getCityKnowledge(), road, intersection,false);
+		    					Road r = knowledge.getCityKnowledge().getRoads().get(road.getName());
+		    					j = AStar.shortestPath(knowledge.getCityKnowledge(), r, intersection,false);
 			    				
 		    					if(j.size() != 0){
-			    					
 		    						j.add(unexploredRoad);
-		    						
-		    						if(this.getClass().equals(MonitoredCarAgent.class))
-			    						System.out.println("FOUND PATH - " + unexploredRoad + " " + j.size());
-			    					break;
+		    						break;
 			    				}
 		    				}
 		    			}
     				}
-    			}*/
+    			}
     			break;
     		}
     		case LEARNING:{

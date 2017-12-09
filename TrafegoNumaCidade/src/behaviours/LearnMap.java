@@ -35,16 +35,9 @@ public class LearnMap extends CyclicBehaviour{
 		if(car.getIntersection() != null){
 			
 			
-			
 			//Don't know the intersection
 			if(!knowledge.getIntersections().containsKey(car.getIntersection().getName())){
-				
-				//Get the perception of the intersection
-				//Knows the intersection roads (in/out) but only with the "visible" information
-				//at the moment: the outRoads will only have the startPoint, Direction and Name
-				//and the inRoads the endPoint, Direction and name
-				//Intersection intersection = car.getIntersection().getPerception();
-				
+
 				Intersection intersection = null;
 				Intersection realI = car.getIntersection();
 				
@@ -71,7 +64,6 @@ public class LearnMap extends CyclicBehaviour{
 					
 					//New road discovered
 					if(!knowledge.getRoads().containsKey(in.getName())){
-						//knowledge.getRoads().put(in.getName(), in);
 						Road r = in.getRoadPerceptionAtEnd();
 						r.setEndIntersection(intersection);
 						intersection.insertRoad(r, false);
@@ -89,11 +81,9 @@ public class LearnMap extends CyclicBehaviour{
 						knownRoad.setEndIntersection(intersection);
 
 						intersection.insertRoad(knownRoad, false);
-
-
 						
-						//if(car.getJourney().size() != 0)
-							//car.calculateAndUpdateJourney();
+						if(car.getJourney().size() != 0)
+							car.calculateAndUpdateJourney();
 					}
 
 				}
@@ -102,9 +92,7 @@ public class LearnMap extends CyclicBehaviour{
 					Road out = outRoads.get(i);
 					
 					//New road discovered
-					if(!knowledge.getRoads().containsKey(out.getName())){
-						//knowledge.getRoads().put(out.getName(), out);
-						
+					if(!knowledge.getRoads().containsKey(out.getName())){						
 						Road r = out.getRoadPerceptionAtStart();
 						r.setStartIntersection(intersection);
 						intersection.insertRoad(r, false);
@@ -121,25 +109,20 @@ public class LearnMap extends CyclicBehaviour{
 						knownRoad.updateLength();
 						knownRoad.setStartIntersection(intersection);
 						
-						intersection.insertRoad(knownRoad, true);
+						intersection.insertRoad(knownRoad, false);
 
 						
 						//If road is still unexplored
 						if(car.getUnexploredRoads().containsKey(out))
 							car.getUnexploredRoads().put(out.getName(), intersection.getName());
 						
-						//if(car.getJourney().size() != 0)
-							//car.calculateAndUpdateJourney();
+						if(car.getJourney().size() != 0)
+							car.calculateAndUpdateJourney();
 					}
 
 				}
 				
 			}
-			
-			/*if(!car.getIntersection().equals(latestIntersection)){
-				System.out.println(car.getCityKnowledge().getIntersections().get(car.getIntersection().getName()).print() + "\n");
-			}*/
-			
 			
 		}
 		
