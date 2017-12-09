@@ -6,10 +6,10 @@ import resources.Point;
 
 public class RandomCarAgent extends CarAgent {
 
-	//cor vermelho
+	//RED
 	
-	public RandomCarAgent(Grid<Object> space, Point origin, Road startRoad,CarSerializable knowledge) {
-		super(space, origin, startRoad, knowledge);	
+	public RandomCarAgent(Grid<Object> space, Point origin, Road startRoad,Point destination,CarSerializable knowledge) {
+		super(space, origin, startRoad,destination, knowledge,LearningMode.NONE);	
 	}
 	
     @Override
@@ -17,5 +17,13 @@ public class RandomCarAgent extends CarAgent {
     	super.takeDown();
     }
 
+	@Override
+	public String print() {
+		String ret = "-- Random Car Agent Informations --\n";
+		ret += "Origin : "+position.print()+"\n";
+		ret += "Destination : "+destination.print()+"\n";
+		return ret;
+	}
+    
 	
 }

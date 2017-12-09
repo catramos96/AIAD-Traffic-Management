@@ -41,7 +41,9 @@ public class CityTrafficBuilder extends RepastSLauncher {
 
 	//params
 	private static Point myOrigin;
+	private static Point myDest;
 	private static CarSerializable myKnowledge;
+	private static LearningMode myMode;
 	private static String path;
 
 	private static int nCars;
@@ -133,10 +135,12 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			Road myStartRoad = city.getMap().isPartOfRoad(myOrigin);
 			if (myStartRoad != null) 
 			{
-				MonitoredCarAgent car = new MonitoredCarAgent(space, myOrigin, myStartRoad,myKnowledge);
+				MonitoredCarAgent car = new MonitoredCarAgent(space, myOrigin, myStartRoad,myDest,myKnowledge,myMode);
 				agentContainer.acceptNewAgent("MonitoredCarAgent", car).start();
 				space.getAdder().add(space, car);
 				car.setPosition(myOrigin);
+				
+				System.out.println(car.print());
 			}
 
 		} catch (StaleProxyException e) {
@@ -186,20 +190,18 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		if (randProb <= prob) {
 			// the car must learn
 			CarSerializable know = new CarSerializable(spaceDimensions);
-			know.setDestination(destination);
-			car = new RandomCarAgent(space, origin, startRoad, know);
+			car = new RandomCarAgent(space, origin, startRoad, destination, know);
 		} else {
 			// the car has previous knowledge of the city
 			CarSerializable know = new CarSerializable(spaceDimensions);
 			know.setCityKnowledge(city.getMap());
-			know.setDestination(destination);
-			car = new RandomCarAgent(space, origin, startRoad,know);
+			car = new RandomCarAgent(space, origin, startRoad, destination, know);
 		}
 
 		agentContainer.acceptNewAgent("RandomCarAgent"+n, car).start();
 		space.getAdder().add(space, car);
 		car.setPosition(origin);
-		System.out.println("RandomCarAgent"+n +"  " + car.print() + "\nProb : " + randProb);
+		System.out.println(car.print() + "Prob : " + randProb+"\nNumber : "+n);
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -214,7 +216,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		//2. dest monitored car
 		x = (Integer) params.getValue("destX");
 		y = (Integer) params.getValue("destY");
-		Point myDest = new Point(x, y);
+		myDest = new Point(x, y);
 		
 		//3. agent learning mode
 		String mode = (String) params.getValue("type");
@@ -224,7 +226,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		
 		if(filename.equals("new")) 
 		{
-			createNewAgent(myDest,mode);
+			createNewAgent(mode);
 		}
 		//load knowledge
 		else {		
@@ -239,31 +241,28 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				fileIn.close();
 				System.out.println("Data loaded from car.ser\n");
 				
-				//update destination
-				myKnowledge.setDestination(myDest);
-				
 				//Escolhi fazer A*
 				if(mode.equals("A*")) {
-					myKnowledge.setLearningMode(LearningMode.NONE);
+					myMode = LearningMode.NONE;
 				}
 				//escolhi QLearning
 				else 
 				{
-					myKnowledge.setLearningMode(LearningMode.LEARNING);
+					myMode = LearningMode.LEARNING;
 					
 					//verifico se ja existe neste agente
-					if(myKnowledge.isHasQLearning()) 
+					if(myKnowledge.getqLearningDest() != null) 
 					{
 						//nao tenho qLearning para esta posicao -> executo A*
 						if(!myKnowledge.getqLearningDest().equals(myDest)) {
-							myKnowledge.setLearningMode(LearningMode.NONE);
+							myMode = LearningMode.NONE;
 						}
 						
 					}
 					//nao existe -> vou aprender
 					else 
 					{
-						myKnowledge.setLearn();
+						myKnowledge.setLearn(myDest);
 						filename = "qlearnig_"+x+"_"+y;
 					}
 				}
@@ -272,7 +271,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				
 			} catch (FileNotFoundException f) {
 				System.out.println("Car file not found");
-				createNewAgent(myDest,mode);
+				createNewAgent(mode);
 			} catch (IOException i) {
 				i.printStackTrace();
 			} catch (ClassNotFoundException c) {
@@ -295,18 +294,18 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		return super.build(context);
 	}
 	
-	private void createNewAgent(Point myDest, String mode) {
+	private void createNewAgent(String mode) {
+		System.out.println("New Agent created\n");
 		myKnowledge = new CarSerializable(spaceDimensions);
-		myKnowledge.setDestination(myDest);
 		String temp = "";
 		if(mode.equals("A*")) {
-			myKnowledge.setLearningMode(LearningMode.NONE);
+			myMode = LearningMode.SHORT_LEARNING;
 			long timestamp =  (new Timestamp(System.currentTimeMillis())).getTime();
 			temp = "astar"+timestamp+".ser";
 		}
 		else {
-			myKnowledge.setLearningMode(LearningMode.LEARNING);
-			myKnowledge.setLearn();
+			myMode = LearningMode.LEARNING;
+			myKnowledge.setLearn(myDest);
 			temp = "qlearnig_"+myDest.x+"_"+myDest.y+".ser";
 		}
 		myKnowledge.setFilename(temp);

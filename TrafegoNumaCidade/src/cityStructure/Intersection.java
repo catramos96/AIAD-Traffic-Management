@@ -66,18 +66,22 @@ public abstract class Intersection implements Serializable {
 		length = entries.keySet().size();
 	}
 	
-	protected Intersection(HashMap<Point,HashMap<CellEntry,Road>> entries, ArrayList<Road> inRoads, ArrayList<Road> outRoads, String name, int length){
-		this.entries = entries;
-		this.inRoads = inRoads;
-		this.outRoads = outRoads;
-		this.name = name;
-		this.length = length;
-	}
-	
-	public abstract Intersection getPerception();
-	
 	public abstract ArrayList<Point> getRouteToRoad(String roadEntry,String roadOut);
 
+	public String print(){
+		String s = "Intersection " + name + ":\n";
+		
+		for(Point entry : entries.keySet()){
+			for(CellEntry c : entries.get(entry).keySet()){
+				Road r = entries.get(entry).get(c);
+				if(r!=null)
+					s += "   " + entry.print() +  " " + c + " " + r.print() + "\n";
+			}
+		}
+		
+		return s;
+	}
+	
 	/*
 	 * GETS & SETS
 	 */
@@ -97,7 +101,7 @@ public abstract class Intersection implements Serializable {
 		return null;
 	}
 	
-	public EntryType insertRoad(Road r){
+	public EntryType insertRoad(Road r, boolean substituteRoad){
 		Point startPoint = r.getStartPoint();
 		Point endPoint = r.getEndPoint();
 
@@ -108,20 +112,46 @@ public abstract class Intersection implements Serializable {
 
 			for(CellEntry key : entries_tmp.keySet()){
 				
-				if(startPoint.equals(getCellEntryPoint(key, p))){
-					outRoads.add(r);
-					entries_tmp.put(key, r);
-					return EntryType.Out;
+				if(startPoint != null){
+					if(startPoint.equals(getCellEntryPoint(key, p))){
+						if(substituteRoad)
+							updateEntry(r.getName(),r,false);
+						else
+							outRoads.add(r);
+						entries_tmp.put(key, r);
+						return EntryType.Out;
+					}
 				}
-				else if(endPoint.equals(getCellEntryPoint(key, p))){
-					inRoads.add(r);
-					entries_tmp.put(key, r);
-					return EntryType.In;
+				if(endPoint != null){
+					if(endPoint.equals(getCellEntryPoint(key, p))){
+						if(substituteRoad)
+							updateEntry(r.getName(),r,true);
+						else
+							inRoads.add(r);
+						
+						entries_tmp.put(key, r);
+						return EntryType.In;
+					}
 				}
 			}
 		}
 		System.out.println("COULDN'T INSERT ROAD");
 		return EntryType.NotPart;
+	}
+	
+	private void updateEntry(String roadName,Road road, boolean inRoad){
+		if(inRoad){
+			for(int i = 0; i < inRoads.size(); i++){
+				if(roadName.equals(inRoads.get(i).getName()))
+					inRoads.set(i, road);
+			}
+		}
+		else{
+			for(int i = 0; i < outRoads.size(); i++){
+				if(roadName.equals(outRoads.get(i).getName()))
+					inRoads.set(i, road);
+			}
+		}
 	}
 	
 	public void setName(String name){

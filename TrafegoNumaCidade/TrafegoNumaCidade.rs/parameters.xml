@@ -13,7 +13,7 @@
 									
 		/>
 				<parameter name="objPath" displayName="4.    Agent Knowledge filename (new if none)" type="java.lang.String" 
-						defaultValue="test.ser" 
+						defaultValue="new" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									
@@ -49,7 +49,7 @@
 									
 		/>
 				<parameter name="type" displayName="3.    Agent Learning Mode (A* or QLearning) " type="java.lang.String" 
-						defaultValue="QLearning" 
+						defaultValue="A*" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									

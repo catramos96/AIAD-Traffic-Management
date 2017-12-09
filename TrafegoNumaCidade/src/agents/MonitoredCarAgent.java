@@ -12,8 +12,17 @@ public class MonitoredCarAgent extends CarAgent {
 
 	//cor azul
 	
-	public MonitoredCarAgent(Grid<Object> space, Point origin, Road startRoad, CarSerializable knowledge) {
-		super(space, origin, startRoad, knowledge);	
+	public MonitoredCarAgent(Grid<Object> space, Point origin, Road startRoad, Point destination,CarSerializable knowledge, LearningMode mode) {
+		super(space, origin, startRoad, destination,knowledge, mode);	
+	}
+	
+	@Override
+	public String print() {
+		String ret = "-- Monitored Car Agent Informations --\n";
+		ret += "Learning Mode : "+learningMode+"\n";
+		ret += "Origin : "+position.print()+"\n";
+		ret += "Destination : "+destination.print()+"\n";
+		return ret;
 	}
 	
 	@Override

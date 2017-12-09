@@ -12,6 +12,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import algorithms.AStar;
 import algorithms.QLearning;
 import behaviours.AskDirections;
@@ -30,22 +31,31 @@ public class CarAgent extends Agent {
 	protected Road road = null;							//Current road he is in (real world)
 	protected Intersection intersection = null;			//Latest intersection (real world)
 	protected Point position = null;
+	
+	//destination
+	protected Point destination = null;
+	protected String destinationName = null;
 
+    //actual destination and learning mode to be apply
+    protected LearningMode learningMode = LearningMode.NONE;
+    
+    //persistent knowledge of the agent
 	protected CarSerializable knowledge = new CarSerializable(null);
+	
 	protected ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
 	protected QLearning qlearning = new QLearning(this, 1f, 0.8f);
 	
 	protected Grid<Object> space = null;
     
-    public CarAgent(Grid<Object> space, Point origin, Road startRoad,CarSerializable knowledge) 
+    public CarAgent(Grid<Object> space, Point origin, Road startRoad, Point destination, CarSerializable knowledge, LearningMode mode) 
 	{
 		this.space = space;
 		
 		this.position = origin;
 		this.road = startRoad;
-		
-		this.knowledge = knowledge;	//QualityValues, CityMap, Mode and Destination
-		
+		this.destination = destination;
+		this.learningMode = mode;
+		this.knowledge = knowledge;	//QualityValues, CityMap, Mode
 		this.qlearning.setQualityValues(knowledge.getQualityValues());
 	}
     /*
@@ -84,8 +94,8 @@ public class CarAgent extends Agent {
         addBehaviour(new CarMessagesReceiver(this));
         addBehaviour(new CarMovement(this, Resources.carVelocity));
         
-        if(knowledge.getLearningMode().equals(LearningMode.LEARNING) ||
-        		knowledge.getLearningMode().equals(LearningMode.SHORT_LEARNING)){
+        if(learningMode.equals(LearningMode.LEARNING) ||
+        		learningMode.equals(LearningMode.SHORT_LEARNING)){
         	addBehaviour(new LearnMap(this));
         	addBehaviour(new AskDirections(this,5000));
         }
@@ -116,26 +126,26 @@ public class CarAgent extends Agent {
     		
 		ArrayList<String> j =new ArrayList<String>();
 		
-		switch(knowledge.getLearningMode()){
+		switch(learningMode){
     		case NONE: {
-    			if(knowledge.getDestinationName() != null){
+    			if(destinationName != null){
     				if(knowledge.getCityKnowledge().getRoads().containsKey(road.getName())){
     					Road r = knowledge.getCityKnowledge().getRoads().get(road.getName());
-    					j = AStar.shortestPath(knowledge.getCityKnowledge(), r, knowledge.getDestinationName(),true);
+    					j = AStar.shortestPath(knowledge.getCityKnowledge(), r,destinationName,true);
     				}
     			}
     			break;
     		}
     		case SHORT_LEARNING:{
-    			if(knowledge.getDestinationName() != null){
+    			if(destinationName != null){
     				if(knowledge.getCityKnowledge().getRoads().containsKey(road.getName())){
         				System.out.println("Trying calculating ...");
     					Road r = knowledge.getCityKnowledge().getRoads().get(road.getName());
-    					j = AStar.shortestPath(knowledge.getCityKnowledge(), r, knowledge.getDestinationName(),true);
+    					j = AStar.shortestPath(knowledge.getCityKnowledge(), r, destinationName,true);
     				}
     			}
     			//Look for the paths to unvisited roads the end of the current road is unknown
-    			/*if(journey.size() == 0 && j.size() == 0 && 
+    			if(journey.size() == 0 && j.size() == 0 && 
     					knowledge.getCityKnowledge().getIntersections().containsKey(road.getEndIntersection().getName())){
     				
     				boolean hasUnvisited = false;
@@ -143,7 +153,7 @@ public class CarAgent extends Agent {
     				//check if next intersection has unvisited roads
     				for(Road r : road.getEndIntersection().getOutRoads()){
     					if(!knowledge.getCityKnowledge().getRoads().containsKey(r.getName()) ||
-    							unexploredRoads.containsKey(r.getName())){
+    							knowledge.getUnexploredRoads().containsKey(r.getName())){
     						hasUnvisited = true;
     						break;
     					}
@@ -151,7 +161,7 @@ public class CarAgent extends Agent {
     				
     				if(!hasUnvisited){
     				//Chooses a path to an unvisited road
-		    			for(String unexploredRoad : unexploredRoads.keySet()){
+		    			for(String unexploredRoad : knowledge.getUnexploredRoads().keySet()){
 		    				
 		    				String intersection = knowledge.getUnexploredRoads().get(unexploredRoad);
 		    				
@@ -160,20 +170,17 @@ public class CarAgent extends Agent {
 		    					if(this.getClass().equals(MonitoredCarAgent.class))
 		    						System.out.println("TRY finding path to " + unexploredRoad + " by " + intersection);
 		    					
-		    					j = AStar.shortestPath(knowledge.getCityKnowledge(), road, intersection,false);
+		    					Road r = knowledge.getCityKnowledge().getRoads().get(road.getName());
+		    					j = AStar.shortestPath(knowledge.getCityKnowledge(), r, intersection,false);
 			    				
 		    					if(j.size() != 0){
-			    					
 		    						j.add(unexploredRoad);
-		    						
-		    						if(this.getClass().equals(MonitoredCarAgent.class))
-			    						System.out.println("FOUND PATH - " + unexploredRoad + " " + j.size());
-			    					break;
+		    						break;
 			    				}
 		    				}
 		    			}
     				}
-    			}*/
+    			}
     			break;
     		}
     		case LEARNING:{
@@ -234,7 +241,7 @@ public class CarAgent extends Agent {
     }
     
     public Point getDestination(){
-    	return knowledge.getDestination();
+    	return destination;
     }
     
     public void setJourney(ArrayList<String> journey){
@@ -252,12 +259,6 @@ public class CarAgent extends Agent {
     public void setPosition(Point p){
     	this.position = p;
     	space.moveTo(this, position.toArray());
-    }
-    
-    public String print(){
-    	return new String("Car:\n" +
-    			"Position: " + position.print() + "\n" +
-    			"Destination: " + knowledge.getDestination().print());
     }
 
 	public Grid<Object> getSpace() {
@@ -291,15 +292,15 @@ public class CarAgent extends Agent {
 	}
 	
 	public String getDestinationName(){
-		return knowledge.getDestinationName();
+		return destinationName;
 	}
 	
 	public void setDestinationName(String n){
-		knowledge.setDestinationName(n);
+		destinationName = n;
 	}
 	
 	public void setLearningMode(LearningMode mode){
-		knowledge.setLearningMode(mode);
+		learningMode = mode;
 		Debug.debugLearningMode(this);
 	}
 	
@@ -308,6 +309,12 @@ public class CarAgent extends Agent {
 	}
 	
 	public LearningMode getLearningMode(){
-		return knowledge.getLearningMode();
+		return learningMode;
+	}
+
+
+	public String print() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

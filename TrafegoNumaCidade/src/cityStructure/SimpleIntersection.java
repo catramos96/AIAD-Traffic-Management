@@ -10,30 +10,7 @@ public class SimpleIntersection extends Intersection{
 
 	public SimpleIntersection(Point area, String name) {
 		super(area, name);
-	}
-	
-	private SimpleIntersection(HashMap<Point,HashMap<CellEntry,Road>> entries, ArrayList<Road> inRoads, ArrayList<Road> outRoads, String name, int length){
-		super(entries,inRoads,outRoads,name,length);
-	}
-	
-	public SimpleIntersection getPerception(){
-		HashMap<Point,HashMap<CellEntry,Road>> e = null;
-		ArrayList<Road> iR = new ArrayList<Road>();
-		ArrayList<Road> oR = new ArrayList<Road>();
-		
-		e = this.getPerceptionsEntries(iR, oR);
-		
-		SimpleIntersection inter = new SimpleIntersection(e,iR,oR,name,length);
-		
-		for(Road i : inter.getInRoads())
-			i.setEndIntersection(inter);
-		
-		for(Road o : inter.getOutRoads())
-			o.setStartIntersection(inter);
-		
-		return inter;
-	}
-	
+	}	
 
 	@Override
 	public ArrayList<Point> getRouteToRoad(String roadInName, String roadOutName) {

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import agents.CarAgent.LearningMode;
 import algorithms.Quality;
 import cityStructure.CityMap;
 import resources.Point;
@@ -23,13 +22,7 @@ public class CarSerializable implements Serializable {
 	
 	//qlearning algorithm needs
     private HashMap<String, ArrayList<Quality>> qualityValues = new HashMap<String, ArrayList<Quality>>();
-    private boolean hasQLearning = false;	//boolean that says if this agent learned some destination
     private Point qLearningDest = null;
-    
-    //actual destination and learning mode to be apply
-    private LearningMode learningMode = LearningMode.NONE;
-    private Point destination = null;
-	private String destinationName = null;
 	
 	private String filename = "car.ser";
 	
@@ -37,8 +30,7 @@ public class CarSerializable implements Serializable {
 		cityMap = new CityMap(p);
 	}
 	
-	public void setLearn() {
-		hasQLearning = true;
+	public void setLearn(Point destination) {
 		qLearningDest = destination;
 	}
 
@@ -58,14 +50,6 @@ public class CarSerializable implements Serializable {
 		return this.filename;
 	}
 
-	public LearningMode getLearningMode() {
-		return learningMode;
-	}
-
-	public void setLearningMode(LearningMode learningMode) {
-		this.learningMode = learningMode;
-	}
-
 	public HashMap<String, ArrayList<Quality>> getQualityValues() {
 		return qualityValues;
 	}
@@ -82,30 +66,6 @@ public class CarSerializable implements Serializable {
 		this.unexploredRoads = unexploredRoads;
 	}
 
-	public Point getDestination() {
-		return destination;
-	}
-
-	public void setDestination(Point destination) {
-		this.destination = destination;
-	}
-
-	public String getDestinationName() {
-		return destinationName;
-	}
-
-	public void setDestinationName(String destinationName) {
-		this.destinationName = destinationName;
-	}
-
-	public boolean isHasQLearning() {
-		return hasQLearning;
-	}
-
-	public void setHasQLearning(boolean hasQLearning) {
-		this.hasQLearning = hasQLearning;
-	}
-
 	public Point getqLearningDest() {
 		return qLearningDest;
 	}
@@ -113,4 +73,5 @@ public class CarSerializable implements Serializable {
 	public void setqLearningDest(Point qLearningDest) {
 		this.qLearningDest = qLearningDest;
 	}
+
 }

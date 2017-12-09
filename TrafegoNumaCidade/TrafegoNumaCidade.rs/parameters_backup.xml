@@ -6,49 +6,49 @@
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="hour" displayName="Hour of the day" type="int" 
+				<parameter name="hour" displayName="5.    Hour of the day" type="int" 
 						defaultValue="1" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="objPath" displayName="Agent Knowledge filename" type="java.lang.String" 
+				<parameter name="objPath" displayName="4.    Agent Knowledge filename (new if none)" type="java.lang.String" 
 						defaultValue="test.ser" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									
 		/>
-				<parameter name="originX" displayName="Agent Origin ( X )" type="int" 
+				<parameter name="originX" displayName="1.    Agent Origin ( X )" type="int" 
 						defaultValue="1" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="destX" displayName="Agent Destination ( X )" type="int" 
+				<parameter name="destX" displayName="2.    Agent Destination ( X )" type="int" 
 						defaultValue="4" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="originY" displayName="Agent Origin ( Y )" type="int" 
+				<parameter name="originY" displayName="1.    Agent Origin ( Y )" type="int" 
 						defaultValue="19" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="destY" displayName="Agent Destination Y" type="int" 
+				<parameter name="destY" displayName="2.    Agent Destination ( Y )" type="int" 
 						defaultValue="13" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="mapPath" displayName="Map name" type="java.lang.String" 
+				<parameter name="mapPath" displayName="6.    Map Name" type="java.lang.String" 
 						defaultValue="Map.txt" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									
 		/>
-				<parameter name="type" displayName="Agent Learning Mode (A* or QLearning) :" type="java.lang.String" 
+				<parameter name="type" displayName="3.    Agent Learning Mode (A* or QLearning) " type="java.lang.String" 
 						defaultValue="QLearning" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
