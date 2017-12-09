@@ -62,6 +62,12 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	
 	private static Point spaceDimensions = new Point(21,21);
 
+	/**
+	 * GEts an agent in the given context with the given aid.
+	 * @param context
+	 * @param aid
+	 * @return
+	 */
 	public static Agent getAgent(Context<?> context, AID aid) {
 		for (Object obj : context.getObjects(Agent.class)) {
 			if (((Agent) obj).getAID().equals(aid)) {
@@ -91,117 +97,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		}
 
 		launchAgents();
-	}
-
-	private void launchAgents() {
-
-		// random probability of cars learning the city
-		prob = (int) (Math.random() * 100);
-		System.out.println("Probability to learn the city = " + prob + " %");
-		
-		try {
-			//city agent
-			City city = new City(space,spaceDimensions,agentContainer,path);
-			
-			agentContainer.acceptNewAgent("city", city).start();
-			space.getAdder().add(space, city);
-			space.moveTo(city, spacePos.x,spacePos.y);
-			
-			//update map with new cars
-			ScheduleParameters params = ScheduleParameters.createRepeating(1, 2000);
-			schedule.schedule(params,this,"createRandomCar",city);
-			
-			//radio agent
-			Radio radio = new Radio();
-			agentContainer.acceptNewAgent("radio", radio).start();
-
-			// create road monitors (transit)
-			for (Road r : city.getMap().getRoads().values()) {
-				if (r.getLength() > 3) 
-				{
-					RoadMonitor monitor = new RoadMonitor(r, space, radio);
-					agentContainer.acceptNewAgent("road monitor-" + r.getName(), monitor).start();
-					space.getAdder().add(space, monitor);
-					space.moveTo(monitor, r.getEndPoint().toArray());
-				}
-			}
-
-			// create cars in random positions
-			for (int i = 0; i < nCars; i++) {
-				createRandomCar(city);
-			}
-
-			// create monitored car
-			Road myStartRoad = city.getMap().isPartOfRoad(myOrigin);
-			if (myStartRoad != null) 
-			{
-				CarMonitored car = new CarMonitored(space, myOrigin, myStartRoad,myDest,myKnowledge,myMode);
-				agentContainer.acceptNewAgent("MonitoredCarAgent", car).start();
-				space.getAdder().add(space, car);
-				car.setPosition(myOrigin);
-				
-				System.out.println(car.print());
-			}
-
-		} catch (StaleProxyException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void createRandomCar(City city) throws StaleProxyException 
-	{
-		n++;	//inc car number
-		
-		int rnd_road;
-		Road startRoad = null, endRoad = null;
-		Point origin = null, destination = null;
-		
-		boolean position_ok = false;
-		
-		//Search Origin Random
-		while(!position_ok){
-			
-			rnd_road = (int)(Math.random() * city.getMap().getRoads().size());
-			startRoad = (Road) city.getMap().getRoads().values().toArray()[rnd_road];
-			origin = city.getRandomRoadPosition(startRoad);
-			
-			position_ok = true;
-
-			//check if there are no cars at the location
-			for(int j = 0; j < n; j++){
-				if(SpaceResources.hasCar(space, origin) != null)
-					position_ok = false;
-			}
-		}
-		
-		//Search Destination Random
-		rnd_road = (int)(Math.random() * city.getMap().getRoads().size());
-		endRoad = (Road) city.getMap().getRoads().values().toArray()[rnd_road];
-		destination = city.getRandomRoadPosition(endRoad);
-
-		// Search Destination Random
-		rnd_road = (int) (Math.random() * city.getMap().getRoads().size());
-		endRoad = (Road) city.getMap().getRoads().values().toArray()[rnd_road];
-		destination = city.getRandomRoadPosition(endRoad);
-
-		// create car
-		CarRandom car = null;
-		double randProb = Math.random() * 100;
-		if (randProb <= prob) {
-			// the car must learn
-			CarSerializable know = new CarSerializable(spaceDimensions);
-			car = new CarRandom(space, origin, startRoad, destination, know);
-		} else {
-			// the car has previous knowledge of the city
-			CarSerializable know = new CarSerializable(spaceDimensions);
-			know.setCityKnowledge(city.getMap());
-			car = new CarRandom(space, origin, startRoad, destination, know);
-		}
-
-		agentContainer.acceptNewAgent("CarRandom"+n, car).start();
-		space.getAdder().add(space, car);
-		car.setPosition(origin);
-		System.out.println(car.print() + "Prob : " + randProb+"\nNumber : "+n);
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -318,6 +213,142 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		return super.build(context);
 	}
 	
+	/*
+	 * OTHERS
+	 */
+	
+	/**
+	 * Method that launch all the needed agents.
+	 */
+	private void launchAgents() {
+
+		// random probability of cars learning the city
+		prob = (int) (Math.random() * 100);
+		System.out.println("Probability to learn the city = " + prob + " %");
+		
+		try {
+			
+			//CITY AGENT
+			
+			City city = new City(space,spaceDimensions,agentContainer,path);
+			
+			agentContainer.acceptNewAgent("city", city).start();
+			space.getAdder().add(space, city);
+			space.moveTo(city, spacePos.x,spacePos.y);
+			
+			//update map with new cars
+			ScheduleParameters params = ScheduleParameters.createRepeating(1, 2000);
+			schedule.schedule(params,this,"createRandomCar",city);
+
+			//RADIO AGENT
+			
+			Radio radio = new Radio();
+			agentContainer.acceptNewAgent("radio", radio).start();
+
+			//ROAD MONITOR AGENTS
+			
+			for (Road r : city.getMap().getRoads().values()) {
+				
+				if (r.getLength() > 3) 
+				{
+					RoadMonitor monitor = new RoadMonitor(r, space, radio);
+					agentContainer.acceptNewAgent("road monitor-" + r.getName(), monitor).start();
+					space.getAdder().add(space, monitor);
+					space.moveTo(monitor, r.getEndPoint().toArray());
+				}
+			}
+
+			//CAR AGENTS
+			
+			// create cars in random positions
+			for (int i = 0; i < nCars; i++) {
+				createRandomCar(city);
+			}
+
+			// create monitored car
+			Road myStartRoad = city.getMap().isPartOfRoad(myOrigin);
+			if (myStartRoad != null) 
+			{
+				CarMonitored car = new CarMonitored(space, myOrigin, myStartRoad,myDest,myKnowledge,myMode);
+				agentContainer.acceptNewAgent("MonitoredCarAgent", car).start();
+				space.getAdder().add(space, car);
+				car.setPosition(myOrigin);
+				
+				System.out.println(car.print());
+			}
+
+		} catch (StaleProxyException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+	 * Create random cars.
+	 * @param city
+	 * @throws StaleProxyException
+	 */
+	public void createRandomCar(City city) throws StaleProxyException 
+	{
+		n++;	//inc car number
+		
+		int rnd_road;
+		Road startRoad = null, endRoad = null;
+		Point origin = null, destination = null;
+		
+		boolean position_ok = false;
+		
+		//Search Origin Random
+		while(!position_ok){
+			
+			rnd_road = (int)(Math.random() * city.getMap().getRoads().size());
+			startRoad = (Road) city.getMap().getRoads().values().toArray()[rnd_road];
+			origin = city.getRandomRoadPosition(startRoad);
+			
+			position_ok = true;
+
+			//check if there are no cars at the location
+			for(int j = 0; j < n; j++){
+				if(SpaceResources.hasCar(space, origin) != null)
+					position_ok = false;
+			}
+		}
+		
+		//Search Destination Random
+		rnd_road = (int)(Math.random() * city.getMap().getRoads().size());
+		endRoad = (Road) city.getMap().getRoads().values().toArray()[rnd_road];
+		destination = city.getRandomRoadPosition(endRoad);
+
+		// Search Destination Random
+		rnd_road = (int) (Math.random() * city.getMap().getRoads().size());
+		endRoad = (Road) city.getMap().getRoads().values().toArray()[rnd_road];
+		destination = city.getRandomRoadPosition(endRoad);
+
+		// create car
+		CarRandom car = null;
+		double randProb = Math.random() * 100;
+		if (randProb <= prob) {
+			// the car must learn
+			CarSerializable know = new CarSerializable(spaceDimensions);
+			car = new CarRandom(space, origin, startRoad, destination, know, LearningMode.SHORT_LEARNING);
+		} else {
+			// the car has previous knowledge of the city
+			CarSerializable know = new CarSerializable(spaceDimensions);
+			know.setCityKnowledge(city.getMap());
+			car = new CarRandom(space, origin, startRoad, destination, know, LearningMode.NONE);
+		}
+
+		agentContainer.acceptNewAgent("CarRandom"+n, car).start();
+		space.getAdder().add(space, car);
+		car.setPosition(origin);
+		System.out.println(car.print() + "Prob : " + randProb+"\nNumber : "+n);
+	}
+	
+	
+	/**
+	 * Creates new knowledge.
+	 * @param mode
+	 */
 	private void createNewAgent(String mode) {
 		System.out.println("New Agent created\n");
 		myKnowledge = new CarSerializable(spaceDimensions);
@@ -335,6 +366,10 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		myKnowledge.setFilename(temp);
 	}
 
+	/**
+	 * Calculates the number of cars given the hour of the day.
+	 * @param hour
+	 */
 	private void calculateNumCars(int hour) 
 	{
 		if(hour < 0) hour = 0;

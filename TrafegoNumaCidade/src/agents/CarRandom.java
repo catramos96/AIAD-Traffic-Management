@@ -14,7 +14,7 @@ import resources.Point;
 public class CarRandom extends Car {
 	
 	/**
-	 * Contructor.
+	 * Constructor.
 	 * By default the learning mode is NONE.
 	 * @param space
 	 * @param origin
@@ -22,8 +22,8 @@ public class CarRandom extends Car {
 	 * @param destination
 	 * @param knowledge
 	 */
-	public CarRandom(Grid<Object> space, Point origin, Road startRoad,Point destination,CarSerializable knowledge) {
-		super(space, origin, startRoad,destination, knowledge,LearningMode.NONE);	
+	public CarRandom(Grid<Object> space, Point origin, Road startRoad,Point destination,CarSerializable knowledge, LearningMode mode) {
+		super(space, origin, startRoad,destination, knowledge,mode);	
 	}
 	
     @Override
