@@ -34,8 +34,8 @@ public class Road implements Serializable {
 		startPoint = start;
 		endPoint = end;
 		
-		EntryType entry1 = i1.insertRoad(this);
-		EntryType entry2 = i2.insertRoad(this);
+		EntryType entry1 = i1.insertRoad(this,false);
+		EntryType entry2 = i2.insertRoad(this,false);
 		
 		boolean insertOk = false;
 		
