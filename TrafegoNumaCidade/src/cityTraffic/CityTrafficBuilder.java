@@ -6,12 +6,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.sql.Timestamp;
+
+import agents.Car;
 import agents.Car.LearningMode;
 import agents.City;
 import agents.CarSerializable;
+import agents.CarShortLearning;
 import agents.CarMonitored;
 import agents.Radio;
-import agents.CarRandom;
+import agents.CarNoneLearning;
 import agents.RoadMonitor;
 import cityStructure.Road;
 import jade.core.AID;
@@ -325,17 +328,17 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		destination = city.getRandomRoadPosition(endRoad);
 
 		// create car
-		CarRandom car = null;
+		Car car = null;
 		double randProb = Math.random() * 100;
 		if (randProb <= prob) {
 			// the car must learn
 			CarSerializable know = new CarSerializable(spaceDimensions);
-			car = new CarRandom(space, origin, startRoad, destination, know, LearningMode.SHORT_LEARNING);
+			car = new CarShortLearning(space, origin, startRoad, destination, know);
 		} else {
 			// the car has previous knowledge of the city
 			CarSerializable know = new CarSerializable(spaceDimensions);
 			know.setCityKnowledge(city.getMap());
-			car = new CarRandom(space, origin, startRoad, destination, know, LearningMode.NONE);
+			car = new CarNoneLearning(space, origin, startRoad, destination, know);
 		}
 
 		agentContainer.acceptNewAgent("CarRandom"+n, car).start();

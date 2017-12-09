@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import agents.Car;
 import agents.CarMonitored;
-import agents.CarRandom;
+import agents.CarNoneLearning;
 import agents.Semaphore;
 import agents.SemaphoreRed;
 import agents.SemaphoreYellow;
@@ -89,7 +89,7 @@ public class SpaceResources {
 	public static Car hasCar(Grid<Object> space, Point location){
 		Car temp = searchForObject(space, location, CarMonitored.class);
 		if(temp == null)
-			return searchForObject(space, location, CarRandom.class);
+			return searchForObject(space, location, CarNoneLearning.class);
 		return temp;
 	}
 	

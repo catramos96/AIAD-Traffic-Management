@@ -9,9 +9,9 @@ import resources.Point;
  * messages in a different way and to enable the choice of a different icon
  * in the repast display, such that it can be easily distinguished in the space 
  * from the other cars.
- * The color of this car is red.
+ * The color of this car is green.
  */
-public class CarRandom extends Car {
+public class CarShortLearning extends Car {
 	
 	/**
 	 * Constructor.
@@ -22,8 +22,8 @@ public class CarRandom extends Car {
 	 * @param destination
 	 * @param knowledge
 	 */
-	public CarRandom(Grid<Object> space, Point origin, Road startRoad,Point destination,CarSerializable knowledge, LearningMode mode) {
-		super(space, origin, startRoad,destination, knowledge,mode);	
+	public CarShortLearning(Grid<Object> space, Point origin, Road startRoad,Point destination,CarSerializable knowledge) {
+		super(space, origin, startRoad,destination, knowledge,LearningMode.SHORT_LEARNING);	
 	}
 	
     @Override
