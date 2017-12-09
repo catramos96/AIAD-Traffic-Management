@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import resources.Point;
 
-/*
+/**
+ * Class to represent an intersection that is connected
+ * with the in roads and out roads.
+ * 
  * Area with 4 points		Area with 1 point
  * 8 Possible Roads			4 Possible Roads
  * Complex Intersection		Simple Intersection
@@ -19,21 +22,30 @@ public abstract class Intersection implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	enum EntryType {In,Out,NotPart}
-	enum CellEntry {North, South, East, West}
+	enum EntryType {In,Out,NotPart}					
+	enum CellEntry {North, South, East, West}		//Entry Cell Direction.
 	
 	protected ArrayList<Road> inRoads = new ArrayList<Road>();
 	protected ArrayList<Road> outRoads = new ArrayList<Road>();
+	
+	//To look for entries by their area points
 	protected HashMap<Point,HashMap<CellEntry,Road>> entries = new HashMap<Point,HashMap<CellEntry,Road>>();
+	
 	protected String name = new String();
 	
 	protected int length = 0; // = weight in Dijkstra
 	
+	/**
+	 * Constructor for area with more than one point.
+	 * @param area
+	 * @param name
+	 */
 	public Intersection(ArrayList<Point> area, String name){
 		this.name = name;
 		
 		HashMap<Point,ArrayList<CellEntry>> occupied = getOccupiedAdjacentCells(area);
 		
+		//Loads the available entries
 		for(int i = 0; i < area.size(); i++){
 			HashMap<CellEntry,Road> entries_tmp = new HashMap<CellEntry,Road>();
 			entries_tmp.put(CellEntry.North, null);
@@ -53,6 +65,11 @@ public abstract class Intersection implements Serializable {
 		length = entries.keySet().size();
 	}
 	
+	/**
+	 * Constructor for area with one point.
+	 * @param area
+	 * @param name
+	 */
 	public Intersection(Point area, String name){
 		this.name = name;
 		
@@ -66,8 +83,20 @@ public abstract class Intersection implements Serializable {
 		length = entries.keySet().size();
 	}
 	
+	/**
+	 * Method that gives the route out of the intersection starting in one of the
+	 * in roads and ending in one of the out roads.
+	 * If there is no route, then the method returns an empty array.
+	 * @param roadEntry
+	 * @param roadOut
+	 * @return
+	 */
 	public abstract ArrayList<Point> getRouteToRoad(String roadEntry,String roadOut);
 
+	/**
+	 * Method that returns a String with the main information about the object.
+	 * @return
+	 */
 	public String print(){
 		String s = "Intersection " + name + ":\n";
 		
@@ -85,6 +114,13 @@ public abstract class Intersection implements Serializable {
 	/*
 	 * GETS & SETS
 	 */
+	
+	/**
+	 * Returns a road if the given name is the name of an out road
+	 * or it will return null.
+	 * @param roadName
+	 * @return
+	 */
 	public Road isOutRoad(String roadName){
 		for(int i = 0; i < outRoads.size(); i++){
 			if(outRoads.get(i).getName().equals(roadName))
@@ -93,6 +129,12 @@ public abstract class Intersection implements Serializable {
 		return null;
 	}
 	
+	/**
+	 * Returns a road if the given name is the name of an in road
+	 * or it will return null.
+	 * @param roadName
+	 * @return
+	 */
 	public Road isInRoad(String roadName){
 		for(int i = 0; i < inRoads.size(); i++){
 			if(inRoads.get(i).getName().equals(roadName))
@@ -101,7 +143,14 @@ public abstract class Intersection implements Serializable {
 		return null;
 	}
 	
-	public EntryType insertRoad(Road r, boolean substituteRoad){
+	/**
+	 * Method that inserts a road in an entry. I returns the type
+	 * of entry in which it was inserted.
+	 * @param r
+	 * @param substituteRoad
+	 * @return
+	 */
+	public EntryType insertRoad(Road r){
 		Point startPoint = r.getStartPoint();
 		Point endPoint = r.getEndPoint();
 
@@ -114,9 +163,6 @@ public abstract class Intersection implements Serializable {
 				
 				if(startPoint != null){
 					if(startPoint.equals(getCellEntryPoint(key, p))){
-						if(substituteRoad)
-							updateEntry(r.getName(),r,false);
-						else
 							outRoads.add(r);
 						entries_tmp.put(key, r);
 						return EntryType.Out;
@@ -124,9 +170,6 @@ public abstract class Intersection implements Serializable {
 				}
 				if(endPoint != null){
 					if(endPoint.equals(getCellEntryPoint(key, p))){
-						if(substituteRoad)
-							updateEntry(r.getName(),r,true);
-						else
 							inRoads.add(r);
 						
 						entries_tmp.put(key, r);
@@ -139,35 +182,45 @@ public abstract class Intersection implements Serializable {
 		return EntryType.NotPart;
 	}
 	
-	private void updateEntry(String roadName,Road road, boolean inRoad){
-		if(inRoad){
-			for(int i = 0; i < inRoads.size(); i++){
-				if(roadName.equals(inRoads.get(i).getName()))
-					inRoads.set(i, road);
-			}
-		}
-		else{
-			for(int i = 0; i < outRoads.size(); i++){
-				if(roadName.equals(outRoads.get(i).getName()))
-					inRoads.set(i, road);
-			}
-		}
-	}
+	/*
+	 * GETS & SETS
+	 */
 	
+	/**
+	 * Gets the name of the intersection.
+	 * @param name
+	 */
 	public void setName(String name){
 		this.name = name;
 	}
 	
+	/**
+	 * Gets the out roads of the intersection.
+	 * @return
+	 */
 	public ArrayList<Road> getOutRoads(){
 		return outRoads;
 	}
 	
+	/**
+	 * Gets the in roads of the intersection.
+	 * @return
+	 */
 	public ArrayList<Road> getInRoads(){
 		return inRoads;
 	}
 	
+	/**
+	 * Gets the area of the intersection.
+	 * @return
+	 */
 	public abstract <T> T getArea();
 	
+	/**
+	 * Gets the occupied adjacent cells. The cells that can't have road entries.
+	 * @param area
+	 * @return
+	 */
 	private HashMap<Point,ArrayList<CellEntry>> getOccupiedAdjacentCells(ArrayList<Point> area){
 		HashMap<Point,ArrayList<CellEntry>> ret = new HashMap<Point,ArrayList<CellEntry>>();
 		
@@ -209,6 +262,12 @@ public abstract class Intersection implements Serializable {
 		return ret;
 	}
 	
+	/**
+	 * Gets the entry point of a cell by its CellEntry.
+	 * @param entry
+	 * @param cell
+	 * @return
+	 */
 	public Point getCellEntryPoint(CellEntry entry, Point cell){
 		switch (entry) {
 		case North:
@@ -224,6 +283,11 @@ public abstract class Intersection implements Serializable {
 		}
 	}
 
+	/**
+	 * Gets the area point where an entry point in connected.
+	 * @param entry
+	 * @return
+	 */
 	public Point getAreaPointOfEntry(Point entry){
 		for(Point p : entries.keySet()){
 			
@@ -236,54 +300,28 @@ public abstract class Intersection implements Serializable {
 		return null;
 	}
 	
+	/**
+	 * Gets the length of the intersection.
+	 * @return
+	 */
 	public int getLength(){
 		return length;
 	}
 	
-	protected HashMap<Point,HashMap<CellEntry,Road>> getPerceptionsEntries(ArrayList<Road> inR,ArrayList<Road> outR){
-		HashMap<Point,HashMap<CellEntry,Road>> tmp = new HashMap<Point,HashMap<CellEntry,Road>>();
-		inR.clear();
-		outR.clear();
-		
-		for(Point area: entries.keySet()){
-			
-			HashMap<CellEntry, Road> tmp2 = new HashMap<CellEntry, Road>();
-			
-			for(CellEntry entry : entries.get(area).keySet()){
-				
-				Road r = entries.get(area).get(entry);
-				Road roadPerc = null;
-				
-				if(r != null){
-					if(r.getEndIntersection().equals(this)){		//inRoad
-						roadPerc = r.getRoadPerceptionAtEnd();
-						tmp2.put(entry,roadPerc);
-						inR.add(roadPerc);
-					}
-					else	{										//endRoad
-						roadPerc = r.getRoadPerceptionAtStart();
-						tmp2.put(entry, roadPerc);
-						outR.add(roadPerc);
-
-					}
-				}
-				else
-					tmp2.put(entry, null);
-
-			}
-			tmp.put(area, tmp2);
-		}
-		
-		return tmp;
-	}
-	
-	//getEntry
+	/**
+	 * Gets one point of the intersection area.
+	 * @return
+	 */
 	public Point getOneEntry(){
 		for(Point p : entries.keySet())
 			return p;
 		return null;
 	}
 	
+	/**
+	 * Gets the name of the intersection.
+	 * @return
+	 */
 	public String getName(){
 		return name;
 	}

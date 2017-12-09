@@ -2,8 +2,8 @@ package behaviours;
 
 import java.util.ArrayList;
 import agents.Car;
-import agents.MonitoredCarAgent;
 import agents.Car.LearningMode;
+import agents.CarMonitored;
 import cityStructure.Road;
 import resources.Point;
 import resources.Resources;
@@ -60,7 +60,7 @@ public class CarMovement extends TickerBehaviour{
 						Road nextRoad = null;
 						boolean valid = true;
 						
-    					if(car.getClass().equals(MonitoredCarAgent.class))
+    					if(car.getClass().equals(CarMonitored.class))
     					
 						
     					if(car.getJourney().size() == 0)

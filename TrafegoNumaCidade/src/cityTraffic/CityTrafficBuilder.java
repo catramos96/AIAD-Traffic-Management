@@ -9,9 +9,9 @@ import java.sql.Timestamp;
 import agents.Car.LearningMode;
 import agents.City;
 import agents.CarSerializable;
-import agents.MonitoredCarAgent;
+import agents.CarMonitored;
 import agents.Radio;
-import agents.RandomCarAgent;
+import agents.CarRandom;
 import agents.RoadMonitor;
 import cityStructure.Road;
 import jade.core.AID;
@@ -135,7 +135,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			Road myStartRoad = city.getMap().isPartOfRoad(myOrigin);
 			if (myStartRoad != null) 
 			{
-				MonitoredCarAgent car = new MonitoredCarAgent(space, myOrigin, myStartRoad,myDest,myKnowledge,myMode);
+				CarMonitored car = new CarMonitored(space, myOrigin, myStartRoad,myDest,myKnowledge,myMode);
 				agentContainer.acceptNewAgent("MonitoredCarAgent", car).start();
 				space.getAdder().add(space, car);
 				car.setPosition(myOrigin);
@@ -185,20 +185,20 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		destination = city.getRandomRoadPosition(endRoad);
 
 		// create car
-		RandomCarAgent car = null;
+		CarRandom car = null;
 		double randProb = Math.random() * 100;
 		if (randProb <= prob) {
 			// the car must learn
 			CarSerializable know = new CarSerializable(spaceDimensions);
-			car = new RandomCarAgent(space, origin, startRoad, destination, know);
+			car = new CarRandom(space, origin, startRoad, destination, know);
 		} else {
 			// the car has previous knowledge of the city
 			CarSerializable know = new CarSerializable(spaceDimensions);
 			know.setCityKnowledge(city.getMap());
-			car = new RandomCarAgent(space, origin, startRoad, destination, know);
+			car = new CarRandom(space, origin, startRoad, destination, know);
 		}
 
-		agentContainer.acceptNewAgent("RandomCarAgent"+n, car).start();
+		agentContainer.acceptNewAgent("CarRandom"+n, car).start();
 		space.getAdder().add(space, car);
 		car.setPosition(origin);
 		System.out.println(car.print() + "Prob : " + randProb+"\nNumber : "+n);
@@ -251,10 +251,10 @@ public class CityTrafficBuilder extends RepastSLauncher {
 					myMode = LearningMode.LEARNING;
 					
 					//verifico se ja existe neste agente
-					if(myKnowledge.getqLearningDest() != null) 
+					if(myKnowledge.getDestinationPoint() != null) 
 					{
 						//nao tenho qLearning para esta posicao -> executo A*
-						if(!myKnowledge.getqLearningDest().equals(myDest)) {
+						if(!myKnowledge.getDestinationPoint().equals(myDest)) {
 							myMode = LearningMode.NONE;
 						}
 						
@@ -262,7 +262,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 					//nao existe -> vou aprender
 					else 
 					{
-						myKnowledge.setLearn(myDest);
+						myKnowledge.setDestinationPoint(myDest);
 						filename = "qlearnig_"+x+"_"+y;
 					}
 				}
@@ -329,7 +329,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		}
 		else {
 			myMode = LearningMode.LEARNING;
-			myKnowledge.setLearn(myDest);
+			myKnowledge.setDestinationPoint(myDest);
 			temp = "qlearnig_"+myDest.x+"_"+myDest.y+".ser";
 		}
 		myKnowledge.setFilename(temp);

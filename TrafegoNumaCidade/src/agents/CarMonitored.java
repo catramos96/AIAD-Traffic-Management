@@ -4,19 +4,31 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-
-import org.apache.poi.util.SystemOutLogger;
-
 import cityStructure.Road;
-import repast.simphony.engine.schedule.Schedule;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
 
-public class MonitoredCarAgent extends Car {
-
-	//cor azul
+/**
+ * The car that is supervised. 
+ * Any debug car messages showing in the console are regarding this subclass.
+ * It's an extended class of car just with the purpose of handling the debug
+ * messages in a different way and to enable the choice of a different icon
+ * in the repast display, such that it can be easily distinguished in the space 
+ * from the other cars.
+ * The color of this car is blue.
+ */
+public class CarMonitored extends Car {
 	
-	public MonitoredCarAgent(Grid<Object> space, Point origin, Road startRoad, Point destination,CarSerializable knowledge, LearningMode mode) {
+	/**
+	 * Contructor.
+	 * @param space
+	 * @param origin
+	 * @param startRoad
+	 * @param destination
+	 * @param knowledge
+	 * @param mode
+	 */
+	public CarMonitored(Grid<Object> space, Point origin, Road startRoad, Point destination,CarSerializable knowledge, LearningMode mode) {
 		super(space, origin, startRoad, destination,knowledge, mode);	
 	}
 	
@@ -48,8 +60,8 @@ public class MonitoredCarAgent extends Car {
             
             //set time
             long now = System.currentTimeMillis();
-            long delta = now-secs;
-            secs = delta/1000;
+            long delta = now-init;
+            secs = (delta/1000);
             System.out.println(printStatistics());
             
          }catch (IOException i) {

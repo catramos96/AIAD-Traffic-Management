@@ -1,6 +1,5 @@
 package agents;
 
-import repast.simphony.engine.schedule.Schedule;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import resources.Debug;
@@ -15,10 +14,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import algorithms.AStar;
 import algorithms.QLearning;
-import behaviours.AskDirections;
-import behaviours.CarMessagesReceiver;
-import behaviours.CarMovement;
-import behaviours.LearnMap;
+import behaviors.AskDirections;
+import behaviors.CarMessagesReceiver;
+import behaviors.CarMovement;
+import behaviors.LearnMap;
 import cityStructure.CityMap;
 import cityStructure.Intersection;
 import cityStructure.Road;
@@ -58,7 +57,7 @@ public class Car extends Agent {
 	protected Grid<Object> space = null;
 	
 	//statistics
-	protected Schedule schedule;
+	protected long init = 0;
 	protected long secs = 0;
 	protected int countGetPathSend = 0;
 	protected int countWhichRoadSend = 0;
@@ -94,7 +93,7 @@ public class Car extends Agent {
 			}
 		}
 		
-		secs = System.currentTimeMillis();
+		init = System.currentTimeMillis();
 	}
 
     @Override

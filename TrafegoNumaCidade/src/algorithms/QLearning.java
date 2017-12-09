@@ -12,7 +12,8 @@ import resources.Point;
 import resources.SpaceResources;
 
 /**
- * Executed only after knowing the destination road name
+ * Class that implements the QLearning algorithm for
+ * a city structure.
  *
  */
 public class QLearning {
@@ -22,12 +23,19 @@ public class QLearning {
 	
 	private HashMap<String, ArrayList<Quality>> qualityValues = new HashMap<String, ArrayList<Quality>>(); 
 	
-	//algorithms parameters
+	//Some parameters factors
 	private float learningRate = 1;
 	private float discount = (float) 0.8;			//greedy measure: 0->very greedy
 
 	private Car car = null;
 	
+	/**
+	 * Constructor.
+	 * @param c
+	 * @param learningRate
+	 * @param discount
+	 * @param values
+	 */
 	public QLearning(Car c,float learningRate, float discount,HashMap<String, ArrayList<Quality>> values){
 		this.car = c;
 		this.learningRate = learningRate;
@@ -35,6 +43,12 @@ public class QLearning {
 		this.qualityValues = values;
 	}
 	
+	/**
+	 * Register the new intersection out roads and insert new
+	 * quality values regarding those new roads.
+	 * Used when a car discovers a new intersection.
+	 * @param intersection
+	 */
 	public void insertNewIntersection(Intersection intersection){
 		
 		ArrayList<Quality> actions = new ArrayList<Quality>();
@@ -53,6 +67,13 @@ public class QLearning {
 
 	}
 	
+	/**
+	 * Update the quality values of choosing the out road "toRoad" when
+	 * the state was "intersection". The values update are for the road
+	 * with and withour transit.
+	 * @param intersection
+	 * @param toRoad
+	 */
 	public void updateQualityValues(String intersection,String toRoad){
 		
 		if(!(qualityValues.containsKey(intersection)))
@@ -61,13 +82,16 @@ public class QLearning {
 		boolean transitHandled = false;
 		boolean noTransitHandled = false;
 					
+		//Searchs for the Q(intersection,toRoad with transit) and Q(intersection,toRoad no transit)
 		for(Quality q : qualityValues.get(intersection)){
 
 			if(q.action_road.equals(toRoad)){
 								
+				//Calculates the next possible state with the higher value
 				Quality maxQnextState = getMaxQuality(toRoad);
 				int quality_value = 0;
 				
+				//Calculates the quality value for this Q(intersection,toRoad)
 				if(maxQnextState != null)
 					quality_value =  (int) (100 * (q.value + learningRate * (getReward(intersection, toRoad, q.action_transit) + discount * maxQnextState.value - q.value)));
 				else
@@ -88,6 +112,12 @@ public class QLearning {
 		}
 	}
 	
+	/**
+	 * Gets the max quality that has the highest value for the 
+	 * the intersection state.
+	 * @param intersection
+	 * @return
+	 */
 	private Quality getMaxQuality(String intersection){
 		float max = 0;
 		Quality maxQ =null;
@@ -107,6 +137,23 @@ public class QLearning {
 		return maxQ;
 	}
 	
+	/**
+	 * Gets the reward from choosing the road "toRoad" with a given
+	 * transit in the intersection.
+	 * 
+	 * Reward = 1.5 * (space_width + space_height) - distance(toRoad_endIntersection, destination) * 2 * IMPORTANCE1 - 
+	 * 					(toRoad_length + transitPenalty) * 2 * IMPORTANCE2);
+	 * 
+	 * TransitPenalty = 0 if no transit,
+	 * 				  = (Number_of_semaphores_at_end_intersection - 1) * (time_yellow + time_green) / time_car_move_1_cell
+	 * 
+	 * The transit penalty represents the number of cells that the car could be moving if it wasn't stopped at the transit.
+	 * 
+	 * @param intersection
+	 * @param toRoad
+	 * @param withTransit
+	 * @return
+	 */
 	private float getReward(String intersection, String toRoad, boolean withTransit){
 		
 		float reward = 0;
@@ -119,6 +166,8 @@ public class QLearning {
 			Intersection nextRoadInter = nextRoad.getEndIntersection();
 			
 			
+			//if name of the destination road is known, then the destination
+			//will the the start intersection of that road
 			if(car.getDestinationName() != null){
 				
 				String dName = car.getDestinationName();
@@ -137,14 +186,13 @@ public class QLearning {
 			float transitPenalty = 0;
 			float length = nextRoad.getLength();
 			
-			//If he doesn't know the length of the road
+			//If he doesn't know the length of the road assume the worst case
 			if(length == SpaceResources.INFINITE)
-				length = Math.max(car.getCityKnowledge().getDimensions().x, car.getCityKnowledge().getDimensions().y);		//assume worst case
-			
-			
+				length = Math.max(car.getCityKnowledge().getDimensions().x, car.getCityKnowledge().getDimensions().y);
+					
 			if(withTransit){
 				//Number of cells that the car could pass if he wasn't stopped at the transit
-				transitPenalty = (float)(CityMap.getTransitPenalization(car.getCityKnowledge(), toRoad));
+				transitPenalty = (float)(CityMap.getTransitPenalty(car.getCityKnowledge(), toRoad));
 			}			
 			
 			reward = (float) (1.5 * (car.getCityKnowledge().getDimensions().x + car.getCityKnowledge().getDimensions().y) - 
@@ -156,6 +204,12 @@ public class QLearning {
 		return reward;
 	}
 
+	/**
+	 * Method that gives the action road that gives the most value when the car is in the intersection i.
+	 * It takes in consideration the current transit in the out roads of intersection i.
+	 * @param i
+	 * @return
+	 */
 	public String getNextRoad(Intersection i){
 		String road = null;
 		float value = - SpaceResources.INFINITE;
@@ -180,13 +234,24 @@ public class QLearning {
 		
 		return road;
 	}
-
 	
+	
+	/*
+	 * GETS & SETS
+	 */
+
+	/**
+	 * Gets the quality values.
+	 * @return
+	 */
 	public HashMap<String, ArrayList<Quality>> getQualityValues() {
 		return qualityValues;
 	}
 
-	
+	/**
+	 * Sets the quality values.
+	 * @param qualityValues
+	 */
 	public void setQualityValues(HashMap<String, ArrayList<Quality>> qualityValues) {
 		this.qualityValues = qualityValues;
 	}

@@ -1,4 +1,4 @@
-package behaviours;
+package behaviors;
 import agents.Car;
 import agents.Radio;
 import jade.lang.acl.ACLMessage;
@@ -9,6 +9,10 @@ import resources.MessagesResources;
 import resources.MessagesResources.MessageType;
 import sajas.core.behaviours.CyclicBehaviour;
 
+/**
+ * Behavior to handle the messages received by a radio.
+ *
+ */
 public class RadioService extends CyclicBehaviour{
 
 	private static final long serialVersionUID = 1L;
@@ -18,6 +22,7 @@ public class RadioService extends CyclicBehaviour{
 		this.radio = radio;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void action() {
 		ACLMessage message = radio.receive();
@@ -28,10 +33,9 @@ public class RadioService extends CyclicBehaviour{
 			
 			MessageType type = MessagesResources.getMessageType(message.getContent());
 
+			//Message is about transit flow ?
 			if(type.equals(MessagesResources.MessageType.TRANSIT) || 
 					type.equals(MessagesResources.MessageType.NO_TRANSIT)){
-				
-				System.out.println("Radio received: " + message.getContent());
 				
 				String content[] = message.getContent().split(MessagesResources.SEPARATOR);
 				String roadName = content[1];

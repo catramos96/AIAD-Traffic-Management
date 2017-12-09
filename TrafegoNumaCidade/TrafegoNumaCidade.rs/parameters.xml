@@ -19,7 +19,7 @@
 									
 		/>
 				<parameter name="originX" displayName="1.    Agent Origin ( X )" type="int" 
-						defaultValue="60" 
+						defaultValue="5" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
@@ -31,7 +31,7 @@
 									
 		/>
 				<parameter name="originY" displayName="1.    Agent Origin ( Y )" type="int" 
-						defaultValue="33" 
+						defaultValue="19" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									

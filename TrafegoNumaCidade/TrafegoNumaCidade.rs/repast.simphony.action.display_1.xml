@@ -7,14 +7,6 @@
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
-      <string>agents.RandomCarAgent</string>
-      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
-    </entry>
-    <entry>
-      <string>agents.MonitoredCarAgent</string>
-      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
-    </entry>
-    <entry>
       <string>agents.SemaphoreGreen</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
@@ -26,19 +18,19 @@
       <string>agents.SemaphoreYellow</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
+    <entry>
+      <string>agents.CarRandom</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
+      <string>agents.CarMonitored</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
   </styles>
   <editedStyles>
     <entry>
       <string>agents.SemaphoreRed</string>
       <string>agents.SemaphoreRed.style_0.xml</string>
-    </entry>
-    <entry>
-      <string>agents.RandomCarAgent</string>
-      <string>agents.RandomCarAgent.style_1.xml</string>
-    </entry>
-    <entry>
-      <string>agents.MonitoredCarAgent</string>
-      <string>agents.MonitoredCarAgent.style_1.xml</string>
     </entry>
     <entry>
       <string>agents.SemaphoreGreen</string>
@@ -52,6 +44,14 @@
       <string>agents.SemaphoreYellow</string>
       <string>agents.SemaphoreYellow.style_0.xml</string>
     </entry>
+    <entry>
+      <string>agents.CarRandom</string>
+      <string>agents.CarRandom.style_0.xml</string>
+    </entry>
+    <entry>
+      <string>agents.CarMonitored</string>
+      <string>agents.CarMonitored.style_0.xml</string>
+    </entry>
   </editedStyles>
   <netStyles/>
   <editedNetStyles/>
@@ -63,7 +63,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1346766773</hashCode>
+    <hashCode>-582111794</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>street_map</layoutProjection>
@@ -72,14 +72,6 @@
     <entry>
       <string>agents.SemaphoreRed</string>
       <int>5</int>
-    </entry>
-    <entry>
-      <string>agents.RandomCarAgent</string>
-      <int>1</int>
-    </entry>
-    <entry>
-      <string>agents.MonitoredCarAgent</string>
-      <int>2</int>
     </entry>
     <entry>
       <string>agents.SemaphoreGreen</string>
@@ -92,6 +84,14 @@
     <entry>
       <string>agents.SemaphoreYellow</string>
       <int>4</int>
+    </entry>
+    <entry>
+      <string>agents.CarRandom</string>
+      <int>1</int>
+    </entry>
+    <entry>
+      <string>agents.CarMonitored</string>
+      <int>2</int>
     </entry>
   </layerOrder>
   <projections>
