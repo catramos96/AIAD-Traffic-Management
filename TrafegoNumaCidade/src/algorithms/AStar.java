@@ -16,8 +16,21 @@ import resources.Point;
  */
 public class AStar {
 	
-	public static int INFINITE = 999999;
+	public static int INFINITE = 999999;		//Max weight
 	
+	/**
+	 * Method to get the shortest path between a road and its destination.
+	 * The destination can be the name of a road (destinationIsRoad = true)
+	 * or the name of an intersection (destinationIsRoad = false).
+	 * 
+	 * @param map - city structure
+	 * @param startRoad - Road of start
+	 * @param destinationName - String name of an intersection or a road
+	 * @param destinationIsRoad - True if the destinationName is the name of a road
+	 * or False if it's the name of an intersection.
+	 * @return - ArrayList with the names of roads to follow to reach the destination or 
+	 * empty if it failed to calculate a path.
+	 */
 	public static ArrayList<String> shortestPath(CityMap map, Road startRoad, String destinationName, boolean destinationIsRoad){
 		
 		ArrayList<String> path = new ArrayList<String>();
@@ -38,47 +51,56 @@ public class AStar {
 		
 		if(map.getRoads().containsKey(destinationName) && destinationIsRoad)					//If it's a road
 			endRoad = map.getRoads().get(destinationName);
-		else if(map.getIntersections().containsKey(destinationName) && !destinationIsRoad)			//If it's a intersection
+		else if(map.getIntersections().containsKey(destinationName) && !destinationIsRoad)		//If it's a intersection
 			endIntersection = map.getIntersections().get(destinationName);
 		else 
 			return path;
 		
-		if(startRoad.getName().equals(destinationName) && destinationIsRoad)
+		//The start road and destinationName (road) are the same
+		if(startRoad.getName().equals(destinationName) && destinationIsRoad)					
 			return path;
 		
+		//Add start road to the set to be evaluated later
 		toEvaluateSet.add(startRoad);
+		//Cost of start is 0
 		costs.put(startRoad, 0);
 		
 		Point destination = null;
 		
+		//Find destination point
 		if(destinationIsRoad && endRoad.getStartIntersection() !=null)		//if destination is a road
-			destination = endRoad.getStartIntersection().getOneEntry();
+			destination = endRoad.getStartIntersection().getOneEntry();		//destination is the start intersection of the endRoad
 		else if(!destinationIsRoad)											//if destination is an intersection
-			destination = endIntersection.getOneEntry();
+			destination = endIntersection.getOneEntry();					//destination the endIntersection
 		else
 			return path;
 		
+		//Estimate the cost from the start road until the destination
 		if(startRoad.getEndIntersection() != null)
 			final_costs.put(startRoad,Point.getDistance(startRoad.getEndIntersection().getOneEntry(), destination));
 		else
 			return path;
 
-		
+		//Until there is no road to evaluate
 		while(!toEvaluateSet.isEmpty()){
-
 			
+			//get the cheapest road
 			Road current = getMinimumCost(toEvaluateSet,final_costs);
 
+			//if the current road being analyzed is the destination
 			if(destinationIsRoad){											//if destination is a road
 				if(current.getName().equals(destinationName))
 					return buildPath(cameFrom, current);
 			}
+			//if the current road being analyzed leads to the destination
 			else if(current.getEndIntersection() != null){					//if destination is an intersection
 				if(current.getEndIntersection().getName().equals(destinationName))
 					return buildPath(cameFrom,current);
 			}
 			
+			//Remove the current road being analyzed from the set to be evaluated
 			toEvaluateSet.remove(current);
+			//Add it to the already evaluated set
 			evaluatedSet.add(current);
 			
 			//If the end Intersection of the current road is known
@@ -90,26 +112,29 @@ public class AStar {
 					//If end intersection of nextRoad is known
 					if(!evaluatedSet.contains(next)  && next.getEndIntersection() != null){
 						
+						//Evaluate later
 						if(!toEvaluateSet.contains(next))
 							toEvaluateSet.add(next);
 						
-						//failure
+						//Failure
 						if(!costs.containsKey(next))
 							return path;
 							
-						//If the road has transit, then it has a penalty to the costs
 						int transitPenalty = 0;
 						
+						//If the road has transit, then it has a penalty to the costs
 						if(next.isBlocked())
 							transitPenalty = CityMap.getTransitPenalization(map, next.getName());
 				
+						//Calculate costs from the start to the current road being analyzed plus the nextRoad
 						int cost_next = costs.get(current) + current.getEndIntersection().getLength() + next.getLength() + transitPenalty;
 						
+						//If the costs are cheaper then the previous one registed for this nextRoad
 						if(cost_next < costs.get(next)){
 							cameFrom.put(next, current);
 							costs.put(next, cost_next);
 							
-							//custos finais = custo até à rua actual + possível custo até ao final
+							//Costs from the start to end of the road plus an estimate cost from the nextRoad to the destination
 							final_costs.put(next, cost_next + Point.getDistance(next.getEndIntersection().getOneEntry(), destination));
 						}
 					}
@@ -121,6 +146,12 @@ public class AStar {
 		return path;
 	}
 	
+	/**
+	 * Method that builds the path from to the destination.
+	 * @param cameFrom
+	 * @param last
+	 * @return
+	 */
 	private static ArrayList<String> buildPath(HashMap<Road,Road> cameFrom, Road last){
 		ArrayList<String> path = new ArrayList<String>();
 		
@@ -134,6 +165,12 @@ public class AStar {
 		return path;
 	};
 	
+	/**
+	 * Method that gets the minimum cost road in the set to be evaluated.
+	 * @param toEvaluateSet
+	 * @param cost
+	 * @return
+	 */
 	private static Road getMinimumCost(ArrayList<Road> toEvaluateSet,HashMap<Road,Integer> cost){
 		int min = INFINITE;
 		int v;
