@@ -44,7 +44,7 @@ public class AskDirections extends TickerBehaviour{
 	protected void onTick() {
 		
 		//Car already learned enough
-		if(car.getQLearning().equals(LearningMode.APPLYING))
+		if(car.getLearningMode().equals(LearningMode.APPLYING))
 			car.removeBehaviour(this);
 		
 		//If it didn't received any valuable directions before

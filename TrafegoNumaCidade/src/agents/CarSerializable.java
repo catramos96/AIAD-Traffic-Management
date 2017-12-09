@@ -26,7 +26,9 @@ public class CarSerializable implements Serializable {
 	
 	private String filename = "car.ser";
 	
-	public CarSerializable(Point p) { 
+	private boolean newVersion = true;
+	
+	public CarSerializable(Point p){ 
 		cityMap = new CityMap(p);
 	}
 	
@@ -74,4 +76,11 @@ public class CarSerializable implements Serializable {
 		this.qLearningDest = qLearningDest;
 	}
 
+	public boolean isNew(){
+		return newVersion;
+	}
+	
+	public void setNewVersion(boolean isNew){
+		newVersion = isNew;
+	}
 }

@@ -43,7 +43,7 @@ public class CarAgent extends Agent {
 	protected CarSerializable knowledge = new CarSerializable(null);
 	
 	protected ArrayList<String> journey = new ArrayList<String>();	//journey to reach the destination (composed by the names of the roads to follow)
-	protected QLearning qlearning = new QLearning(this, 1f, 0.8f);
+	protected QLearning qlearning = null;
 	
 	protected Grid<Object> space = null;
     
@@ -56,22 +56,17 @@ public class CarAgent extends Agent {
 		this.destination = destination;
 		this.learningMode = mode;
 		this.knowledge = knowledge;	//QualityValues, CityMap, Mode
-		this.qlearning.setQualityValues(knowledge.getQualityValues());
-	}
-    /*
-    public CarAgent(Grid<Object> space, CityMap map, Point origin, String endRoad, Road startRoad,CarSerializable knowledge) 
-	{
-		this.space = space;
-
-		this.position = origin;
-		this.road = startRoad;
+		this.qlearning = new QLearning(this, 1f, 0.8f,knowledge.getQualityValues());
 		
-		this.knowledge = knowledge;
-		this.knowledge.setDestinationName(endRoad);
-		
-		this.qlearning.setQualityValues(knowledge.getQualityValues());
+		if(learningMode.equals(LearningMode.NONE)){
+			for(Road r : knowledge.getCityKnowledge().getRoads().values()){
+				if(r.partOfRoad(destination)){
+					destinationName = r.getName();
+					break;
+				}
+			}
+		}
 	}
-	*/
 
     
     //JADE RELATED
@@ -186,29 +181,53 @@ public class CarAgent extends Agent {
     		case LEARNING:{
     			
     			if(journey.size() == 0){
-    				//Chooses a path to an unvisited road
-	    			for(String unexploredRoad : knowledge.getUnexploredRoads().keySet()){
-	    				
-	    				String intersection = knowledge.getUnexploredRoads().get(unexploredRoad);
-	    				
-	    				if(intersection != ""){
-	    					if(this.getClass().equals(MonitoredCarAgent.class))
-	    						System.out.println("TRY finding path to " + unexploredRoad + " by " + intersection);
-	    					//j = AStar.shortestPath(knowledge.getCityKnowledge(), road, intersection,false);
-		    				if(j.size() > 1){
-		    					System.out.println("FOUND PATH");
-		    					break;
-		    				}
-	    				}
-	    			}
-	    			break;
+    				//Look for the paths to unvisited roads the end of the current road is unknown
+        			if(journey.size() == 0 && j.size() == 0 && 
+        					knowledge.getCityKnowledge().getIntersections().containsKey(road.getEndIntersection().getName())){
+        				
+        				boolean hasUnvisited = false;
+        				
+        				//check if next intersection has unvisited roads
+        				for(Road r : road.getEndIntersection().getOutRoads()){
+        					if(!knowledge.getCityKnowledge().getRoads().containsKey(r.getName()) ||
+        							knowledge.getUnexploredRoads().containsKey(r.getName())){
+        						hasUnvisited = true;
+        						break;
+        					}
+        				}
+        				
+        				if(!hasUnvisited){
+        				//Chooses a path to an unvisited road
+    		    			for(String unexploredRoad : knowledge.getUnexploredRoads().keySet()){
+    		    				
+    		    				String intersection = knowledge.getUnexploredRoads().get(unexploredRoad);
+    		    				
+    		    				if(intersection != ""){
+    		    					
+    		    					if(this.getClass().equals(MonitoredCarAgent.class))
+    		    						System.out.println("TRY finding path to " + unexploredRoad + " by " + intersection);
+    		    					
+    		    					Road r = knowledge.getCityKnowledge().getRoads().get(road.getName());
+    		    					j = AStar.shortestPath(knowledge.getCityKnowledge(), r, intersection,false);
+    			    				
+    		    					if(j.size() != 0){
+    		    						j.add(unexploredRoad);
+    		    						break;
+    			    				}
+    		    				}
+    		    			}
+        				}
+        			}
     			}
+    			break;
     			
     		}
     		case APPLYING: {
     			String road = qlearning.getNextRoad(intersection);
-    			if(road != null)
+    			if(road != null){
+    				j.add(this.road.getName());	//it will be consumed
     				j.add(road);
+    			}
     			break;
     		}
 		}
@@ -310,6 +329,10 @@ public class CarAgent extends Agent {
 	
 	public LearningMode getLearningMode(){
 		return learningMode;
+	}
+	
+	public CarSerializable getKnowledge(){
+		return knowledge;
 	}
 
 

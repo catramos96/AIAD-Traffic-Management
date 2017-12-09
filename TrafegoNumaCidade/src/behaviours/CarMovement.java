@@ -26,7 +26,7 @@ public class CarMovement extends TickerBehaviour{
 		super(car,time);
 		this.car = car;
 		
-		if(car.getJourney().size() == 0)
+		if(car.getJourney().size() == 0 && !car.getLearningMode().equals(LearningMode.APPLYING))
 			car.calculateAndUpdateJourney();
 	}
 
@@ -38,19 +38,15 @@ public class CarMovement extends TickerBehaviour{
 		{
 			Point pos = car.getPosition();
 			
-			if(car.getDestination().equals(pos)){
-				car.setDestinationName(car.getRoad().getName());
-			}
-			
-			/*if(car.getDestination().equals(pos) && !car.getLearningMode().equals(LearningMode.LEARNING)){
+			if(car.getDestination().equals(pos) && !car.getLearningMode().equals(LearningMode.LEARNING)){
 				passageType = PassageType.Out;
 				car.takeDown();
-			}*/
+			}
 			
 			if(passageType.equals(PassageType.Road) && car.getRoad() != null){
 				
 				//End of the road
-				if(pos.equals(car.getRoad().getEndPoint())){		
+				if(pos.equals(car.getRoad().getEndPoint())){	
 					
 					//Check semaphores
 					if(SpaceResources.hasRedOrYellowSemaphore(car.getSpace(), pos) != null)
@@ -65,42 +61,53 @@ public class CarMovement extends TickerBehaviour{
 						Road nextRoad = null;
 						boolean valid = true;
 						
+    					if(car.getClass().equals(MonitoredCarAgent.class))
+    					
+						
+    					if(car.getJourney().size() == 0)
+    						car.calculateAndUpdateJourney();
+    					
 						//follow the jorney
 						if(car.getJourney().size() != 0){
 							
-	    					if(this.getClass().equals(MonitoredCarAgent.class))
-	    						System.out.println("NextRoad: " + car.getJourney().get(0));
+							if(car.getClass().equals(MonitoredCarAgent.class))
+								System.out.println("Enter1: " + car.getJourney().get(0));
 							
 							//checks if the next road to follow is a road out of the intersection (real world)
 							nextRoad = car.getIntersection().isOutRoad(car.getJourney().get(0));
 							
-							if(nextRoad == null)
+							if(nextRoad == null){
 								valid = false;
+								
+								if(car.getClass().equals(MonitoredCarAgent.class))
+									System.out.println("Enter2: couldn't get road");
+							}
 							else{
-		    					if(this.getClass().equals(MonitoredCarAgent.class))
-		    						System.out.println("Valid Road");
-
 								car.jorneyConsume();
+								
+								if(car.getClass().equals(MonitoredCarAgent.class))
+									System.out.println("Enter2: OK");
 								
 								//get route to go to the road
 								intersectionRoute = car.getIntersection().getRouteToRoad(car.getRoad().getName(), nextRoad.getName());
+								
 								
 								//no valid route
 								if(intersectionRoute.size() == 0){
 									valid = false;
 									car.getJourney().clear();
+									if(car.getClass().equals(MonitoredCarAgent.class))
+										System.out.println("Enter3: couldn't get route");
 								}
-		    					if(this.getClass().equals(MonitoredCarAgent.class))
-		    						System.out.println("Route Good");
-
+								else
+								{
+									if(car.getClass().equals(MonitoredCarAgent.class))
+										System.out.println("Enter3: OK");
+								}
 							}
 						}
-						else{
-							car.calculateAndUpdateJourney();
-							
-							if(car.getJourney().size() == 0)
-								valid = false;
-						}
+						else
+	    					valid = false;
 						
 						//failed to calculate journey
 						if(!valid){
@@ -125,16 +132,16 @@ public class CarMovement extends TickerBehaviour{
 							intersectionRoute = car.getIntersection().getRouteToRoad(car.getRoad().getName(), nextRoad.getName());
 						}
 						
-						if(nextRoad == null)
-							System.out.println("NULL" + valid);
-						
 						//update the current road
 						car.setRoad(nextRoad);
 						
 						
 						//if previous jorney wasn't valid
-						if(!valid)
+						//If it his in applying mode then, the decision is 
+						//made when he enters the intersection
+						if(!valid && !car.getLearningMode().equals(LearningMode.APPLYING)){
 							car.calculateAndUpdateJourney();	
+						}
 						
 						//Perform the intersection route
 						passageType = SpaceResources.PassageType.Intersection;

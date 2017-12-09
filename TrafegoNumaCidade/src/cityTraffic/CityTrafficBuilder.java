@@ -269,6 +269,13 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				
 				myKnowledge.setFilename(filename);
 				
+				if(myMode.equals(LearningMode.LEARNING) && 
+						myKnowledge.getUnexploredRoads().size() == 0)
+					myMode = LearningMode.APPLYING;
+				
+				//indicate is an old version
+				myKnowledge.setNewVersion(false);
+				
 			} catch (FileNotFoundException f) {
 				System.out.println("Car file not found");
 				createNewAgent(mode);

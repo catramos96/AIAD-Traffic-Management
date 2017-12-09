@@ -22,6 +22,19 @@ public class LearnMap extends CyclicBehaviour{
 		this.latestIntersection = car.getIntersection();
 		this.latestRoad = car.getRoad();
 		
+		boolean newRoad = true;
+		
+		//It the car knowledge knows the road in it's totality
+		//then it's not necessary to insert it in the unexplored roads
+		if(!car.getKnowledge().isNew()){
+			if(car.getCityKnowledge().getRoads().containsKey(latestRoad.getName())){
+				Road r = car.getCityKnowledge().getRoads().get(latestRoad.getName());
+				if(r.getStartIntersection() != null && r.getEndIntersection() != null)
+					newRoad = false;
+			}	
+		}
+		
+		if(car.getKnowledge().isNew() || newRoad)
 		car.getUnexploredRoads().put(latestRoad.getName(), latestRoad.getStartIntersection().getName());
 	}
 
@@ -46,7 +59,7 @@ public class LearnMap extends CyclicBehaviour{
 					
 				
 				if(car.getLearningMode().equals(LearningMode.LEARNING))
-					car.getQLearning().insertNewIntersection(intersection);
+					car.getQLearning().insertNewIntersection(realI);
 
 				
 				//Saves the discovered intersection
@@ -80,6 +93,11 @@ public class LearnMap extends CyclicBehaviour{
 
 						intersection.insertRoad(knownRoad, false);
 						
+						if(car.getDestinationName() == null){
+							if(knownRoad.partOfRoad(car.getDestination()))
+								car.setDestinationName(knownRoad.getName());
+						}
+						
 						if(car.getJourney().size() != 0)
 							car.calculateAndUpdateJourney();
 					}
@@ -108,16 +126,18 @@ public class LearnMap extends CyclicBehaviour{
 						knownRoad.setStartIntersection(intersection);
 						
 						intersection.insertRoad(knownRoad, false);
-
+						
+						if(car.getDestinationName() == null){
+							if(knownRoad.partOfRoad(car.getDestination()))
+								car.setDestinationName(knownRoad.getName());
+						}
 						
 						//If road is still unexplored
 						if(car.getUnexploredRoads().containsKey(out)) {
-							System.out.println("---->>>> ENTREI 1");
 							car.getUnexploredRoads().put(out.getName(), intersection.getName());
 						}
 						
 						if(car.getJourney().size() != 0) {
-							System.out.println("---->>>> ENTREI 2");
 							car.calculateAndUpdateJourney();
 						}
 					}
@@ -130,23 +150,28 @@ public class LearnMap extends CyclicBehaviour{
 		
 				
 		//change in road
-		if(!car.getRoad().equals(latestRoad) && latestIntersection != null){
-			
-			//Reinforcment Learning
-			if(car.getLearningMode().equals(LearningMode.LEARNING))
-				car.getQLearning().updateQualityValues(latestIntersection.getName(), latestRoad.getName());
-			
-			latestRoad = car.getRoad();
-			
-			if(car.getUnexploredRoads().containsKey(latestRoad.getName()))
-				car.getUnexploredRoads().remove(latestRoad.getName());
+		if(car.getRoad() != null){
+			if(!car.getRoad().equals(latestRoad) && 
+					latestIntersection != null){
+				
+				//Reinforcment Learning
+				if(car.getLearningMode().equals(LearningMode.LEARNING))
+					car.getQLearning().updateQualityValues(latestIntersection.getName(), latestRoad.getName());
+				
+				latestRoad = car.getRoad();
+				
+				if(car.getUnexploredRoads().containsKey(latestRoad.getName()))
+					car.getUnexploredRoads().remove(latestRoad.getName());
+			}
 		}
+		
 		
 		latestIntersection = car.getIntersection();
 		
 		//Knows all the city
 		if(car.getUnexploredRoads().size() == 0 && car.getLearningMode().equals(LearningMode.LEARNING)){
 			car.setLearningMode(LearningMode.APPLYING);
+			car.getJourney().clear();
 			car.removeBehaviour(this);
 		}
 

@@ -28,10 +28,11 @@ public class QLearning {
 
 	private CarAgent car = null;
 	
-	public QLearning(CarAgent c,float learningRate, float discount){
+	public QLearning(CarAgent c,float learningRate, float discount,HashMap<String, ArrayList<Quality>> values){
 		this.car = c;
 		this.learningRate = learningRate;
 		this.discount = discount;
+		this.qualityValues = values;
 	}
 	
 	public void insertNewIntersection(Intersection intersection){
