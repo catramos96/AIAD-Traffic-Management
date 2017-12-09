@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.sql.Timestamp;
-
 import agents.Car.LearningMode;
 import agents.City;
 import agents.CarSerializable;
@@ -45,6 +44,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	private static CarSerializable myKnowledge;
 	private static LearningMode myMode;
 	private static String path;
+	private static Point spacePos;
 
 	private static int nCars;
 	private static int n = -1; 		//number of the car being produced
@@ -60,7 +60,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 
 	private Schedule schedule = new Schedule();
 	
-	private static Point spaceDimensions = new Point(21,21);//new Point(62,62);
+	private static Point spaceDimensions = new Point(21,21);
 
 	public static Agent getAgent(Context<?> context, AID aid) {
 		for (Object obj : context.getObjects(Agent.class)) {
@@ -105,7 +105,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			
 			agentContainer.acceptNewAgent("city", city).start();
 			space.getAdder().add(space, city);
-			space.moveTo(city, 10,10);//30, 20);
+			space.moveTo(city, spacePos.x,spacePos.y);
 			
 			//update map with new cars
 			ScheduleParameters params = ScheduleParameters.createRepeating(1, 2000);
@@ -290,8 +290,25 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		calculateNumCars((int) params.getValue("hour"));
 		
 		//6. map path
+		String type = (String) params.getValue("mapPath");
 		path = new File("").getAbsolutePath();
-		path += "\\maps\\"+(String) params.getValue("mapPath");
+		if(type.equals("Small")) {
+			path += "\\maps\\small.txt";
+			spaceDimensions = new Point(21,21);
+			spacePos = new Point(10,10);
+			int ntemp = (int) (nCars*0.6);
+			nCars = ntemp;
+		}
+		else {
+			path += "\\maps\\big.txt";
+			spaceDimensions = new Point(62,62);
+			spacePos = new Point(30,20);
+			int ntemp = (int) (nCars*2);
+			nCars = ntemp;
+		}
+		System.out.println("Carros gerados final : "+nCars);
+		
+		//7. debug mode
 		
 		//create path
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
@@ -325,15 +342,18 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		
 		//muito transito
 		if(7 <= hour && hour <= 9 || 12 <= hour && hour <= 14 || 17 <= hour && hour <= 19) {
-			nCars = (int) (Math.random() * 100 + 70);
+			nCars = (int) (Math.random() * 30 + 70); // 70 - 100 
+			System.out.println("*");
 		}
 		//moderado
-		if(9 < hour && hour < 12 || 14 < hour && hour < 17 || 19 < hour && hour < 22) {
-			nCars = (int) (Math.random() * 70 + 25);
+		else if(9 < hour && hour < 12 || 14 < hour && hour < 17 || 19 < hour && hour < 22) {
+			nCars = (int) (Math.random() * 45 + 25); //25 - 70
+			System.out.println("**");
 		}
 		//fraco
 		else {
-			nCars = (int) (Math.random() * 25 + 0);
+			nCars = (int) (Math.random() * 20 + 5); //5 - 25
+			System.out.println("***");
 		}
 		
 		System.out.println("Carros Gerados : "+nCars);
