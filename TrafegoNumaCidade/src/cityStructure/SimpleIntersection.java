@@ -4,10 +4,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import resources.Point;
 
+/**
+ * Intersection with one point of area.
+ * 
+ * Example:
+ * 
+ *  Area with 1 point	
+ * 4 Possible Roads			
+ * SimpleIntersection		
+ * 
+ * 		_| |_						
+ * 		_ X _ 					 
+ * 	 	 | |
+ *
+ */
 public class SimpleIntersection extends Intersection{
 		
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Constructor.
+	 * @param area
+	 * @param name
+	 */
 	public SimpleIntersection(Point area, String name) {
 		super(area, name);
 	}	

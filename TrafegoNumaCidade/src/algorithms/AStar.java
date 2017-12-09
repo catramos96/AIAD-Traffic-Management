@@ -124,7 +124,7 @@ public class AStar {
 						
 						//If the road has transit, then it has a penalty to the costs
 						if(next.isBlocked())
-							transitPenalty = CityMap.getTransitPenalization(map, next.getName());
+							transitPenalty = CityMap.getTransitPenalty(map, next.getName());
 				
 						//Calculate costs from the start to the current road being analyzed plus the nextRoad
 						int cost_next = costs.get(current) + current.getEndIntersection().getLength() + next.getLength() + transitPenalty;

@@ -6,16 +6,42 @@ import resources.Point;
 import resources.Resources;
 import resources.Resources.Direction;
 
+/**
+ * Intersection with more than one point of area.
+ * 
+ * Example:
+ * 
+ *  Area with 4 points	
+ * 8 Possible Roads			
+ * Complex Intersection		
+ * 
+ * 		_|||_						
+ * 		_X|X_							
+ * 		_X|X_	 					 
+ * 	 	 |||
+ *
+ */
 public class ComplexIntersection extends Intersection {
 
 	private static final long serialVersionUID = 1L;
 	ArrayList<Point> circuit = new ArrayList<Point>();
 	
+	/**
+	 * Constructor.
+	 * @param area
+	 * @param name
+	 */
 	public ComplexIntersection(ArrayList<Point> area, String name) {
 		super(area, name);
 		loadCircuit(area);
 	}
 	
+	/**
+	 * Constructor just to be used by the behavior LearnMap.
+	 * @param area
+	 * @param name
+	 * @param circuit
+	 */
 	public ComplexIntersection(ArrayList<Point> area, String name,ArrayList<Point> circuit) {
 		super(area, name);
 		this.circuit = circuit;
@@ -38,10 +64,8 @@ public class ComplexIntersection extends Intersection {
 		if(areaOfEntry == null || areaOfOut == null)
 			return route;
 		
+		//Enters the intersection
 		route.add(areaOfEntry);
-		
-		if(areaOfEntry.equals(areaOfOut))
-			return route;
 		
 		int index = -1;
 		
@@ -58,6 +82,7 @@ public class ComplexIntersection extends Intersection {
 		
 		Point lastPoint;
 		
+		//Follow the circuit order until it reaches the out area
 		do{
 			index ++;
 			if(index == circuit.size())
@@ -66,23 +91,17 @@ public class ComplexIntersection extends Intersection {
 			route.add(lastPoint);
 		}while(!lastPoint.equals(areaOfOut));
 		
+		//Adds the start point of out road (of the intersection)
 		route.add(out.getStartPoint());
 		
 		return route;
 	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public ArrayList<Point> getArea() {
-		ArrayList<Point> ret = new ArrayList<Point>();
-		
-		for(Point p : entries.keySet())
-			ret.add(p);
-		
-		return ret;
-	}
 	
-	public void loadCircuit(ArrayList<Point> area){
+	/**
+	 * Loads order of the circuit counter clockwise.
+	 * @param area
+	 */
+	private void loadCircuit(ArrayList<Point> area){
 		ArrayList<Direction> circuit_direction = new ArrayList<Direction>();
 		
 		//Direction counterclockwise
@@ -124,6 +143,25 @@ public class ComplexIntersection extends Intersection {
 		
 	}
 	
+	/*
+	 * GETS & SETS
+	 */
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public ArrayList<Point> getArea() {
+		ArrayList<Point> ret = new ArrayList<Point>();
+		
+		for(Point p : entries.keySet())
+			ret.add(p);
+		
+		return ret;
+	}
+	
+	/**
+	 * Gets the circuit order of the intersection.
+	 * @return
+	 */
 	public ArrayList<Point> getCircuit(){
 		return circuit;
 	}

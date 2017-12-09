@@ -59,8 +59,6 @@ public class LearnMap extends CyclicBehaviour{
 			
 				//NEW intersection
 				if(!knowledge.getIntersections().containsKey(car.getIntersection().getName())){
-					
-					System.out.println(car.getIntersection().getName());
 	
 					Intersection intersection = null;
 					Intersection realI = car.getIntersection();
@@ -93,7 +91,7 @@ public class LearnMap extends CyclicBehaviour{
 						if(!knowledge.getRoads().containsKey(in.getName())){
 							Road r = in.getRoadPerceptionAtEnd();
 							r.setEndIntersection(intersection);
-							intersection.insertRoad(r, false);
+							intersection.insertRoad(r);
 							
 							knowledge.getRoads().put(r.getName(), r);
 							
@@ -107,7 +105,7 @@ public class LearnMap extends CyclicBehaviour{
 							knownRoad.updateLength();
 							knownRoad.setEndIntersection(intersection);
 	
-							intersection.insertRoad(knownRoad, false);
+							intersection.insertRoad(knownRoad);
 							
 							if(car.getDestinationName() == null){
 								if(knownRoad.partOfRoad(car.getDestination()))
@@ -129,7 +127,7 @@ public class LearnMap extends CyclicBehaviour{
 						if(!knowledge.getRoads().containsKey(out.getName())){						
 							Road r = out.getRoadPerceptionAtStart();
 							r.setStartIntersection(intersection);
-							intersection.insertRoad(r, false);
+							intersection.insertRoad(r);
 							knowledge.getRoads().put(r.getName(), r);
 	
 							
@@ -143,7 +141,7 @@ public class LearnMap extends CyclicBehaviour{
 							knownRoad.updateLength();
 							knownRoad.setStartIntersection(intersection);
 							
-							intersection.insertRoad(knownRoad, false);
+							intersection.insertRoad(knownRoad);
 							
 							if(car.getDestinationName() == null){
 								if(knownRoad.partOfRoad(car.getDestination()))

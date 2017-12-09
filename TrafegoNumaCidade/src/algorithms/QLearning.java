@@ -145,7 +145,7 @@ public class QLearning {
 	 * 					(toRoad_length + transitPenalty) * 2 * IMPORTANCE2);
 	 * 
 	 * TransitPenalty = 0 if no transit,
-	 * 				  = (Number_semaphores_at_toRoad_endIntersection - 1)/Time_for_the_car_to_move_one_cell if transit
+	 * 				  = (Number_of_semaphores_at_end_intersection - 1) * (time_yellow + time_green) / time_car_move_1_cell
 	 * 
 	 * The transit penalty represents the number of cells that the car could be moving if it wasn't stopped at the transit.
 	 * 
@@ -192,7 +192,7 @@ public class QLearning {
 					
 			if(withTransit){
 				//Number of cells that the car could pass if he wasn't stopped at the transit
-				transitPenalty = (float)(CityMap.getTransitPenalization(car.getCityKnowledge(), toRoad));
+				transitPenalty = (float)(CityMap.getTransitPenalty(car.getCityKnowledge(), toRoad));
 			}			
 			
 			reward = (float) (1.5 * (car.getCityKnowledge().getDimensions().x + car.getCityKnowledge().getDimensions().y) - 

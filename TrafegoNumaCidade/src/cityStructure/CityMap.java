@@ -22,16 +22,34 @@ import sajas.core.Agent;
 public class CityMap extends Agent implements Serializable
 {
 	private static final long serialVersionUID = 1L;
+	
 	private HashMap<String,Intersection> intersections = new HashMap<String,Intersection>();
 	private HashMap<String,Road> roads = new HashMap<String,Road>();
 	
+	//dimension of the map
 	private Point dimensions = null;
 
+	/**
+	 * Constructor.
+	 * @param dimensions - Dimensions of the space
+	 */
 	public CityMap(Point dimensions) {
 		this.dimensions = dimensions;
 	}
 	
-	public static int getTransitPenalization(CityMap map, String road){
+	/**
+	 * Static method that returns the transit penalty  of a certain
+	 * road belonging to a certain city structure.
+	 * 
+	 * Penalty = (Number_of_semaphores_at_end_intersection - 1) * (time_yellow + time_green) / time_car_move_1_cell
+	 * 		   =  Road_Length * 3 (if above is equal to 0)
+	 *         =  Max(space_width,space_height) (if length is INFINITE)
+	 * 
+	 * @param map
+	 * @param road
+	 * @return
+	 */
+	public static int getTransitPenalty(CityMap map, String road){
 		int pen = 0;
 		
 		if(map.getRoads().containsKey(road)){
@@ -56,28 +74,48 @@ public class CityMap extends Agent implements Serializable
 	 * GETS & SETS
 	 */
 	
+	/**
+	 * Gets the space dimensions.
+	 * @return
+	 */
 	public Point getDimensions(){
 		return dimensions;
 	}
 	
-
+	/**
+	 * Gets the intersections.
+	 * @return
+	 */
 	public HashMap<String,Intersection> getIntersections(){
 		return intersections;
 	}
 	
+	/**
+	 * Gets the roads.
+	 * @return
+	 */
 	public HashMap<String,Road> getRoads(){
 		return roads;
 	}
 	
+	/**
+	 * Returns the road in which the point p is part of or null
+	 * if it doesn't belong to any road.
+	 * @param p
+	 * @return
+	 */
 	public Road isPartOfRoad(Point p){
 		for(Road r : roads.values()){
 			if(r.partOfRoad(p))
 				return r;
 		}
-		
 		return null;
 	}
 	
+	/**
+	 * Returns a String with the main information about this object.
+	 * @return
+	 */
 	public String print() {
 		String ret = "Roads :\n";
 		for(Road r : roads.values()){
@@ -90,6 +128,11 @@ public class CityMap extends Agent implements Serializable
 	 * SAVE & LOAD
 	 */
 	
+	/**
+	 * Method that loads the city structure information in a file.
+	 * @param path
+	 * @return
+	 */
 	public boolean load(String path){
 		
 		boolean inIntersections = false;
@@ -194,6 +237,10 @@ public class CityMap extends Agent implements Serializable
 		return true;
 	}
 	
+	/**
+	 * Method that saves the city structure into a file.
+	 * @param path
+	 */
 	public void save(String path){
 		try {
 			File f = new File(path);
