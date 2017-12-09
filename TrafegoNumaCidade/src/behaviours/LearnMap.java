@@ -1,8 +1,8 @@
 package behaviours;
 
 import java.util.ArrayList;
-import agents.CarAgent;
-import agents.CarAgent.LearningMode;
+import agents.Car;
+import agents.Car.LearningMode;
 import cityStructure.CityMap;
 import cityStructure.ComplexIntersection;
 import cityStructure.Intersection;
@@ -12,12 +12,12 @@ import sajas.core.behaviours.CyclicBehaviour;
 
 public class LearnMap extends CyclicBehaviour{
 
-	private CarAgent car = null;
+	private Car car = null;
 	private static final long serialVersionUID = 1L;
 	private Intersection latestIntersection = null;
 	private Road latestRoad = null;
 	
-	public LearnMap(CarAgent car){
+	public LearnMap(Car car){
 		this.car = car;
 		this.latestIntersection = car.getIntersection();
 		this.latestRoad = car.getRoad();

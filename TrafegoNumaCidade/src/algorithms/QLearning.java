@@ -3,7 +3,7 @@ package algorithms;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import agents.CarAgent;
+import agents.Car;
 import cityStructure.CityMap;
 import cityStructure.Intersection;
 import cityStructure.Road;
@@ -26,9 +26,9 @@ public class QLearning {
 	private float learningRate = 1;
 	private float discount = (float) 0.8;			//greedy measure: 0->very greedy
 
-	private CarAgent car = null;
+	private Car car = null;
 	
-	public QLearning(CarAgent c,float learningRate, float discount,HashMap<String, ArrayList<Quality>> values){
+	public QLearning(Car c,float learningRate, float discount,HashMap<String, ArrayList<Quality>> values){
 		this.car = c;
 		this.learningRate = learningRate;
 		this.discount = discount;

@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.sql.Timestamp;
 
-import agents.CarAgent.LearningMode;
+import agents.Car.LearningMode;
 import agents.City;
 import agents.CarSerializable;
 import agents.MonitoredCarAgent;

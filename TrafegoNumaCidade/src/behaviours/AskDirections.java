@@ -2,8 +2,8 @@ package behaviours;
 
 import java.util.ArrayList;
 
-import agents.CarAgent;
-import agents.CarAgent.LearningMode;
+import agents.Car;
+import agents.Car.LearningMode;
 import agents.MonitoredCarAgent;
 import cityTraffic.onto.ServiceOntology;
 import jade.content.lang.sl.SLCodec;
@@ -20,7 +20,7 @@ import sajas.core.behaviours.TickerBehaviour;
 public class AskDirections extends TickerBehaviour{
 
 	private static final long serialVersionUID = 1L;
-	private CarAgent car = null;
+	private Car car = null;
 	private ArrayList<AID> carsAsked = new ArrayList<AID>();
 	private String lastRoadName = "";
 	
@@ -28,7 +28,7 @@ public class AskDirections extends TickerBehaviour{
     private SLCodec codec;
     private Ontology serviceOntology;
 	 
-	public AskDirections(CarAgent car, long time) {
+	public AskDirections(Car car, long time) {
 		super(car,time);
 		this.car = car;
 		lastRoadName = car.getRoad().getName();
@@ -81,7 +81,7 @@ public class AskDirections extends TickerBehaviour{
 							p.x < car.getSpace().getDimensions().getWidth() && 
 							p.y < car.getSpace().getDimensions().getHeight()){
 
-						CarAgent c = SpaceResources.hasCar(car.getSpace(), p);	
+						Car c = SpaceResources.hasCar(car.getSpace(), p);	
 						
 						if(c != null){
 							if(!carsAsked.contains(c.getAID())){

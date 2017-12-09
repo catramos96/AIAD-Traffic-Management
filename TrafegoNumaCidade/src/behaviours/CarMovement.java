@@ -1,9 +1,9 @@
 package behaviours;
 
 import java.util.ArrayList;
-import agents.CarAgent;
+import agents.Car;
 import agents.MonitoredCarAgent;
-import agents.CarAgent.LearningMode;
+import agents.Car.LearningMode;
 import cityStructure.Road;
 import resources.Point;
 import resources.Resources;
@@ -14,7 +14,7 @@ import sajas.core.behaviours.TickerBehaviour;
 public class CarMovement extends TickerBehaviour{
 
 	private static final long serialVersionUID = 1L;
-	private CarAgent car = null;
+	private Car car = null;
 	
 	private PassageType passageType = PassageType.Road;
 	private ArrayList<Point> intersectionRoute = new ArrayList<Point>();
@@ -22,7 +22,7 @@ public class CarMovement extends TickerBehaviour{
 	//Semaphore
 	private boolean greenSemaphore = true;
 	
-	public CarMovement(CarAgent car, long time){
+	public CarMovement(Car car, long time){
 		super(car,time);
 		this.car = car;
 		
@@ -70,23 +70,14 @@ public class CarMovement extends TickerBehaviour{
 						//follow the jorney
 						if(car.getJourney().size() != 0){
 							
-							if(car.getClass().equals(MonitoredCarAgent.class))
-								System.out.println("Enter1: " + car.getJourney().get(0));
-							
 							//checks if the next road to follow is a road out of the intersection (real world)
 							nextRoad = car.getIntersection().isOutRoad(car.getJourney().get(0));
 							
 							if(nextRoad == null){
 								valid = false;
-								
-								if(car.getClass().equals(MonitoredCarAgent.class))
-									System.out.println("Enter2: couldn't get road");
 							}
 							else{
 								car.jorneyConsume();
-								
-								if(car.getClass().equals(MonitoredCarAgent.class))
-									System.out.println("Enter2: OK");
 								
 								//get route to go to the road
 								intersectionRoute = car.getIntersection().getRouteToRoad(car.getRoad().getName(), nextRoad.getName());
@@ -96,13 +87,6 @@ public class CarMovement extends TickerBehaviour{
 								if(intersectionRoute.size() == 0){
 									valid = false;
 									car.getJourney().clear();
-									if(car.getClass().equals(MonitoredCarAgent.class))
-										System.out.println("Enter3: couldn't get route");
-								}
-								else
-								{
-									if(car.getClass().equals(MonitoredCarAgent.class))
-										System.out.println("Enter3: OK");
 								}
 							}
 						}

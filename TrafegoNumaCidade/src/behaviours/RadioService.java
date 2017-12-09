@@ -1,5 +1,5 @@
 package behaviours;
-import agents.CarAgent;
+import agents.Car;
 import agents.Radio;
 import jade.lang.acl.ACLMessage;
 import repast.simphony.context.Context;
@@ -42,8 +42,8 @@ public class RadioService extends CyclicBehaviour{
 					message.setContent(MessagesResources.buildMessage(MessageType.UNBLOCKED,roadName));
 				
 				//Warn the cars via radio
-				Context<CarAgent> context = ContextUtils.getContext(radio);
-			    for(CarAgent c : context.getAgentLayer(CarAgent.class)){
+				Context<Car> context = ContextUtils.getContext(radio);
+			    for(Car c : context.getAgentLayer(Car.class)){
 			    	message.addReceiver(c.getAID());
 			    }
 			    

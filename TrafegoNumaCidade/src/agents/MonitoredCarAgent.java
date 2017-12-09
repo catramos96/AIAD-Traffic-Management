@@ -8,7 +8,7 @@ import cityStructure.Road;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
 
-public class MonitoredCarAgent extends CarAgent {
+public class MonitoredCarAgent extends Car {
 
 	//cor azul
 	

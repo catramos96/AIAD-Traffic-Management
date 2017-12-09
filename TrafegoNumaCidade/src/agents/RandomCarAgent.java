@@ -4,7 +4,7 @@ import cityStructure.Road;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
 
-public class RandomCarAgent extends CarAgent {
+public class RandomCarAgent extends Car {
 
 	//RED
 	

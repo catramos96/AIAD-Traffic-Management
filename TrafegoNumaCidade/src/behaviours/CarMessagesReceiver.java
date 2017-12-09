@@ -1,8 +1,8 @@
 package behaviours;
 
 import java.util.ArrayList;
-import agents.CarAgent;
-import agents.CarAgent.LearningMode;
+import agents.Car;
+import agents.Car.LearningMode;
 import cityStructure.Road;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
@@ -15,9 +15,9 @@ import sajas.core.behaviours.CyclicBehaviour;
 public class CarMessagesReceiver extends CyclicBehaviour{
 
 	private static final long serialVersionUID = 1L;
-	private CarAgent car = null;
+	private Car car = null;
 	
-	public CarMessagesReceiver(CarAgent car) {
+	public CarMessagesReceiver(Car car) {
 		this.car = car;
 	}
 

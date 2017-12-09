@@ -1,6 +1,6 @@
 package resources;
 
-import agents.CarAgent;
+import agents.Car;
 import agents.MonitoredCarAgent;
 import agents.Radio;
 import agents.RoadMonitor;
@@ -29,7 +29,7 @@ public class Debug {
 			System.out.println(a.getClass().getSimpleName() + " : MessageSent : " + content);
 	}
 	
-	public static void debugJourney(CarAgent c){
+	public static void debugJourney(Car c){
 		
 		if(c.getClass().equals(MonitoredCarAgent.class) && debugJourneyUpdate){
 			String s = c.getClass().getSimpleName() + " : Journey : ";
@@ -41,13 +41,13 @@ public class Debug {
 		}
 	}
 
-	public static void debugQLearning(CarAgent c, Quality q){
+	public static void debugQLearning(Car c, Quality q){
 		if(c.getClass().equals(MonitoredCarAgent.class) && debugQLearning){
 			System.out.println(c.getClass().getSimpleName() + " : QLearning : " + q.print());
 		}
 	}
 	
-	public static void debugLearningMode(CarAgent c){
+	public static void debugLearningMode(Car c){
 		if(c.getClass().equals(MonitoredCarAgent.class) && debugQLearning){
 			System.out.println(c.getClass().getSimpleName() + " : LearningMode : " + c.getLearningMode());
 		}

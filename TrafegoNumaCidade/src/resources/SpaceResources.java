@@ -2,7 +2,7 @@ package resources;
 
 import java.util.ArrayList;
 
-import agents.CarAgent;
+import agents.Car;
 import agents.MonitoredCarAgent;
 import agents.RandomCarAgent;
 import agents.Semaphore;
@@ -37,8 +37,8 @@ public class SpaceResources {
 		ArrayList<AID> cars = new ArrayList<AID>();
 		
 		for(Object o : space.getObjects()){
-			if(o.getClass().equals(CarAgent.class))
-				cars.add((AID) ((CarAgent)o).getAID());
+			if(o.getClass().equals(Car.class))
+				cars.add((AID) ((Car)o).getAID());
 		}
 		
 		return cars;		
@@ -56,8 +56,8 @@ public class SpaceResources {
 			return s1;
 	}
 	
-	public static CarAgent hasCar(Grid<Object> space, Point location){
-		CarAgent temp = searchForObject(space, location, MonitoredCarAgent.class);
+	public static Car hasCar(Grid<Object> space, Point location){
+		Car temp = searchForObject(space, location, MonitoredCarAgent.class);
 		if(temp == null)
 			return searchForObject(space, location, RandomCarAgent.class);
 		return temp;
