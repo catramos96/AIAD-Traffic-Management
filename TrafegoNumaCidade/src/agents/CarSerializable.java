@@ -16,6 +16,7 @@ import resources.Point;
 public class CarSerializable implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	//What the agent knows about the city -> calculate the journey to the destination
 	private CityMap cityMap = null;
 	private HashMap<String,String> unexploredRoads = new HashMap<String,String>();		//<RoadUnexplored,Intersection> 

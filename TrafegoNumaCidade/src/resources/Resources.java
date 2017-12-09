@@ -3,7 +3,7 @@ package resources;
 public class Resources {
 	
 	public static final int lightCheck = 1000;
-	public static final int carVelocity = 700;
+	public static final int carVelocity = 400;
 	
 	public static final int transitPenaltyRatio = 3;
 	
@@ -12,9 +12,9 @@ public class Resources {
 	 */
 	public enum Light{Green,Yellow,Red};
 	
-	public static final int GreenLightTimeUnits = 9;
+	public static final int GreenLightTimeUnits = 2;
 	
-	public static final int YellowLightTimeUnits = 3;
+	public static final int YellowLightTimeUnits = 1;
 
 
 	/*

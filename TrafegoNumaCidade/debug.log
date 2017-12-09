@@ -1,126 +1,3 @@
-<<<<<<< HEAD
-FATAL [Thread-7] 2017-12-08 16:56:34,691 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
-Current tick (123228.0)
-java.lang.NullPointerException
-	at behaviours.LearnMap.action(LearnMap.java:98)
-	at sajas.core.behaviours.Behaviour.actionWrapper(Behaviour.java:341)
-	at sajas.core.Agent.step(Agent.java:205)
-	at sajas.sim.repasts.AgentAction.execute(AgentAction.java:69)
-	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
-	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
-	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
-	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
-	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
-	at java.lang.Thread.run(Unknown Source)
-FATAL [Thread-7] 2017-12-08 16:57:25,160 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
-Current tick (1728649.0)
-java.lang.NullPointerException
-	at behaviours.AskDirections.onTick(AskDirections.java:53)
-	at sajas.core.behaviours.TickerBehaviour.action(TickerBehaviour.java:70)
-	at sajas.core.behaviours.Behaviour.actionWrapper(Behaviour.java:341)
-	at sajas.core.Agent.step(Agent.java:205)
-	at sajas.sim.repasts.AgentAction.execute(AgentAction.java:69)
-	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
-	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
-	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
-	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
-	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
-	at java.lang.Thread.run(Unknown Source)
-FATAL [Thread-7] 2017-12-08 17:06:30,282 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
-Current tick (289027.0)
-java.lang.NullPointerException
-	at behaviours.LearnMap.action(LearnMap.java:98)
-	at sajas.core.behaviours.Behaviour.actionWrapper(Behaviour.java:341)
-	at sajas.core.Agent.step(Agent.java:205)
-	at sajas.sim.repasts.AgentAction.execute(AgentAction.java:69)
-	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
-	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
-	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
-	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
-	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
-	at java.lang.Thread.run(Unknown Source)
-FATAL [Thread-7] 2017-12-08 17:07:44,458 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
-Current tick (1.4450961E7)
-java.lang.NullPointerException
-	at behaviours.LearnMap.action(LearnMap.java:98)
-	at sajas.core.behaviours.Behaviour.actionWrapper(Behaviour.java:341)
-	at sajas.core.Agent.step(Agent.java:205)
-	at sajas.sim.repasts.AgentAction.execute(AgentAction.java:69)
-	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
-	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
-	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
-	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
-	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
-	at java.lang.Thread.run(Unknown Source)
-FATAL [Thread-7] 2017-12-08 17:09:22,635 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
-Current tick (325551.0)
-java.lang.NullPointerException
-	at behaviours.LearnMap.action(LearnMap.java:98)
-	at sajas.core.behaviours.Behaviour.actionWrapper(Behaviour.java:341)
-	at sajas.core.Agent.step(Agent.java:205)
-	at sajas.sim.repasts.AgentAction.execute(AgentAction.java:69)
-	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
-	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
-	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
-	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
-	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
-	at java.lang.Thread.run(Unknown Source)
-FATAL [Thread-7] 2017-12-08 17:13:02,707 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
-Current tick (5593958.0)
-java.lang.NullPointerException
-	at behaviours.LearnMap.action(LearnMap.java:98)
-	at sajas.core.behaviours.Behaviour.actionWrapper(Behaviour.java:341)
-	at sajas.core.Agent.step(Agent.java:205)
-	at sajas.sim.repasts.AgentAction.execute(AgentAction.java:69)
-	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
-	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
-	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
-	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
-	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
-	at java.lang.Thread.run(Unknown Source)
-FATAL [Thread-7] 2017-12-08 17:15:13,543 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
-Current tick (585592.0)
-java.lang.NullPointerException
-	at behaviours.LearnMap.action(LearnMap.java:98)
-	at sajas.core.behaviours.Behaviour.actionWrapper(Behaviour.java:341)
-	at sajas.core.Agent.step(Agent.java:205)
-	at sajas.sim.repasts.AgentAction.execute(AgentAction.java:69)
-	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
-	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
-	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
-	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
-	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
-	at java.lang.Thread.run(Unknown Source)
-FATAL [Thread-7] 2017-12-08 17:17:54,583 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
-Current tick (1255601.0)
-java.lang.NullPointerException
-	at behaviours.LearnMap.action(LearnMap.java:98)
-	at sajas.core.behaviours.Behaviour.actionWrapper(Behaviour.java:341)
-	at sajas.core.Agent.step(Agent.java:205)
-	at sajas.sim.repasts.AgentAction.execute(AgentAction.java:69)
-	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
-	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
-	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
-	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
-	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
-	at java.lang.Thread.run(Unknown Source)
-FATAL [Thread-7] 2017-12-08 18:29:20,983 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
-Current tick (1645844.0)
-java.lang.NullPointerException
-	at algorithms.AStar.shortestPath(AStar.java:46)
-	at agents.CarAgent.calculateAndUpdateJourney(CarAgent.java:138)
-	at behaviours.LearnMap.action(LearnMap.java:69)
-	at sajas.core.behaviours.Behaviour.actionWrapper(Behaviour.java:341)
-	at sajas.core.Agent.step(Agent.java:205)
-	at sajas.sim.repasts.AgentAction.execute(AgentAction.java:69)
-	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
-	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
-	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
-	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
-	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
-	at java.lang.Thread.run(Unknown Source)
-=======
->>>>>>> master
 ERROR [AWT-EventQueue-0] 2017-12-08 18:52:09,535 repast.simphony.ui.RSApplication - Projection error
 repast.simphony.space.SpatialException: Target location 30 is outside of grid's dimensions.
 	at repast.simphony.space.grid.AbstractGridPointTranslator.boundsCheck(AbstractGridPointTranslator.java:48)
@@ -180,6 +57,7 @@ repast.simphony.space.SpatialException: Target location 30 is outside of grid's 
 	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
 	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
 	at java.awt.EventDispatchThread.run(Unknown Source)
+<<<<<<< HEAD
 ERROR [AWT-EventQueue-0] 2017-12-08 23:34:54,172 repast.simphony.ui.RSApplication - Error while initializing simulation
 java.lang.NullPointerException
 	at cityTraffic.CityTrafficBuilder.build(CityTrafficBuilder.java:291)
@@ -233,3 +111,4 @@ java.lang.NullPointerException
 	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
 	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
 	at java.awt.EventDispatchThread.run(Unknown Source)
+

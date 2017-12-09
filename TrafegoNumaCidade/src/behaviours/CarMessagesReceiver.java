@@ -2,6 +2,7 @@ package behaviours;
 
 import java.util.ArrayList;
 import agents.CarAgent;
+import agents.CarAgent.LearningMode;
 import cityStructure.Road;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
@@ -77,7 +78,6 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 							if(!car.getCityKnowledge().getRoads().containsKey(parts[i]) ||
 									car.getUnexploredRoads().containsKey(parts[i])){
 								allRoadsVisited = false;
-								System.out.println("NEW ROADS");
 							}
 							
 							if(foundRoad)
@@ -87,10 +87,10 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 								foundRoad = true;
 						}
 						
-						//Only sets the new journey if it's a new journey with unvisited roads
-						if(foundRoad && !allRoadsVisited){
-							System.out.println("Car transmitted message with new paths");
+						if((car.getLearningMode().equals(LearningMode.SHORT_LEARNING) ||
+								!allRoadsVisited) && foundRoad){
 							car.setJourney(route);
+							car.jorneyConsume();
 						}
 					}
 				}
