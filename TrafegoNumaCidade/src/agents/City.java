@@ -169,7 +169,7 @@ public class City extends Agent{
 			container.acceptNewAgent("CarRandom"+timestamp, car).start();
 			space.getAdder().add(space, car);
 			car.setPosition(origin);
-			System.out.println(car.print());
+			//System.out.println(car.print());
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
 		}

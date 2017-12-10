@@ -173,6 +173,11 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				//indicate is an old version
 				myKnowledge.setNewVersion(false);
 				
+				if(mode.equals("A*")) 
+					myMode = LearningMode.SHORT_LEARNING;
+				else
+					myMode = LearningMode.LEARNING;
+				
 			} catch (FileNotFoundException f) {
 				System.out.println("Car file not found");
 				createNewAgent(mode);
@@ -203,7 +208,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			int ntemp = (int) (nCars*2);
 			nCars = ntemp;
 		}
-		System.out.println("Carros gerados final : "+nCars);
+		//System.out.println("Carros gerados final : "+nCars);
 		
 		//7. debug mode
 		
@@ -227,7 +232,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 
 		// random probability of cars learning the city
 		prob = (int) (Math.random() * 100);
-		System.out.println("Probability to learn the city = " + prob + " %");
+		//System.out.println("Probability to learn the city = " + prob + " %");
 		
 		try {
 			
@@ -294,7 +299,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	 */
 	public void createRandomCar(City city) throws StaleProxyException 
 	{
-		System.out.println(">>>>>");
+		//System.out.println(">>>>>");
 		n++;	//inc car number
 		
 		int rnd_road;
@@ -346,7 +351,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		agentContainer.acceptNewAgent("CarRandom"+n, car).start();
 		space.getAdder().add(space, car);
 		car.setPosition(origin);
-		System.out.println(car.print() + "Prob : " + randProb+"\nNumber : "+n);
+		//System.out.println(car.print() + "Prob : " + randProb+"\nNumber : "+n);
 	}
 	
 	
@@ -383,20 +388,20 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		//muito transito
 		if(7 <= hour && hour <= 9 || 12 <= hour && hour <= 14 || 17 <= hour && hour <= 19) {
 			nCars = (int) (Math.random() * 30 + 70); // 70 - 100 
-			System.out.println("*");
+			//System.out.println("*");
 		}
 		//moderado
 		else if(9 < hour && hour < 12 || 14 < hour && hour < 17 || 19 < hour && hour < 22) {
 			nCars = (int) (Math.random() * 45 + 25); //25 - 70
-			System.out.println("**");
+			//System.out.println("**");
 		}
 		//fraco
 		else {
 			nCars = (int) (Math.random() * 20 + 5); //5 - 25
-			System.out.println("***");
+			//System.out.println("***");
 		}
 		
-		System.out.println("Carros Gerados : "+nCars);
+		//System.out.println("Carros Gerados : "+nCars);
 	}
 	
 }

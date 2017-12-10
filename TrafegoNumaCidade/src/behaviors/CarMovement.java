@@ -195,6 +195,8 @@ public class CarMovement extends TickerBehaviour{
 				intersectionRoute = car.getIntersection().getRouteToRoad(car.getRoad().getName(), nextRoad.getName());
 			}
 			
+			System.out.println(nextRoad);
+			
 			//update the current road
 			car.setRoad(nextRoad);
 			

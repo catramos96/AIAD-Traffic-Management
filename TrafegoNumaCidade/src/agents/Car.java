@@ -84,7 +84,7 @@ public class Car extends Agent {
 		this.qlearning = new QLearning(this, 1f, 0.8f,knowledge.getQualityValues());
 		
 		//If the all city is known, then the destinationName is also known
-		if(learningMode.equals(LearningMode.NONE)){
+		if(learningMode.equals(LearningMode.NONE) || learningMode.equals(LearningMode.SHORT_LEARNING)){
 			for(Road r : knowledge.getCityKnowledge().getRoads().values()){
 				if(r.partOfRoad(destination)){
 					destinationName = r.getName();
