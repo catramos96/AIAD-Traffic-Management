@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.sql.Timestamp;
-
+import resources.Debug;
 import agents.Car;
 import agents.Car.LearningMode;
 import agents.City;
@@ -136,7 +136,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				myKnowledge = (CarSerializable) in.readObject();
 				in.close();
 				fileIn.close();
-				System.out.println("Data loaded from car.ser\n");
+				System.out.println("Data loaded from "+path+"\n");
 				
 				//Escolhi fazer A*
 				if(mode.equals("A*")) {
@@ -209,7 +209,16 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		}
 		//System.out.println("Carros gerados final : "+nCars);
 		
-		//7. debug mode
+		//debug mode
+		boolean a = (boolean) params.getValue("carMessages");
+		boolean b = (boolean) params.getValue("qLearning");
+		boolean c = (boolean) params.getValue("learningMode");
+		boolean d = (boolean) params.getValue("roadMonitor");
+		boolean e = (boolean) params.getValue("radio");
+		boolean f = (boolean) params.getValue("journeyUpdate");
+		boolean g = (boolean) params.getValue("discoveries");
+		boolean h = (boolean) params.getValue("unvisitedJourney");
+		Debug.setDebugMessages(a,b,c,d,e,f,g,h);
 		
 		//create path
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
@@ -360,7 +369,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	 * @param mode
 	 */
 	private void createNewAgent(String mode) {
-		System.out.println("New Agent created\n");
+		//System.out.println("New Agent created\n");
 		myKnowledge = new CarSerializable(spaceDimensions);
 		String temp = "";
 		if(mode.equals("A*")) {

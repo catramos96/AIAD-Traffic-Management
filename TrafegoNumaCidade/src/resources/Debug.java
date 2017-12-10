@@ -13,14 +13,28 @@ import sajas.core.Agent;
  */
 public class Debug {
 
-	public static boolean debugCarMessages = true;
-	public static boolean debugQLearning = true;
-	public static boolean debugLearningMode =true;
-	public static boolean debugRoadMonitor = false;
-	public static boolean debugRadio = false;
-	public static boolean debugJourneyUpdate = true;
-	public static boolean debugDiscoveries = false;
-	public static boolean debugUnvisitedJourney = true;
+	public static boolean debugCarMessages = true; 	//a
+	public static boolean debugQLearning = true;	//b
+	public static boolean debugLearningMode =true;	//c
+	public static boolean debugRoadMonitor = false;	//d
+	public static boolean debugRadio = false;		//e
+	public static boolean debugJourneyUpdate = true;//f
+	public static boolean debugDiscoveries = false;	//g
+	public static boolean debugUnvisitedJourney = true;	//h
+	
+	/**
+	 * Set the debug modes received from the parameters
+	 */
+	public static void setDebugMessages(boolean carMessages, boolean qlearning, boolean learningMode, boolean roadMonitor, boolean radio, boolean journeyUpdate, boolean discoveries, boolean unvisitedJourney) {
+		debugCarMessages = carMessages;
+		debugQLearning = qlearning;
+		debugLearningMode = learningMode;
+		debugRoadMonitor = roadMonitor;
+		debugRadio = radio;
+		debugJourneyUpdate = journeyUpdate;
+		debugDiscoveries = discoveries;
+		debugUnvisitedJourney = unvisitedJourney;
+	}
 	
 	/**
 	 * Debug method for agent a when receiving a message with a certain content.
