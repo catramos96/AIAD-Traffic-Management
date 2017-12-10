@@ -1,4 +1,4 @@
-<repast.simphony.visualization.engine.CartesianDisplayDescriptor>
+<repast.simphony.visualization.engine.CartesianDisplayDescriptor simphonyVersion="2.5.0">
   <name>New Display</name>
   <type>2D</type>
   <styles>
@@ -71,7 +71,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>89496509</hashCode>
+    <hashCode>246677238</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>street_map</layoutProjection>

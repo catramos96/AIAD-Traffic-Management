@@ -7,43 +7,43 @@
 									
 		/>
 				<parameter name="hour" displayName="5.    Hour of the day" type="int" 
-						defaultValue="1" 
+						defaultValue="12" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="objPath" displayName="4.    Agent Knowledge filename (new if none)" type="java.lang.String" 
-						defaultValue="astar1512867025002.ser" 
+						defaultValue="astar1512916928816.ser" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									
 		/>
 				<parameter name="originX" displayName="1.    Agent Origin ( X )" type="int" 
-						defaultValue="60" 
+						defaultValue="14" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="destX" displayName="2.    Agent Destination ( X )" type="int" 
-						defaultValue="28" 
+						defaultValue="4" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="originY" displayName="1.    Agent Origin ( Y )" type="int" 
-						defaultValue="32" 
+						defaultValue="12" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="destY" displayName="2.    Agent Destination ( Y )" type="int" 
-						defaultValue="24" 
+						defaultValue="14" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="mapPath" displayName="6.    Map Size ( Big or Small )" type="java.lang.String" 
-						defaultValue="Big" 
+						defaultValue="Small" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									

@@ -11,6 +11,7 @@ import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
 import resources.Resources.Direction;
+import resources.SpaceResources;
 import sajas.core.Agent;
 import sajas.wrapper.ContainerController;
 
@@ -123,9 +124,9 @@ public class City extends Agent{
 	 * @param n
 	 * @throws StaleProxyException 
 	 */
-	@ScheduledMethod(start=1 , interval=1000000)
+	@ScheduledMethod(start=1 , interval=100000)//50000 para a cidade grande
 	public void createRandomCar() {
-		System.out.println("----------------");
+		//System.out.println("NEW CAR");
 		
 		int rnd_road;
 		Road startRoad = null, endRoad = null;
@@ -142,6 +143,9 @@ public class City extends Agent{
 			
 			position_ok = true;
 
+			if(SpaceResources.hasCar(space, origin) != null)
+				position_ok = false;
+			
 			//check if there are no cars at the location
 			/*for(int j = 0; j < n; j++){
 				if(SpaceResources.hasCar(space, origin) != null)
