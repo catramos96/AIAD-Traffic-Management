@@ -3,6 +3,7 @@ package behaviors;
 import java.util.ArrayList;
 import agents.Car;
 import agents.Car.LearningMode;
+import agents.CarMonitored;
 import cityStructure.Road;
 import resources.Point;
 import resources.Resources;
@@ -131,8 +132,25 @@ public class CarMovement extends TickerBehaviour{
 				//chooses a road not visited before
 				ArrayList<Road> possibleRoads = car.getIntersection().getOutRoads();
 				Road tmp = null;
+				Point destination = null;
+				int minDist = SpaceResources.INFINITE;
+				
+				
+				if(car.getDestinationName() != null){
+					if(car.getCityKnowledge().getRoads().containsKey(car.getDestinationName())){
+						Road d = car.getCityKnowledge().getRoads().get(car.getDestinationName());
+						if(d.getStartIntersection() != null)
+							destination = d.getStartIntersection().getOneEntry();
+					}
+				}
+				if(destination == null)
+					destination = car.getDestination();
+				
+				boolean hasUnvisited = false;
 				
 				for(Road r : possibleRoads){
+					
+					boolean isUnvisited = false;
 					
 					//Road is destination
 					if(car.getDestinationName() != null && 
@@ -142,10 +160,31 @@ public class CarMovement extends TickerBehaviour{
 							break;
 						}
 					}
+					//Road unvisited
 					if(car.getUnexploredRoads().containsKey(r.getName())){
-						tmp = r;
-						if(car.getDestinationName() == null)
-							break;
+						
+						//clears min value
+						if(!hasUnvisited){
+							minDist = SpaceResources.INFINITE;
+							hasUnvisited = true;
+						}
+						
+						isUnvisited = true;
+					}
+										
+					//Chooses the road closer to the destination
+					//It gives priority to unvisited roads
+					if(!hasUnvisited || (hasUnvisited && isUnvisited)){
+						int dist = Point.getDistance(destination, r.getStartPoint());
+
+						if(minDist > dist){
+							minDist = dist;
+							tmp = r;
+							
+		
+							if(car.getClass().equals(CarMonitored.class))
+								System.out.println("Min Dist " + r.getName());
+						}
 					}
 				}
 				
