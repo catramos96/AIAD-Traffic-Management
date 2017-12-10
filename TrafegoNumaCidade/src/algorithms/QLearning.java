@@ -47,6 +47,7 @@ public class QLearning {
 	 * Register the new intersection out roads and insert new
 	 * quality values regarding those new roads.
 	 * Used when a car discovers a new intersection.
+	 * 
 	 * @param intersection
 	 */
 	public void insertNewIntersection(Intersection intersection){
@@ -70,7 +71,7 @@ public class QLearning {
 	/**
 	 * Update the quality values of choosing the out road "toRoad" when
 	 * the state was "intersection". The values update are for the road
-	 * with and withour transit.
+	 * with and without transit.
 	 * @param intersection
 	 * @param toRoad
 	 */
@@ -207,8 +208,8 @@ public class QLearning {
 	/**
 	 * Method that gives the action road that gives the most value when the car is in the intersection i.
 	 * It takes in consideration the current transit in the out roads of intersection i.
-	 * @param i
-	 * @return
+	 * @param i Intersection
+	 * @return Name of the next road
 	 */
 	public String getNextRoad(Intersection i){
 		String road = null;
