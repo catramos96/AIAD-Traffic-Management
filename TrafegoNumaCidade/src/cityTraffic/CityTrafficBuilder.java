@@ -140,7 +140,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				
 				//Escolhi fazer A*
 				if(mode.equals("A*")) {
-					myMode = LearningMode.NONE;
+					myMode = LearningMode.SHORT_LEARNING;
 				}
 				//escolhi QLearning
 				else 
@@ -152,9 +152,8 @@ public class CityTrafficBuilder extends RepastSLauncher {
 					{
 						//nao tenho qLearning para esta posicao -> executo A*
 						if(!myKnowledge.getDestinationPoint().equals(myDest)) {
-							myMode = LearningMode.NONE;
+							myMode = LearningMode.SHORT_LEARNING;
 						}
-						
 					}
 					//nao existe -> vou aprender
 					else 
@@ -173,10 +172,10 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				//indicate is an old version
 				myKnowledge.setNewVersion(false);
 				
-				if(mode.equals("A*")) 
+				/*if(mode.equals("A*")) 
 					myMode = LearningMode.SHORT_LEARNING;
 				else
-					myMode = LearningMode.LEARNING;
+					myMode = LearningMode.LEARNING;*/
 				
 			} catch (FileNotFoundException f) {
 				System.out.println("Car file not found");
@@ -198,7 +197,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			path += "\\maps\\small.txt";
 			spaceDimensions = new Point(21,21);
 			spacePos = new Point(10,10);
-			int ntemp = (int) (nCars*0.6);
+			int ntemp = (int) (nCars*0.5);
 			nCars = ntemp;
 		}
 		else {
@@ -272,6 +271,10 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			Road myStartRoad = city.getMap().isPartOfRoad(myOrigin);
 			if (myStartRoad != null) 
 			{
+				//testes
+				//myMode = LearningMode.NONE;
+				//myKnowledge.setCityKnowledge(city.getMap());
+				
 				CarMonitored car = new CarMonitored(space, myOrigin, myStartRoad,myDest,myKnowledge,myMode);
 				agentContainer.acceptNewAgent("MonitoredCarAgent", car).start();
 				space.getAdder().add(space, car);
@@ -285,8 +288,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				createRandomCar(city);
 			}
 
-			
-
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
 		}
@@ -299,7 +300,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	 */
 	public void createRandomCar(City city) throws StaleProxyException 
 	{
-		//System.out.println(">>>>>");
 		n++;	//inc car number
 		
 		int rnd_road;
@@ -388,17 +388,14 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		//muito transito
 		if(7 <= hour && hour <= 9 || 12 <= hour && hour <= 14 || 17 <= hour && hour <= 19) {
 			nCars = (int) (Math.random() * 30 + 70); // 70 - 100 
-			//System.out.println("*");
 		}
 		//moderado
 		else if(9 < hour && hour < 12 || 14 < hour && hour < 17 || 19 < hour && hour < 22) {
 			nCars = (int) (Math.random() * 45 + 25); //25 - 70
-			//System.out.println("**");
 		}
 		//fraco
 		else {
 			nCars = (int) (Math.random() * 20 + 5); //5 - 25
-			//System.out.println("***");
 		}
 		
 		//System.out.println("Carros Gerados : "+nCars);

@@ -2,7 +2,6 @@ package behaviors;
 
 import java.util.ArrayList;
 import agents.Car;
-import agents.CarMonitored;
 import agents.Car.LearningMode;
 import cityStructure.CityMap;
 import cityStructure.ComplexIntersection;
