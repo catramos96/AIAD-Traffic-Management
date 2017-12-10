@@ -180,10 +180,6 @@ public class CarMovement extends TickerBehaviour{
 						if(minDist > dist){
 							minDist = dist;
 							tmp = r;
-							
-		
-							if(car.getClass().equals(CarMonitored.class))
-								System.out.println("Min Dist " + r.getName());
 						}
 					}
 				}

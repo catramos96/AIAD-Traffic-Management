@@ -66,6 +66,9 @@ public class ComplexIntersection extends Intersection {
 		//Enters the intersection
 		route.add(areaOfEntry);
 		
+		if(areaOfEntry.equals(areaOfOut)) 
+		   return route; 
+		
 		int index = -1;
 		
 		//Look for position in circuit
