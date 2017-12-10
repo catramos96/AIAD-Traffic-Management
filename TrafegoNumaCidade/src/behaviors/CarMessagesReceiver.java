@@ -207,7 +207,7 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 		if(car.getCityKnowledge().getRoads().containsKey(roadName))
 			car.getCityKnowledge().getRoads().get(roadName).blocked();
 		
-		if(car.getJourney().contains(roadName)){
+		if(car.getJourney().contains(roadName) && !car.getLearningMode().equals(LearningMode.APPLYING)){
 			car.calculateAndUpdateJourney();
 		}
 	}
@@ -225,7 +225,7 @@ public class CarMessagesReceiver extends CyclicBehaviour{
 		if(car.getCityKnowledge().getRoads().containsKey(roadName))
 			car.getCityKnowledge().getRoads().get(roadName).unblocked();
 		
-		if(!car.getJourney().contains(roadName)){
+		if(!car.getJourney().contains(roadName) && !car.getLearningMode().equals(LearningMode.APPLYING)){
 			car.calculateAndUpdateJourney();
 		}
 	}
