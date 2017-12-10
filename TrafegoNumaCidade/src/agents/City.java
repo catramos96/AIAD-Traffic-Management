@@ -123,7 +123,7 @@ public class City extends Agent{
 	 * @param n
 	 * @throws StaleProxyException 
 	 */
-	@ScheduledMethod(start=1 , interval=100000)
+	@ScheduledMethod(start=1 , interval=1000000)
 	public void createRandomCar() {
 		System.out.println("----------------");
 		
