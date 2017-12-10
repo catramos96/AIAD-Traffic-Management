@@ -234,6 +234,13 @@ public class CityMap extends Agent implements Serializable
 			e.printStackTrace();
 		}
 		
+		for(Intersection i : intersections.values()){
+			if(i.outRoads.size() == 0){
+				System.out.println("Intersection " + i.getName() + " in " + i.getOneEntry().print() + " has no outs");
+				return false;
+			}
+		}
+		
 		return true;
 	}
 	

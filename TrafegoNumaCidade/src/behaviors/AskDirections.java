@@ -36,6 +36,8 @@ public class AskDirections extends TickerBehaviour{
 	//Messages specification
     private SLCodec codec;
     private Ontology serviceOntology;
+    
+    private boolean askRoad = true;
 	 
     /**
      * Constructor.
@@ -52,6 +54,9 @@ public class AskDirections extends TickerBehaviour{
         serviceOntology = ServiceOntology.getInstance();
         car.getContentManager().registerLanguage(codec);
         car.getContentManager().registerOntology(serviceOntology);
+        
+        if(car.getDestinationName() != null)
+        	askRoad = false;
 	}
 
 	@Override
@@ -81,6 +86,10 @@ public class AskDirections extends TickerBehaviour{
 	        if(car.getDestinationName() == null) 
 	        	message.setContent(MessagesResources.buildMessageWhichRoad(car.getDestination()));
 	        else if(car.getJourney().size() == 0) {
+	        	if(askRoad){
+	        		carsAsked.clear();
+	        		askRoad = false;
+	        	}
 	        	message.setContent(MessagesResources.buildMessageGetPath(car.getRoad().getName(),car.getDestinationName()));
 		        getPathSent = true;
 	        }

@@ -1,6 +1,8 @@
 package behaviors;
 
 import java.util.ArrayList;
+import java.util.Random;
+
 import agents.Car;
 import agents.Car.LearningMode;
 import agents.CarMonitored;
@@ -47,8 +49,8 @@ public class CarMovement extends TickerBehaviour{
 	@Override
 	protected void onTick() {
 		
-		try
-		{
+		//try
+		//{
 			Point pos = car.getPosition();
 			
 			//It reached it's destination
@@ -70,10 +72,18 @@ public class CarMovement extends TickerBehaviour{
 			if(passageType.equals(PassageType.Intersection))
 				handleIntersection();
 			
-		}
-		catch(Exception e){
-			System.out.println("Movement Exception " + e.getMessage());
-		}
+		//}
+		/*catch(Exception e){
+			
+			System.out.println(car.getLocalName() + ":Movement Exception " + e.getMessage());
+			if(car.getRoad() == null)
+				System.out.println("NULL ROAD");
+			if(car.getIntersection() == null)
+				System.out.println("NULL INTERSECTION");
+			
+			car.removeBehaviour(this);
+			car.takeDown();
+		}*/
 		
 	}
 	
@@ -91,6 +101,7 @@ public class CarMovement extends TickerBehaviour{
 		
 		//If it's OK to advance
 		if(greenSemaphore){
+			boolean newIntersection = !car.getCityKnowledge().getIntersections().containsKey(car.getRoad().getEndIntersection().getName());
 			car.setIntersection(car.getRoad().getEndIntersection());
 			
 			Road nextRoad = null;
@@ -160,14 +171,18 @@ public class CarMovement extends TickerBehaviour{
 							break;
 						}
 					}
-					//Road unvisited
-					if(car.getUnexploredRoads().containsKey(r.getName())){
+					//Take into account the unvisited roads in case
+					//The current intersections was already known before
+					if(!newIntersection && car.getUnexploredRoads().containsKey(r.getName())){
 						
 						//clears min value
 						if(!hasUnvisited){
 							minDist = SpaceResources.INFINITE;
 							hasUnvisited = true;
 						}
+						
+						if(car.getClass().equals(CarMonitored.class))
+							System.out.println("Unvisited - " + r.getName());
 						
 						isUnvisited = true;
 					}
@@ -177,25 +192,31 @@ public class CarMovement extends TickerBehaviour{
 					if(!hasUnvisited || (hasUnvisited && isUnvisited)){
 						int dist = Point.getDistance(destination, r.getStartPoint());
 
-						if(minDist > dist){
+						if(dist < minDist){
 							minDist = dist;
 							tmp = r;
+							
+							if(car.getClass().equals(CarMonitored.class))
+								System.out.println("MIN DIST " + r.getName() + " " + dist);
 						}
 					}
 				}
 				
 				nextRoad = tmp;
+				
+				//TMP
+				if(car.getClass().equals(CarMonitored.class) && nextRoad == null)
+					System.out.println("Road null");
 
 				//if it visited all roads, then the next road would be random
 				if(nextRoad == null){
-					int road_index = (int) (Math.random() * car.getIntersection().getOutRoads().size());
+					Random r = new Random();
+					int road_index = r.nextInt(possibleRoads.size()-1);
 					nextRoad = possibleRoads.get(road_index);
 				}
 				
 				intersectionRoute = car.getIntersection().getRouteToRoad(car.getRoad().getName(), nextRoad.getName());
 			}
-			
-			System.out.println(nextRoad);
 			
 			//update the current road
 			car.setRoad(nextRoad);

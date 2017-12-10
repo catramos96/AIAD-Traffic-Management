@@ -2,6 +2,7 @@ package agents;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 
 import behaviors.SwitchLights;
 import resources.Resources.Light;
@@ -50,7 +51,8 @@ public class SemaphoreManager extends Agent{
 		this.space.getAdder().add(space, this);
 		
 		//Random Active Light
-		int rndLight = (int) (Math.random() * 2);
+		Random r = new Random();
+		int rndLight = r.nextInt(1);
 		
 		//Creates a red semaphore for each control point except the first one
 		//in which there will be created a yellow/green semaphore.
