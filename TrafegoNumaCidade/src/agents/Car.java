@@ -95,7 +95,7 @@ public class Car extends Agent {
 		
 		init = System.currentTimeMillis();
 	}
-
+    
     @Override
     public void setup() {
         

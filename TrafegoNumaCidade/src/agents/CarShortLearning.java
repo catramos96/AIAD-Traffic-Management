@@ -9,7 +9,7 @@ import resources.Point;
  * messages in a different way and to enable the choice of a different icon
  * in the repast display, such that it can be easily distinguished in the space 
  * from the other cars.
- * The color of this car is green.
+ * The color of this car is black.
  */
 public class CarShortLearning extends Car {
 	

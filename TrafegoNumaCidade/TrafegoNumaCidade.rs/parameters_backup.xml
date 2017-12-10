@@ -13,31 +13,31 @@
 									
 		/>
 				<parameter name="objPath" displayName="4.    Agent Knowledge filename (new if none)" type="java.lang.String" 
-						defaultValue="new" 
+						defaultValue="astar1512867025002.ser" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									
 		/>
 				<parameter name="originX" displayName="1.    Agent Origin ( X )" type="int" 
-						defaultValue="5" 
+						defaultValue="60" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="destX" displayName="2.    Agent Destination ( X )" type="int" 
-						defaultValue="5" 
+						defaultValue="28" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="originY" displayName="1.    Agent Origin ( Y )" type="int" 
-						defaultValue="19" 
+						defaultValue="32" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="destY" displayName="2.    Agent Destination ( Y )" type="int" 
-						defaultValue="13" 
+						defaultValue="24" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									

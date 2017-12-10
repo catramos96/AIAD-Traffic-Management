@@ -1,10 +1,13 @@
 package agents;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import cityStructure.Intersection;
 import cityStructure.CityMap;
 import cityStructure.Road;
+import jade.wrapper.StaleProxyException;
+import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
 import resources.Resources.Direction;
@@ -21,6 +24,8 @@ public class City extends Agent{
 
 	private CityMap map;					//city structure
 	private Grid<Object> space;				//space where the agent is placed
+	private Point dimensions;
+	private ContainerController container;
 	
 	/**
 	 * Constructor.
@@ -29,10 +34,12 @@ public class City extends Agent{
 	 * @param container - container of agents
 	 * @param map_txt - filename to load the city structure.
 	 */
-	public City(Grid<Object> space, Point dimensions,ContainerController container, String map_txt){
+	public City(Grid<Object> space, Point dimensions, ContainerController container, String map_txt){
 		map = new CityMap(dimensions);
 		map.load(map_txt);
 		
+		this.dimensions = dimensions;
+		this.container = container;
 		this.space = space;
 		
 		//Creates a semaphore manager for each intersection if the
@@ -111,5 +118,60 @@ public class City extends Agent{
 		this.space = space;
 	}
 	
+	/**
+	 * 
+	 * @param n
+	 * @throws StaleProxyException 
+	 */
+	@ScheduledMethod(start=1 , interval=100000)
+	public void createRandomCar() {
+		System.out.println("----------------");
+		
+		int rnd_road;
+		Road startRoad = null, endRoad = null;
+		Point origin = null, destination = null;
+		
+		boolean position_ok = false;
+		
+		//Search Origin Random
+		while(!position_ok){
+			
+			rnd_road = (int)(Math.random() * map.getRoads().size());
+			startRoad = (Road) map.getRoads().values().toArray()[rnd_road];
+			origin = getRandomRoadPosition(startRoad);
+			
+			position_ok = true;
+
+			//check if there are no cars at the location
+			/*for(int j = 0; j < n; j++){
+				if(SpaceResources.hasCar(space, origin) != null)
+					position_ok = false;
+			}*/
+		}
+		
+		//Search Destination Random
+		rnd_road = (int)(Math.random() * map.getRoads().size());
+		endRoad = (Road) map.getRoads().values().toArray()[rnd_road];
+		destination = getRandomRoadPosition(endRoad);
+
+		// Search Destination Random
+		rnd_road = (int) (Math.random() * map.getRoads().size());
+		endRoad = (Road) map.getRoads().values().toArray()[rnd_road];
+		destination = getRandomRoadPosition(endRoad);
+		
+		// the car has previous knowledge of the city
+		CarSerializable know = new CarSerializable(dimensions);
+		know.setCityKnowledge(map);
+		Car car = new CarNoneLearning(space, origin, startRoad, destination, know);
 	
+		try {
+			long timestamp =  (new Timestamp(System.currentTimeMillis())).getTime();
+			container.acceptNewAgent("CarRandom"+timestamp, car).start();
+			space.getAdder().add(space, car);
+			car.setPosition(origin);
+			System.out.println(car.print());
+		} catch (StaleProxyException e) {
+			e.printStackTrace();
+		}
+	}
 }

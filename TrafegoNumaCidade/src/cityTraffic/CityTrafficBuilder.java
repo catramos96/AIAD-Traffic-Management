@@ -25,7 +25,6 @@ import repast.simphony.context.space.grid.GridFactory;
 import repast.simphony.context.space.grid.GridFactoryFinder;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.Schedule;
-import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.parameter.Parameters;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridBuilderParameters;
@@ -61,7 +60,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	private ContainerController mainContainer;
 	private ContainerController agentContainer;
 
-	private Schedule schedule = new Schedule();
+	private Schedule schedule = null;
 	
 	private static Point spaceDimensions = new Point(21,21);
 
@@ -98,7 +97,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		} else {
 			agentContainer = mainContainer;
 		}
-
 		launchAgents();
 	}
 	
@@ -106,6 +104,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	@Override
 	public Context build(Context<Object> context) {
 		Parameters params = RunEnvironment.getInstance().getParameters();
+		schedule = new Schedule();
 		
 		//1. origin monitored car
 		int x = (Integer) params.getValue("originX");
@@ -212,9 +211,10 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
 		space = gridFactory.createGrid(new String("street_map"), context, 
 				new GridBuilderParameters<Object>(new StrictBorders(), new SimpleGridAdder<Object>(), true,spaceDimensions.x, spaceDimensions.y));
-
+		
 		return super.build(context);
 	}
+
 	
 	/*
 	 * OTHERS
@@ -240,9 +240,8 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			space.moveTo(city, spacePos.x,spacePos.y);
 			
 			//update map with new cars
-			ScheduleParameters params = ScheduleParameters.createRepeating(1, 2000);
-			schedule.schedule(params,this,"createRandomCar",city);
-
+			schedule.schedule(city);
+			
 			//RADIO AGENT
 			
 			Radio radio = new Radio();
@@ -285,7 +284,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		}
 	}
 	
-	
 	/**
 	 * Create random cars.
 	 * @param city
@@ -293,6 +291,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	 */
 	public void createRandomCar(City city) throws StaleProxyException 
 	{
+		System.out.println(">>>>>");
 		n++;	//inc car number
 		
 		int rnd_road;
