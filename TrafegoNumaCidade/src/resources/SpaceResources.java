@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import agents.Car;
 import agents.CarMonitored;
 import agents.CarNoneLearning;
+import agents.CarShortLearning;
 import agents.Semaphore;
 import agents.SemaphoreRed;
 import agents.SemaphoreYellow;
@@ -71,6 +72,7 @@ public class SpaceResources {
 		Semaphore s1 = searchForObject(space, location, SemaphoreRed.class);
 		Semaphore s2 = searchForObject(space, location, SemaphoreYellow.class);
 		
+		
 		if(s1 == null && s2 == null)
 			return null;
 		else if(s1 == null)
@@ -87,10 +89,14 @@ public class SpaceResources {
 	 * @return
 	 */
 	public static Car hasCar(Grid<Object> space, Point location){
-		Car temp = searchForObject(space, location, CarMonitored.class);
-		if(temp == null)
-			return searchForObject(space, location, CarNoneLearning.class);
-		return temp;
+		for(Object o : space.getObjectsAt(location.toArray())){
+			if(o.getClass().equals(CarMonitored.class) ||
+					o.getClass().equals(CarNoneLearning.class) ||
+					o.getClass().equals(CarShortLearning.class)){
+				return (Car) o;
+			}
+		}
+		return null;
 	}
 	
 	/**

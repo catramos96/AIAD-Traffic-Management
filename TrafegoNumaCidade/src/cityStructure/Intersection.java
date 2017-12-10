@@ -147,7 +147,6 @@ public abstract class Intersection implements Serializable {
 	 * Method that inserts a road in an entry. I returns the type
 	 * of entry in which it was inserted.
 	 * @param r
-	 * @param substituteRoad
 	 * @return
 	 */
 	public EntryType insertRoad(Road r){

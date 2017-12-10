@@ -249,7 +249,7 @@ public class Road implements Serializable {
 	
 	/**
 	 * To be used just by the behavior LearnMap
-	 * @param endInt
+	 * @param startInt
 	 */
 	public void setStartIntersection(Intersection startInt){
 		startIntersection = startInt;
