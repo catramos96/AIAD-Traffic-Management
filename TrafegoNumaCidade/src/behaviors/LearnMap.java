@@ -2,12 +2,14 @@ package behaviors;
 
 import java.util.ArrayList;
 import agents.Car;
+import agents.CarMonitored;
 import agents.Car.LearningMode;
 import cityStructure.CityMap;
 import cityStructure.ComplexIntersection;
 import cityStructure.Intersection;
 import cityStructure.Road;
 import cityStructure.SimpleIntersection;
+import resources.Debug;
 import sajas.core.behaviours.CyclicBehaviour;
 
 /**
@@ -78,6 +80,7 @@ public class LearnMap extends CyclicBehaviour{
 					//Saves the discovered intersection
 					knowledge.getIntersections().put(intersection.getName(),intersection);
 					
+					Debug.debugDiscovery(car, intersection.getName(), false);
 					
 					ArrayList<Road> inRoads = realI.getInRoads();
 					ArrayList<Road> outRoads = realI.getOutRoads();
@@ -98,6 +101,8 @@ public class LearnMap extends CyclicBehaviour{
 							
 							//Save unexplored road, intersection of start is unknown 
 							car.getUnexploredRoads().put(in.getName(),"");
+							
+							Debug.debugDiscovery(car, in.getName(), true);
 						}
 						else{
 							//Update the missing information
@@ -113,7 +118,7 @@ public class LearnMap extends CyclicBehaviour{
 									car.setDestinationName(knownRoad.getName());
 							}
 							
-							if(car.getJourney().size() != 0)
+							if(car.getLearningMode().equals(LearningMode.SHORT_LEARNING))
 								car.calculateAndUpdateJourney();
 						}
 	
@@ -134,6 +139,8 @@ public class LearnMap extends CyclicBehaviour{
 							
 							//Save unexplored road, intersection of start is known
 							car.getUnexploredRoads().put(out.getName(),intersection.getName());
+							
+							Debug.debugDiscovery(car, out.getName(), true);
 						}
 						else{
 							//Update the missing information
@@ -154,7 +161,7 @@ public class LearnMap extends CyclicBehaviour{
 								car.getUnexploredRoads().put(out.getName(), intersection.getName());
 							}
 							
-							if(car.getJourney().size() != 0) {
+							if(car.getLearningMode().equals(LearningMode.SHORT_LEARNING)) {
 								car.calculateAndUpdateJourney();
 							}
 						}

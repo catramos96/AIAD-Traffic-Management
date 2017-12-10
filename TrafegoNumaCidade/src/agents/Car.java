@@ -253,6 +253,9 @@ public class Car extends Agent {
 	    				
     					if(j.size() != 0){
     						j.add(unexploredRoad);
+    						
+    						Debug.debugUnvisitedJourney(this, unexploredRoad, intersection);
+    						
     						break;
 	    				}
     				}

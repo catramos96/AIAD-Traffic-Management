@@ -130,13 +130,26 @@ public class CarMovement extends TickerBehaviour{
 				
 				//chooses a road not visited before
 				ArrayList<Road> possibleRoads = car.getIntersection().getOutRoads();
+				Road tmp = null;
 				
 				for(Road r : possibleRoads){
+					
+					//Road is destination
+					if(car.getDestinationName() != null && 
+							car.getLearningMode().equals(LearningMode.SHORT_LEARNING)){
+						if(r.getName().equals(car.getDestinationName())){
+							tmp = r;
+							break;
+						}
+					}
 					if(car.getUnexploredRoads().containsKey(r.getName())){
-						nextRoad = r;
-						break;
+						tmp = r;
+						if(car.getDestinationName() == null)
+							break;
 					}
 				}
+				
+				nextRoad = tmp;
 
 				//if it visited all roads, then the next road would be random
 				if(nextRoad == null){
