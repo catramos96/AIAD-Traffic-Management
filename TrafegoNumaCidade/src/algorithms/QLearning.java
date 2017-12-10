@@ -89,7 +89,7 @@ public class QLearning {
 			if(q.action_road.equals(toRoad)){
 								
 				//Calculates the next possible state with the higher value
-				Quality maxQnextState = getMaxQuality(toRoad);
+				Quality maxQnextState = getMaxNextQuality(intersection);
 				int quality_value = 0;
 				
 				//Calculates the quality value for this Q(intersection,toRoad)
@@ -114,12 +114,11 @@ public class QLearning {
 	}
 	
 	/**
-	 * Gets the max quality that has the highest value for the 
-	 * the intersection state.
+	 * Gets the max quality of the next possibles states
 	 * @param intersection
 	 * @return
 	 */
-	private Quality getMaxQuality(String intersection){
+	private Quality getMaxNextQuality(String intersection){
 		float max = 0;
 		Quality maxQ =null;
 		
@@ -128,10 +127,24 @@ public class QLearning {
 		
 		for(Quality q : qualityValues.get(intersection)){
 			
-				if(max < q.value){
-					max = q.value;
-					maxQ = q;
+			if(car.getCityKnowledge().getRoads().containsKey(q.action_road)){
+				Road r = car.getCityKnowledge().getRoads().get(q.action_road);
+				
+				if(r.getEndIntersection() != null){
+					
+					if(qualityValues.get(r.getEndIntersection().getName()) != null){
+					
+						for(Quality q2 : qualityValues.get(r.getEndIntersection().getName())){
+							if(max < q2.value){
+								max = q2.value;
+								maxQ = q2;
+							}
+						}
+					
+					}
 				}
+				
+			}
 				
 		}
 		

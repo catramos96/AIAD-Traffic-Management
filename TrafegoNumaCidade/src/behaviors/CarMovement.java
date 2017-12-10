@@ -181,9 +181,6 @@ public class CarMovement extends TickerBehaviour{
 							hasUnvisited = true;
 						}
 						
-						if(car.getClass().equals(CarMonitored.class))
-							System.out.println("Unvisited - " + r.getName());
-						
 						isUnvisited = true;
 					}
 										
@@ -196,18 +193,12 @@ public class CarMovement extends TickerBehaviour{
 							minDist = dist;
 							tmp = r;
 							
-							if(car.getClass().equals(CarMonitored.class))
-								System.out.println("MIN DIST " + r.getName() + " " + dist);
 						}
 					}
 				}
 				
 				nextRoad = tmp;
 				
-				//TMP
-				if(car.getClass().equals(CarMonitored.class) && nextRoad == null)
-					System.out.println("Road null");
-
 				//if it visited all roads, then the next road would be random
 				if(nextRoad == null){
 					Random r = new Random();
