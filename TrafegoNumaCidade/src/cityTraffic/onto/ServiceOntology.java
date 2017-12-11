@@ -1,7 +1,6 @@
 package cityTraffic.onto;
 
 import jade.content.onto.BeanOntology;
-import jade.content.onto.BeanOntologyException;
 import jade.content.onto.Ontology;
 
 public class ServiceOntology extends BeanOntology {
@@ -21,18 +20,6 @@ public class ServiceOntology extends BeanOntology {
 	// Private constructor
 	private ServiceOntology() {
 		super(ONTOLOGY_NAME);
-		
-		try {
-			// add all Concept, Predicate and AgentAction
-			//add(ServiceProposal.class);
-			//add(ServiceProposalRequest.class);
-			//add(ServiceExecutionRequest.class);
-			//add(ContractOutcome.class);
-			add(Results.class);
-			
-		} catch(BeanOntologyException boe) {
-			boe.printStackTrace();
-		}
 	}
 	
 }
