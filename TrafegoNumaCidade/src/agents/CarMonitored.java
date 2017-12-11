@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import cityStructure.Road;
+import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.grid.Grid;
 import resources.Point;
 
@@ -44,9 +45,25 @@ public class CarMonitored extends Car {
 	@Override
 	public void takeDown() {
     	super.takeDown();
-    	//serialize agent knowledge    	
+    	//save quality values	
     	knowledge.setQualityValues(this.getQLearning().getQualityValues());
-    	try {
+    	
+    	//serialize agent knowledge 
+    	serializeCar();
+            
+    	//set time for statistics
+        long now = System.currentTimeMillis();
+        long delta = now-init;
+        secs = (delta/1000);
+        System.out.println(printStatistics());  
+    }
+	
+	/**
+	 * Serialize car in a cyclic event
+	 */
+	@ScheduledMethod(start=1 , interval=5000000)
+	public void serializeCar() {	
+		try {
     		String path = new File("").getAbsolutePath();
 			path += "\\objs\\"+this.knowledge.getFilename();
 			File ser = new File(path);
@@ -56,17 +73,10 @@ public class CarMonitored extends Car {
             out.writeObject(this.knowledge);
             out.close();
             fileOut.close();
-            System.out.printf("Serialized data in car.ser\n");
-            
-            //set time
-            long now = System.currentTimeMillis();
-            long delta = now-init;
-            secs = (delta/1000);
-            System.out.println(printStatistics());
-            
+            System.out.println("Serialized data in "+this.knowledge.getFilename()+".");
          }catch (IOException i) {
             i.printStackTrace();
          }
-    }
+	}
 
 }

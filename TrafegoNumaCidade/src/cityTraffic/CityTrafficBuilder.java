@@ -187,11 +187,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 				//indicate is an old version
 				myKnowledge.setNewVersion(false);
 				
-				/*if(mode.equals("A*")) 
-					myMode = LearningMode.SHORT_LEARNING;
-				else
-					myMode = LearningMode.LEARNING;*/
-				
 			} catch (FileNotFoundException f) {
 				System.out.println("Car file not found");
 				createNewAgent(mode);
@@ -384,7 +379,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 	 * @param mode
 	 */
 	private void createNewAgent(String mode) {
-		//System.out.println("New Agent created\n");
+		
 		myKnowledge = new CarSerializable(spaceDimensions);
 		String temp = "";
 		if(mode.equals("A*")) {
@@ -426,8 +421,6 @@ public class CityTrafficBuilder extends RepastSLauncher {
 		else {
 			nCars = (int) (Math.random() * 20 + 5); //5 - 25
 		}
-		
-		//System.out.println("Carros Gerados : "+nCars);
 	}
 	
 }

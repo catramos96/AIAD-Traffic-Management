@@ -3,7 +3,6 @@ package behaviors;
 import java.util.ArrayList;
 
 import agents.Car;
-import agents.Car.LearningMode;
 import cityTraffic.onto.ServiceOntology;
 import jade.content.lang.sl.SLCodec;
 import jade.content.onto.Ontology;

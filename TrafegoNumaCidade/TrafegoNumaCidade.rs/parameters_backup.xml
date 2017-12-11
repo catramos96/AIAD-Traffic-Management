@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <parameters>
 					<parameter name="originX" displayName="1.    Agent Origin ( X )" type="int" 
-						defaultValue="2" 
+						defaultValue="1" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="destX" displayName="2.    Agent Destination ( X )" type="int" 
-						defaultValue="60" 
+						defaultValue="3" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
@@ -19,19 +19,19 @@
 									
 		/>
 				<parameter name="originY" displayName="1.    Agent Origin ( Y )" type="int" 
-						defaultValue="2" 
+						defaultValue="19" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="destY" displayName="2.    Agent Destination ( Y )" type="int" 
-						defaultValue="36" 
+						defaultValue="8" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="type" displayName="3.    Agent Learning Mode (A* or QLearning) " type="java.lang.String" 
-						defaultValue="A*" 
+				<parameter name="type" displayName="3.    Agent Learning Mode (A*, QL or AP) " type="java.lang.String" 
+						defaultValue="AP" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									
@@ -66,19 +66,19 @@
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="unvisitedJourney" displayName="g) Unvisited Journey Messages" type="boolean" 
-						defaultValue="false" 
+				<parameter name="unvisitedJourney" displayName="h) Unvisited Journey Messages" type="boolean" 
+						defaultValue="true" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
 									
 		/>
 				<parameter name="hour" displayName="5.    Hour of the day" type="int" 
-						defaultValue="12" 
+						defaultValue="1" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="discoveries" displayName="f) Discoveries" type="boolean" 
+				<parameter name="discoveries" displayName="g) Discoveries" type="boolean" 
 						defaultValue="false" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
@@ -91,13 +91,7 @@
 									
 		/>
 				<parameter name="mapPath" displayName="6.    Map Size ( Big or Small )" type="java.lang.String" 
-						defaultValue="Big" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
-									
-		/>
-				<parameter name="debugMode" displayName="7.    Debug Mode" type="java.lang.String" 
-						defaultValue="Car" 
+						defaultValue="Small" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									

@@ -5,7 +5,6 @@ import java.util.Random;
 
 import agents.Car;
 import agents.Car.LearningMode;
-import agents.CarMonitored;
 import cityStructure.Road;
 import resources.Point;
 import resources.Resources;
