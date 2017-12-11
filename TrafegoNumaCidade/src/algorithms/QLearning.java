@@ -60,8 +60,6 @@ public class QLearning {
 			
 			actions.add(q1);
 			actions.add(q2);
-			
-			updateQualityValues(intersection.getName(),r.getName());
 		}
 		
 		qualityValues.put(intersection.getName(),actions);

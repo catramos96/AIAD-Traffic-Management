@@ -30,7 +30,7 @@
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="type" displayName="3.    Agent Learning Mode (A* or QLearning) " type="java.lang.String" 
+				<parameter name="type" displayName="3.    Agent Learning Mode (A*, QL or AP) " type="java.lang.String" 
 						defaultValue="A*" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"

@@ -143,7 +143,7 @@ public class CityTrafficBuilder extends RepastSLauncher {
 					myMode = LearningMode.SHORT_LEARNING;
 				}
 				//escolhi QLearning
-				else 
+				else if(mode.equals("QL"))
 				{
 					myMode = LearningMode.LEARNING;
 					
@@ -162,12 +162,27 @@ public class CityTrafficBuilder extends RepastSLauncher {
 						filename = "qlearnig_"+x+"_"+y;
 					}
 				}
+				//Applying
+				else{
+					myMode = LearningMode.APPLYING;
+					
+					//verifico se ja existe neste agente
+					if(myKnowledge.getDestinationPoint() != null) 
+					{
+						//nao tenho qLearning para esta posicao -> executo A*
+						if(!myKnowledge.getDestinationPoint().equals(myDest)) {
+							myMode = LearningMode.SHORT_LEARNING;
+						}
+					}
+					//nao existe -> vou aprender
+					else 
+					{
+						myKnowledge.setDestinationPoint(myDest);
+						filename = "qlearnig_"+x+"_"+y;
+					}
+				}
 				
 				myKnowledge.setFilename(filename);
-				
-				if(myMode.equals(LearningMode.LEARNING) && 
-						myKnowledge.getUnexploredRoads().size() == 0)
-					myMode = LearningMode.APPLYING;
 				
 				//indicate is an old version
 				myKnowledge.setNewVersion(false);
@@ -377,8 +392,13 @@ public class CityTrafficBuilder extends RepastSLauncher {
 			long timestamp =  (new Timestamp(System.currentTimeMillis())).getTime();
 			temp = "astar"+timestamp+".ser";
 		}
-		else {
+		else if(mode.equals("QL")){
 			myMode = LearningMode.LEARNING;
+			myKnowledge.setDestinationPoint(myDest);
+			temp = "qlearnig_"+myDest.x+"_"+myDest.y+".ser";
+		}
+		else{
+			myMode = LearningMode.APPLYING;
 			myKnowledge.setDestinationPoint(myDest);
 			temp = "qlearnig_"+myDest.x+"_"+myDest.y+".ser";
 		}

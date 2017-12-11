@@ -187,13 +187,6 @@ public class LearnMap extends CyclicBehaviour{
 		}
 		
 		latestIntersection = car.getIntersection();
-		
-		//Knows all the city ?
-		if(car.getUnexploredRoads().size() == 0 && car.getLearningMode().equals(LearningMode.LEARNING)){
-			car.setLearningMode(LearningMode.APPLYING);
-			car.getJourney().clear();
-			car.removeBehaviour(this);
-		}
 
 	}
 

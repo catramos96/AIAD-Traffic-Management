@@ -186,7 +186,7 @@ public class CarMovement extends TickerBehaviour{
 										
 					//Chooses the road closer to the destination
 					//It gives priority to unvisited roads
-					if(!hasUnvisited || (hasUnvisited && isUnvisited)){
+					if(!hasUnvisited ||(hasUnvisited && isUnvisited)){
 						int dist = Point.getDistance(destination, r.getStartPoint());
 
 						if(dist < minDist){
@@ -202,7 +202,7 @@ public class CarMovement extends TickerBehaviour{
 				//if it visited all roads, then the next road would be random
 				if(nextRoad == null){
 					Random r = new Random();
-					int road_index = r.nextInt(possibleRoads.size()-1);
+					int road_index = r.nextInt(possibleRoads.size());
 					nextRoad = possibleRoads.get(road_index);
 				}
 				

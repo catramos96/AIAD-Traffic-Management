@@ -65,10 +65,6 @@ public class AskDirections extends TickerBehaviour{
 		//statistics only
 		boolean getPathSent = false;
 		
-		//Car already learned enough
-		if(car.getLearningMode().equals(LearningMode.APPLYING))
-			car.removeBehaviour(this);
-		
 		//If it didn't received any valuable directions before
 		if(car.getJourney().size() == 0 || car.getDestinationName() == null){
 			

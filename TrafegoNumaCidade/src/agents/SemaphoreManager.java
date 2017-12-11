@@ -52,7 +52,7 @@ public class SemaphoreManager extends Agent{
 		
 		//Random Active Light
 		Random r = new Random();
-		int rndLight = r.nextInt(1);
+		int rndLight = r.nextInt(2);
 		
 		//Creates a red semaphore for each control point except the first one
 		//in which there will be created a yellow/green semaphore.
