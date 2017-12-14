@@ -181,7 +181,7 @@ public class Car extends Agent {
     			//that the car as across along its course
     			j = getJourneyToUnvisited();
     			
-    			if(getUnexploredRoads().size() == 0 && destinationName != null){
+    			if(getUnexploredRoads().size() == 0 && destinationName != null && journey.size() == 0){
     				Random r = new Random();
     				if(r.nextInt(100) < 10){
     					j = AStar.shortestPath(knowledge.getCityKnowledge(), road,destinationName,true);
