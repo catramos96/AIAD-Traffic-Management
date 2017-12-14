@@ -199,7 +199,7 @@ public class CarMovement extends TickerBehaviour{
 				nextRoad = tmp;
 				
 				//if it visited all roads, then the next road would be random
-				if(nextRoad == null){
+				if(nextRoad == null || (!valid && car.getLearningMode().equals(LearningMode.LEARNING) && !hasUnvisited && car.getUnexploredRoads().size() == 0)){
 					Random r = new Random();
 					int road_index = r.nextInt(possibleRoads.size());
 					nextRoad = possibleRoads.get(road_index);

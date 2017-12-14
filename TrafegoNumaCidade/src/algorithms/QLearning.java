@@ -176,13 +176,15 @@ public class QLearning {
 			Road nextRoad =car.getCityKnowledge().getRoads().get(toRoad);
 			Point destination = null;
 			Intersection nextRoadInter = nextRoad.getEndIntersection();
-			
-			
+						
 			//if name of the destination road is known, then the destination
 			//will the the start intersection of that road
 			if(car.getDestinationName() != null){
 				
 				String dName = car.getDestinationName();
+				
+				if(dName.equals(toRoad))
+					return (float) 3 * (car.getCityKnowledge().getDimensions().x + car.getCityKnowledge().getDimensions().y);
 				
 				if(car.getCityKnowledge().getRoads().containsKey(dName)){
 					Road d = car.getCityKnowledge().getRoads().get(dName);

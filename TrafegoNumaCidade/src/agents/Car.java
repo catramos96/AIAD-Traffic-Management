@@ -12,6 +12,8 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
+
 import algorithms.AStar;
 import algorithms.QLearning;
 import behaviors.AskDirections;
@@ -178,6 +180,14 @@ public class Car extends Agent {
     			//Tries to discover new roads by explore the unvisited roads
     			//that the car as across along its course
     			j = getJourneyToUnvisited();
+    			
+    			if(getUnexploredRoads().size() == 0 && destinationName != null){
+    				Random r = new Random();
+    				if(r.nextInt(100) < 10){
+    					j = AStar.shortestPath(knowledge.getCityKnowledge(), road,destinationName,true);
+    				}
+    			}
+    			
     			break;
     			
     		}
